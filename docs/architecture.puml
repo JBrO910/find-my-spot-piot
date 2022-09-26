@@ -1,0 +1,37 @@
+@startuml
+
+package Thing {
+    component "Ultrasonic Sensor" as sensor
+    component "PyCom" as py
+    component "Light" as actuator
+
+    sensor <-d-> py : checking depth
+    actuator <-l- py : availability light
+}
+
+package Server {
+
+package Gateway {
+    component "MQTT Broker" as broker
+}
+
+py --> broker : mqtt over wifi
+
+package Internet {
+    database "Firebase Realtime DB" as realtimedb
+    database "Firebase Document DB" as documentdb
+
+    component API as api
+
+    component WebUI as web
+
+    api <-r-> web : over sockets
+    api <-d-> realtimedb : availability
+    api <-d-> documentdb : historic data
+}
+
+broker -r-> api : Send availability
+
+}
+
+@enduml

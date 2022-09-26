@@ -2,6 +2,7 @@ import pycom
 from time import sleep
 from hcsr04 import HCSR04
 from machine import Pin
+from ENV import TRIGGER_DISTANCE
 
 pycom.heartbeat(False)
 
@@ -13,7 +14,7 @@ green_led = Pin('P20', mode=Pin.OUT)
 while True:
     distance = sensor.distance_cm()
     print('Distance:', distance, 'cm')
-    if distance < 5:
+    if distance < TRIGGER_DISTANCE:
         green_led.value(1)
         red_led.value(0)
     else:

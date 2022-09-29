@@ -15,7 +15,7 @@ The intention of this project is to create a smart parking solution with some an
 | 6           | 150 Ohm resistor |                   |
 
 ## Architecture
-TODO
+![Architecture diagram](./architecture.svg)
 
 ## Possible extensions
 During planning of the initial concept of this project. We came through multiple extensions we might want to add during the course of this project.
@@ -23,6 +23,8 @@ During planning of the initial concept of this project. We came through multiple
 The first extension we thought of is to have an RFID scanner and a gate at the entrance of the parking lot. The gate will then open if the RFID scanner recognizes the card. If that is not the case, the gate will remain closed.
 
 ### Parts 
-| Amount      | Name             | Description       |
-| ----------- | ---------------- | ----------------- |
-| 1           | RFID MIFARE RC522| RFID reader/writer|
+| Amount      | Name                    | Description             |
+| ----------- | ----------------------- | ----------------------- |
+| 1           | RFID MIFARE RC522       | RFID reader/writer      |
+| 1           | SG90                    | Servo Motor             |
+| 1           | 5V external power source| To power the servo motor|

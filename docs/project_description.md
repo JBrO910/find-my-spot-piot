@@ -4,7 +4,7 @@ Authors: Joshua Gawenda & Jonathan Brocksieper
 
 ## Introduction
 
-The intention of this project is to create a smart parking solution with some analytical possibilities. To achieve this, each parking spot is equipped with an ultrasonic sensors and two LEDs (One red, one green). If the parking spot is free, the green LED will lit up. Whenever the ultrasonic sensor detects a car, the red LED will lit up instead. All of this will be monitored and stored across 2 databases to perform analytics.
+The intention of this project is to create a smart parking solution with some analytical possibilities. To achieve this, each parking spot is equipped with an ultrasonic sensors and two LEDs (One red, one green). If the parking spot is free, the green LED will light up. Whenever the ultrasonic sensor detects a car, the red LED will light up instead. The live number of available parking spots will be displayed on a website and stored in a database.
 
 ## Parts list
 
@@ -17,22 +17,24 @@ The intention of this project is to create a smart parking solution with some an
 | 3           | LED green        |                   |
 | 6           | 150 Ohm resistor |                   |
 | 1           | Breadboard       |                   |
-|             | Jumper wires     |                   |
+| 1 package   | Jumper wires     |                   |
 
 ## Architecture
 
-The architecture of this project mainly consists of a Lopy4 (Thing) and a Raspberry Pi (Server). The Lopy4 is responsible for getting the readings of the ultrasonic sensors and turn on the LEDs corresponding to that. It will also send updates of the parking availability and other statistical data to the Raspberry Pi via MQTT.
+The architecture of this project mainly consists of a Lopy4 (Thing) and a Raspberry Pi (Server). The Lopy4 is responsible for getting the readings of the ultrasonic sensors and turn on the LEDs corresponding to that. It will also send updates of the parking availability and other statistical data to the API hosted on the Raspberry Pi via MQTT, where the Raspberry Pi also works as the MQTT Broker.
 
-This data will be spread across two databases which are hosted in a Google Firebase project. The realtime database stores the availability of the parking spots while the document database stores historic data such as the duration of an occupied parking spot for example.
+This data will be spread across two databases which are hosted in a Google Firebase project. The realtime database stores the availability of the parking spots while the document database stores historic data such as the duration of an occupied parking spot.
 
-A web user interface allows us to look at this data in a more structured fashion. This interface will also include a booking function to reserve parking spots which will be indicated by a red lit up LED on the booked parking spot.
+A web interface will be hosted on the Raspberry Pi to allow for easy reading access for the live parking spot availability, as well as a detailed look at the historic data.
+
 ![Architecture diagram](./architecture.svg)
 
 ## Possible extensions
 
 During planning of the initial concept of this project, we came through multiple extensions we might want to add during the course of this project.
 
-The first extension we thought of is to have an RFID scanner and a gate at the entrance of the parking lot. The gate will then open if the RFID scanner recognizes the card. If that is not the case, the gate will remain closed.
+1. The web interface will be extended to also include a booking function to reserve parking spots which will be handeled as a taken parking spot. These will be removed from the live availability counter and also displayed with the red LED over an empty parking spot.
+2. Implement an RFID scanner and gate into the system. The RFID scanner will be able to read a user account and balance and open the gate if enough balance is available. The gate will remain closed if there is not enough balance on the account or if there are no more available spots.
 
 ### Parts
 

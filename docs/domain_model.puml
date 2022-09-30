@@ -1,0 +1,61 @@
+@startuml
+
+hide circle
+hide empty method
+
+package "Firebase Document DB" as documentdb {
+    class Garage {
+        id: \t\t\t\t number
+        name: \t\t\t string
+        address: \t\t\t string
+        phone number: \t string
+    }
+
+    class Spot {
+        id: \t\t\t number
+        garage: \t\t Garage
+        localIdentifier: \t string
+    }
+    Garage <-r- Spot
+
+    class SpotHistory {
+        id: \t\t number
+        spot: \t Spot
+        status: \t "OCCUPIED" | "AVAILABLE"
+        from: \t DateTime
+        until: \t DateTime
+    }
+    SpotHistory -u-> Spot
+
+    class "User (*)" as User {
+        id: \t\t\t number
+        First Name: \t string
+        Last Name: \t string
+        balance: \t\t number
+    }
+
+    class "TransactionHistory (*)" as TransactionHistory {
+        id: \t\t\t number
+        user: \t\t User
+        garage: \t\t Garage
+        amount: \t\t number
+        timestamp: \t DateTime
+    }
+    TransactionHistory -u-> Garage
+    TransactionHistory -l-> User
+}
+
+package "Firebase Realtime DB" as realtimedb {
+    class LiveSpot {
+        id: \t\t\t\t number
+        spot: \t\t\t Spot
+        status: \t\t\t "OCCUPIED" | "AVAILABLE"
+        statusChangedAt: \t DateTime
+        lastKeepAlive: \t\t DateTime
+    }
+    LiveSpot -d-> Spot
+}
+
+note top of documentdb : (*) Possible extension
+
+@enduml

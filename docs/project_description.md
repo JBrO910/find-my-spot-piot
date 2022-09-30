@@ -8,16 +8,16 @@ The intention of this project is to create a smart parking solution with some an
 
 ## Parts list
 
-| Amount      | Name             | Description       |
-| ----------- | ---------------- | ----------------- |
-| 1           | Lopy4            |                   |
-| 1           | Raspberry Pi     |                   |
-| 3           | HCSR04           | Ultrasonic sensor |
-| 3           | LED red          |                   |
-| 3           | LED green        |                   |
-| 6           | 150 Ohm resistor |                   |
-| 1           | Breadboard       |                   |
-| 1 package   | Jumper wires     |                   |
+| Amount    | Name             | Description       |
+|-----------|------------------|-------------------|
+| 1         | Lopy4            |                   |
+| 1         | Raspberry Pi     |                   |
+| 3         | HCSR04           | Ultrasonic sensor |
+| 3         | LED red          |                   |
+| 3         | LED green        |                   |
+| 6         | 150 Ohm resistor |                   |
+| 1         | Breadboard       |                   |
+| 1 package | Jumper wires     |                   |
 
 ## Architecture
 
@@ -27,7 +27,13 @@ This data will be spread across two databases which are hosted in a Google Fireb
 
 A web interface will be hosted on the Raspberry Pi to allow for easy reading access for the live parking spot availability, as well as a detailed look at the historic data.
 
-![Architecture diagram](./architecture.svg)
+### Architecture Diagram
+
+<img src="./architecture.svg" alt="Architecture diagram" width='75%'>
+
+### Initial Domain Model
+
+<img src="./domain_model.svg" alt="Domain Model" width='75%'>
 
 ## Possible extensions
 
@@ -38,8 +44,8 @@ During planning of the initial concept of this project, we came through multiple
 
 ### Parts
 
-| Amount      | Name                    | Description             |
-| ----------- | ----------------------- | ----------------------- |
-| 1           | RFID MIFARE RC522       | RFID reader/writer      |
-| 1           | SG90                    | Servo Motor             |
-| 1           | 5V external power source| To power the servo motor|
+| Amount | Name                     | Description              |
+|--------|--------------------------|--------------------------|
+| 1      | RFID MIFARE RC522        | RFID reader/writer       |
+| 1      | SG90                     | Servo Motor              |
+| 1      | 5V external power source | To power the servo motor |

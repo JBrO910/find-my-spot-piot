@@ -15,7 +15,7 @@ package Gateway {
     component "MQTT Broker" as broker
 }
 
-py --> broker : mqtt over wifi
+py --> broker : Wi-Fi (MQTT)
 
 package Internet {
     database "Firebase Realtime DB" as realtimedb
@@ -25,12 +25,12 @@ package Internet {
 
     component WebUI as web
 
-    api <-r-> web : over sockets
+    api <-l-> web : sockets
     api <-d-> realtimedb : availability
     api <-d-> documentdb : historic data
 }
 
-broker -r-> api : Send availability
+broker -l-> api : Wi-Fi (MQTT)
 
 }
 

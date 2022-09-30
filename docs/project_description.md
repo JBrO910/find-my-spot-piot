@@ -16,6 +16,8 @@ The intention of this project is to create a smart parking solution with some an
 | 3           | LED red          |                   |
 | 3           | LED green        |                   |
 | 6           | 150 Ohm resistor |                   |
+| 1           | Breadboard       |                   |
+|             | Jumper wires     |                   |
 
 ## Architecture
 

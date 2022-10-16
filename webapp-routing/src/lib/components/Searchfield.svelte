@@ -1,8 +1,10 @@
 <script>
-    import {globalSearchState} from "../lib/stores.js"
+    import { globalSearchState } from '$lib/stores'
+
+    export let placeholder = 'Search...'
 
     let timer
-    let searchFieldValue = ""
+    let searchFieldValue = ''
     const debounceSearch = () => {
         $globalSearchState.bouncing = true
         clearTimeout(timer)
@@ -13,6 +15,10 @@
     }
 </script>
 
-<main>
-    <input class='w-[480px]' type='text' on:input={debounceSearch} bind:value={searchFieldValue}/>
-</main>
+<input
+        bind:value={searchFieldValue}
+        class='w-[480px]'
+        on:input={debounceSearch}
+        placeholder={placeholder}
+        type='text'
+/>

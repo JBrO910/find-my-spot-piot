@@ -1,10 +1,11 @@
-<script>
-    import { MarkerIcon, PhoneIcon } from '../icons'
+<script lang="ts">
+    import { MarkerIcon, PhoneIcon } from '$lib/icons'
+    import type { GarageOverview } from '$lib/types'
 
-    export let garage
+    export let garage: GarageOverview
 </script>
 
-<main class='card'>
+<a href={`/garage/${garage.id}`} class='card'>
     <div>
         <h6 class='text-lg'>{garage.name}</h6>
         <div class='flex items-center'>
@@ -19,7 +20,7 @@
         <p class='min-w-[2em] text-end'>{garage.freeSpots}/{garage.totalSpots}</p>
         <small class='text-sm text-gray-500'>Free Spots</small>
     </div>
-</main>
+</a>
 
 <style lang='postcss'>
     @tailwind components;

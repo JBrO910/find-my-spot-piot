@@ -1,23 +1,26 @@
-@startuml
+{@startuml
 
-package Thing {
-    component "Ultrasonic Sensor" as sensor
-    component "PyCom" as py
-    component "Light" as actuator
+package Local {
+    package Thing {
+        component "Ultrasonic Sensor" as sensor
+        component "PyCom" as py
+        component "Light" as actuator
 
-    sensor <-d-> py : checking depth
-    actuator <-l- py : availability light
+        sensor <-d-> py : checking depth
+        actuator <-l- py : availability light
+    }
+
+
+    package Gateway {
+        component "MQTT Broker" as broker
+        component Distributor as distributor
+    }
+
+    py -d-> broker : Wi-Fi (MQTT)
+    broker -r-> distributor : Wi-Fi (MQTT)
 }
 
 package Server {
-
-package Gateway {
-    component "MQTT Broker" as broker
-}
-
-py --> broker : Wi-Fi (MQTT)
-
-package Internet {
     database "Firebase Realtime DB" as realtimedb
     database "Firebase Document DB" as documentdb
 
@@ -26,12 +29,12 @@ package Internet {
     component WebUI as web
 
     api <-l-> web : sockets
+    api <-l-> web : http
     api <-d-> realtimedb : availability
     api <-d-> documentdb : historic data
-}
 
-broker -l-> api : Wi-Fi (MQTT)
-
+    distributor --> api : sockets
 }
 
 @enduml
+}

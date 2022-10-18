@@ -41,12 +41,15 @@ class HCSR04:
         self.trigger.value(0)
 
         # wait for the rising edge of the echo then start timer
+        timeout = utime.ticks_us()
         while self.echo() == 0:
+            self.__check_timeout(timeout, 'Echo is still on high')
             pass
         start = utime.ticks_us()
 
          # wait for end of echo pulse then stop timer
         while self.echo() == 1:
+            self.__check_timeout(start, 'Out of Range')
             pass
         end = utime.ticks_us()
 
@@ -54,6 +57,10 @@ class HCSR04:
         utime.sleep_ms(20)
 
         return utime.ticks_diff(end, start)
+
+    def __check_timeout(self, start_time, msg):
+        if utime.ticks_diff(utime.ticks_us(), start_time) > self.echo_timeout_us:
+                raise OSError(msg)
 
     def distance_cm(self):
         """

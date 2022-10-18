@@ -1,20 +1,11 @@
 import pycom
 from time import sleep
-from hcsr04 import HCSR04
-from machine import Pin
 import machine
-from ENV import TRIGGER_DISTANCE
 import ubinascii
 import mqtt
-import json
+from measure_behavior import SpotBehavior
 
 pycom.heartbeat(False)
-
-# Sensor definitions
-# sensor = HCSR04(trigger_pin=25, echo_pin=14, echo_timeout_us=10000)
-sensor = HCSR04(trigger_pin='P22', echo_pin='P23', echo_timeout_us=10000)
-red_led = Pin('P21', mode=Pin.OUT)
-green_led = Pin('P20', mode=Pin.OUT)
 
 # MQTT definition
 mqtt_server = '192.168.204.111'
@@ -28,28 +19,24 @@ try:
 except OSError as e:
     mqtt.restart_and_reconnect()
 
-is_occupied = True
+# Sensor definitions
+spot_1 = SpotBehavior('001', 'HY 01','P23', 'P22', 'P21', 'P20', client)
+spot_2 = SpotBehavior('002', 'HY 02','P9', 'P10', 'P11', 'P12', client)
+spot_3 = SpotBehavior('003', 'HY 03', 'P3', 'P4', 'P19', 'P8', client)
+spot_1.register()
+spot_2.register()
+spot_3.register()
+
 while True:
     try:
-        distance = sensor.distance_cm()
-        print('Distance:', distance, 'cm')
-        if distance < TRIGGER_DISTANCE:
-            # Spot is occupied
-            green_led.value(1)
-            red_led.value(0)
-            if not is_occupied:
-                msg = json.dumps({"id":"001", "status":"0",})
-                client.publish(topic_spot_update, msg)
-            is_occupied = True
-        else:
-            # Spot is free
-            red_led.value(1)
-            green_led.value(0)
-            if is_occupied:
-                msg = json.dumps({ "id":"001", "status":"1",})
-                client.publish(topic_spot_update, msg)
-            is_occupied = False 
+        print('Sensor 1:')
+        spot_1.measure()
+        sleep(0.1)
+        print('Sensor 2:')
+        spot_2.measure()
+        sleep(0.1)
+        print('Sensor 3:')
+        spot_3.measure()
         sleep(1)
     except OSError as e:
         mqtt.restart_and_reconnect()
-    

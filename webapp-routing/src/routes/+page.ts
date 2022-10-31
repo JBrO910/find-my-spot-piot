@@ -1,9 +1,16 @@
-import type { Load } from '@sveltejs/kit'
-import { getGarageOverview } from '../lib/api'
+import { getGarageOverview } from '$lib/api'
+import type { PageLoad } from './$types'
+import type { PageLoadProps } from './types'
 
-export const load: Load = async () => {
+export const load: PageLoad = async (): Promise<PageLoadProps> => {
+  const {
+    data: garages,
+    error,
+  } = await getGarageOverview()
+
   return {
-    garages: await getGarageOverview()
-  };
+    garages,
+    error,
+  }
 }
 

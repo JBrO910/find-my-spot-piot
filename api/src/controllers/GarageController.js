@@ -17,6 +17,10 @@ export default class GarageController {
         return this.#database.getSingleFrom(GarageController.TABLE, id, Garage.fromSerialized)
     }
 
+    async deleteSingle(id) {
+        return this.#database.deleteSingleFrom(GarageController.TABLE, id)
+    }
+
     addOne(garage) {
         return this.#database.addSerializable(GarageController.TABLE, garage.serialised)
     }

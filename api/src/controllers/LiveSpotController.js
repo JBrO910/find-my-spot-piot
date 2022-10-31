@@ -8,6 +8,22 @@ export default class LiveSpotController {
     this.#database = new RealtimeDatabase()
   }
 
+  async #mapGarage(garage, values) {
+    if(!values || !garage) return []
+
+    return await Promise.all(
+      Object.entries(values).map(async ([key, value]) => ({
+        id: key,
+        garage,
+        ...value,
+      })),
+    ).then((res) => res.map(LiveSpot.fromSerialized))
+  }
+
+  getSpotId(garage, key) {
+    return `${garage}/${key}`
+  }
+
   onStatusChangeRaw(garage, spotCallback) {
     return this.#database.subscribeTo(garage, (res) => spotCallback(res.val()))
   }
@@ -15,47 +31,41 @@ export default class LiveSpotController {
   onStatusChange(garage, spotCallback) {
     return this.onStatusChangeRaw(
       garage,
-      (values) =>
-        values &&
-        spotCallback(
-          Object.entries(values)
-            .map(([key, value]) => ({ id: key, ...value }))
-            .map(LiveSpot.fromSerialized),
-        ),
+      async (values) =>
+        values && spotCallback(await this.#mapGarage(garage, values)),
     )
   }
 
   setLiveSpot(liveSpot) {
     return this.#database.setSerializable(
-      `${liveSpot.garage}/${liveSpot.id}`,
+        this.getSpotId(liveSpot.garage, liveSpot.id),
       liveSpot.serialised,
     )
   }
 
   setLiveSpotStatus(garage, id, value) {
-    return this.#database.updateSerializable(`${garage}/${id}`, {
+    return this.#database.updateSerializable(this.getSpotId(garage, id), {
       status: value,
       statusChangedAt: new Date().getTime(),
     })
   }
 
   keepAlive(garage, id) {
-    return this.#database.updateSerializable(`${garage}/${id}`, {
+    return this.#database.updateSerializable(this.getSpotId(garage, id), {
       lastKeepAlive: new Date().getTime(),
     })
   }
 
-  getGarageSpotsOnce(garageId) {
+  async getGarageSpotsOnce(garageId) {
     return this.#database
       .getOnce(garageId)
       .then((res) => res.val())
-      .then(
-        (garage) =>
-          garage &&
-          Object.entries(garage)
-            .map(([key, value]) => ({ id: key, ...value }))
-            .map(LiveSpot.fromSerialized),
-      )
+      .then(async (garage) => await this.#mapGarage(garageId, garage))
+  }
+
+  async removeForGarage(garageId) {
+    return this.#database
+      .removeOnce(garageId)
   }
 
   getAllOnce() {

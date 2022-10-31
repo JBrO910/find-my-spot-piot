@@ -1,5 +1,5 @@
 import {realtimeDatabase} from './firebaseClient.js'
-import {child, push, update, set, get, ref, onValue} from 'firebase/database'
+import {child, push, update, set, remove, get, ref, onValue} from 'firebase/database'
 
 export default class RealtimeDatabase {
     async addSerializable(table, element) {
@@ -20,6 +20,10 @@ export default class RealtimeDatabase {
 
     async getOnce(id) {
         return await get(ref(realtimeDatabase, id))
+    }
+
+    async removeOnce(id) {
+        return await remove(ref(realtimeDatabase, id))
     }
 
     subscribeTo(id, listener) {

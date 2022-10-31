@@ -8,11 +8,11 @@
 <a href={`/garage/${garage.id}`} class='card'>
     <div>
         <h6 class='text-lg'>{garage.name}</h6>
-        <div class='flex items-center'>
+        <div class='mt-1 flex items-center'>
             <MarkerIcon class='mr-1 text-sm text-gray-500' />
-            <small class='mt-1 mr-4 text-sm text-gray-500 font-light'>{garage.address}</small>
+            <small class='mr-4 text-sm text-gray-500 font-light'>{garage.address}</small>
             <PhoneIcon class='mr-1 text-sm text-gray-500' />
-            <small class='mt-1 text-sm text-gray-500 font-light'>{garage.phoneNumber}</small>
+            <small class='text-sm text-gray-500 font-light'>{garage.phoneNumber}</small>
         </div>
     </div>
     <div class='divider'></div>

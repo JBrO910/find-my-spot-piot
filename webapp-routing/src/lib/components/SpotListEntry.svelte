@@ -1,9 +1,12 @@
 <script lang="ts">
-    import type { Spot } from '$lib/types.js'
+    import type { CombinedSpot } from '$lib/types.js'
 
-    export let spot: Spot
+    export let spot: CombinedSpot | undefined
+
+    $: statusClass = !spot ? 'bg-gray-500' : !spot?.status ? 'bg-red-700' : 'bg-green-700'
+    $: gridLocationStyle = `grid-column: ${spot?.x + 1}; grid-row: ${spot?.y + 1};`
 </script>
 
-<div class='flex justify-center items-center px-4 py-4 h-[100px] bg-green-700 rounded text-green-50' class:bg-red-700={spot.status}>
-    {spot.id}
+<div class={statusClass + ' flex justify-center items-center px-4 py-4 h-[100px] text-green-50 outline outline-1 outline-gray-300'} style={gridLocationStyle}>
+    {spot?.id ?? ""}
 </div>

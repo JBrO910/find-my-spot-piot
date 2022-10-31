@@ -1,0 +1,108 @@
+GET http://localhost:3000/garage/overview
+Content-Type: application/json
+
+###
+
+DELETE http://localhost:3000/garage/v7Rv6WDLEqnddyQXNZY2
+
+
+###
+
+DELETE http://localhost:3000/garage/v7Rv6WDLEqnddyQXNZY2/reset
+
+###
+
+POST http://localhost:3000/garage
+Content-Type: application/json
+
+{
+  "name": "Parkhaus Königstraße APCOA",
+  "address": "Königstraße 164, 47798 Krefeld",
+  "phoneNumber": "0711 30570305",
+  "levelDescription": [
+    {
+      "x": 10,
+      "y": 5
+    },
+    {
+      "x": 10,
+      "y": 5
+    },
+    {
+      "x": 10,
+      "y": 5
+    }
+  ]
+}
+
+###
+
+POST http://localhost:3000/garage
+Content-Type: application/json
+
+{
+  "id": "TEST",
+  "name": "Small Garage",
+  "address": "Tiny Street 12, 78162 Tiny",
+  "phoneNumber": "011 72823",
+  "levelDescription": [
+    {
+      "x": 4,
+      "y": 2
+    },
+    {
+      "x": 4,
+      "y": 2
+    }
+  ]
+}
+
+###
+
+POST http://localhost:3000/garage
+Content-Type: application/json
+
+{
+  "name": "Parkhaus Behnisch Haus APCOA",
+  "address": "Marktstraße 5, 47798 Krefeld",
+  "phoneNumber": "0711 30570305",
+  "levelDescription": [
+    {
+      "x": 10,
+      "y": 5
+    },
+    {
+      "x": 10,
+      "y": 5
+    },
+    {
+      "x": 10,
+      "y": 5
+    }
+  ]
+}
+
+###
+
+POST http://localhost:3000/garage
+Content-Type: application/json
+
+{
+  "name": "Test Garage",
+  "address": "Matrix 72, Real World",
+  "phoneNumber": "+123 378237123",
+  "levelDescription": [
+    {
+      "x": 10,
+      "y": 5
+    },
+    {
+      "x": 10,
+      "y": 5
+    },
+    {
+      "x": 10,
+      "y": 5
+    }
+  ]
+}

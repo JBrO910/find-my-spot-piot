@@ -13,7 +13,8 @@
     "socket.io": "^4.5.2"
   },
   "scripts": {
-    "start": "nodemon --exec babel-node src/server.js"
+    "start": "babel-node src/server.js",
+    "dev": "nodemon --exec babel-node src/server.js"
   },
   "devDependencies": {
     "@babel/cli": "^7.18.10",

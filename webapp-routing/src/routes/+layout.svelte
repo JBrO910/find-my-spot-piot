@@ -1,5 +1,6 @@
 <script>
     import '../app.css'
+    import Snackbar from '$lib/components/Snackbar.svelte'
 </script>
 
 <svelte:head>
@@ -7,3 +8,4 @@
 </svelte:head>
 
 <slot />
+<Snackbar />

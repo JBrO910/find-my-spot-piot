@@ -3,12 +3,14 @@ export default class Garage {
   name
   address
   phoneNumber
+  levelDescription
 
-  constructor(name, address, phoneNumber, id) {
+  constructor(name, address, phoneNumber, levelDescription, id) {
     this.id = id
     this.name = name
     this.address = address
     this.phoneNumber = phoneNumber
+    this.levelDescription = levelDescription
   }
 
   get serialised() {
@@ -16,10 +18,11 @@ export default class Garage {
       name: this.name,
       address: this.address,
       phoneNumber: this.phoneNumber,
+      levelDescription: this.levelDescription,
     }
   }
 
-  static fromSerialized({ id, name, address, phoneNumber }) {
-    return new Garage(name, address, phoneNumber, id)
+  static fromSerialized({ id, name, address, phoneNumber, levelDescription }) {
+    return new Garage(name, address, phoneNumber,levelDescription, id)
   }
 }

@@ -1,5 +1,17 @@
-import {documentDatabase} from './firebaseClient.js'
-import {addDoc, updateDoc, setDoc, collection, doc, getDoc, getDocs} from 'firebase/firestore'
+import {
+    addDoc,
+    collection,
+    deleteDoc,
+    doc,
+    getDoc,
+    getDocs,
+    query,
+    runTransaction,
+    setDoc,
+    updateDoc,
+    where,
+} from 'firebase/firestore'
+import { documentDatabase } from './firebaseClient.js'
 
 export default class DocumentDatabase {
     async addSerializable(table, element) {
@@ -21,6 +33,37 @@ export default class DocumentDatabase {
 
     async getSingleFrom(table, id, transform) {
         const document = await getDoc(doc(documentDatabase, table, id))
+
+        if (!document.exists()) return undefined
+
         return transform({id: document.id, ...document.data()})
+    }
+
+    async getWhere(table, whereColumn, whereCommand, whereValue, transform) {
+        const q = await query(
+            collection(documentDatabase, table),
+            where(whereColumn, whereCommand, whereValue),
+        )
+        return await getDocs(q)
+            .then(({docs}) =>
+                docs.map((document) =>
+                    transform({id: document.id, ...document.data()}),
+                ),
+            )
+    }
+
+    async deleteWhere(table, whereColumn, whereCommand, whereValue) {
+        await runTransaction(documentDatabase, async (transaction) => {
+            const q = await query(
+                collection(documentDatabase, table),
+                where(whereColumn, whereCommand, whereValue),
+            )
+            const documents = await getDocs(q)
+            documents.docs.forEach((doc) => transaction.delete(doc.ref))
+        })
+    }
+
+    async deleteSingleFrom(table, id) {
+        return deleteDoc(doc(documentDatabase, table, id))
     }
 }

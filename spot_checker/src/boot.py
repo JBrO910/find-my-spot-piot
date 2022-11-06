@@ -1,14 +1,17 @@
 from network import WLAN
+import time
+import machine
 
 ssid = 'JoshuaHotspot'
 password = 'kommrein'
-ssid = 'FRITZ!Box 3490'
-password = '85368507722187996960'
 station = WLAN(mode=WLAN.STA)
 
 station.connect(ssid=ssid,auth=(WLAN.WPA2, password))
 
+start = time.time()
 while station.isconnected() == False:
+    if time.time() - start > 10:
+        machine.reset()
     pass
 
 print('Connection successful')

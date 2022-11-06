@@ -9,7 +9,6 @@ pycom.heartbeat(False)
 
 # MQTT definition
 mqtt_server = '192.168.204.111'
-mqtt_server = '192.168.178.36'
 client_id = ubinascii.hexlify(machine.unique_id())
 
 

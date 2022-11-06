@@ -39,11 +39,17 @@ class HCSR04:
         # Send a 10us pulse.
         time.sleep_us(10)
         self.trigger.value(0)
-
+        print(self.echo())
         # wait for the rising edge of the echo then start timer
         timeout = utime.ticks_us()
         while self.echo() == 0:
-            self.__check_timeout(timeout, 'Echo is still on high')
+            self.__check_timeout(timeout, 'Echo is still on low')
+            """ if utime.ticks_diff(utime.ticks_us(), timeout) > self.echo_timeout_us:
+                self.echo = self.echo_OUT
+                self.echo.value(1)
+                self.echo = self.echo_IN
+                print('INSIDE')
+                break """
             pass
         start = utime.ticks_us()
 
@@ -60,7 +66,7 @@ class HCSR04:
 
     def __check_timeout(self, start_time, msg):
         if utime.ticks_diff(utime.ticks_us(), start_time) > self.echo_timeout_us:
-                raise OSError(msg)
+            raise OSError(msg)
 
     def distance_cm(self):
         """

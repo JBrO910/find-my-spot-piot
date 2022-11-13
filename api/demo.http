@@ -1,3 +1,21 @@
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "username": "TestUser1",
+  "password": "password"
+}
+
+###
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "username": "TestUser1",
+  "password": "password"
+}
+
+###
 GET http://localhost:3000/garage/overview
 Content-Type: application/json
 

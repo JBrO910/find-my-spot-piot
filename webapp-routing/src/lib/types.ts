@@ -3,8 +3,25 @@ export interface ApiError {
   description?: string
   code?: string
 }
+export interface FieldError {
+  message?: string
+  field?: string
+}
+
+export interface PageProps {
+  page: {
+    name: string
+    user?: User
+    error?: ApiError
+  }
+}
 
 export type WithError<T> = { data?: T, error?: ApiError }
+
+export interface User {
+  username: string,
+  isAdmin: boolean,
+}
 
 export interface Garage {
   id: string
@@ -36,6 +53,8 @@ export interface LiveSpot {
   status: 0 | 1
   statusChangedAt: number
   lastKeepAlive: number
+  hasLostConnection: boolean
+  hasNotChangedWarning: boolean
 }
 
 export type CombinedSpot = Spot & Partial<LiveSpot>

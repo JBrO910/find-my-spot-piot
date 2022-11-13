@@ -1,7 +1,11 @@
+import {config} from 'dotenv'
+config()
+
 import cors from 'cors'
 import express from 'express'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
+import authRouter, { authenticated } from './routers/AuthenticationRouter.js'
 import garageRouter from './routers/GarageRouter.js'
 import setupRealtimeRouter from './routers/setupRealtimeRouter.js'
 import { Log } from './utils/logger.js'
@@ -23,7 +27,8 @@ const io = new Server(httpServer, {
 })
 
 setupRealtimeRouter(io)
-app.use('/garage', garageRouter)
+app.use('/garage', authenticated, garageRouter)
+app.use('/auth', authRouter)
 
 const port = 3000
 httpServer.listen(port)

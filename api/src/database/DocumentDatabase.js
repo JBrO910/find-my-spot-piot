@@ -46,9 +46,13 @@ export default class DocumentDatabase {
         )
         return await getDocs(q)
             .then(({docs}) =>
-                docs.map((document) =>
-                    transform({id: document.id, ...document.data()}),
-                ),
+                docs
+                    .map(
+                        (document) =>
+                            document.exists() &&
+                            transform({id: document.id, ...document.data()}),
+                    )
+                    .filter((e) => e),
             )
     }
 

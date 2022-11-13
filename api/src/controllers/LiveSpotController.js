@@ -17,7 +17,7 @@ export default class LiveSpotController {
         garage,
         ...value,
       })),
-    ).then((res) => res.map(LiveSpot.fromSerialized))
+    ).then((res) => res.map(LiveSpot.fromSerialized).filter(e => e.status !== undefined).map(s => s.serialised))
   }
 
   getSpotId(garage, key) {

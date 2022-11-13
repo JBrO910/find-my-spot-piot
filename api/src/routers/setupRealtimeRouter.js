@@ -1,13 +1,9 @@
 import GarageController from '../controllers/GarageController.js'
 import LiveSpotController from '../controllers/LiveSpotController.js'
-import SpotController from '../controllers/SpotController.js'
-import LiveSpot from '../models/LiveSpot.js'
-import Spot from '../models/Spot.js'
 import { Log } from '../utils/logger.js'
 
 export default (io) => {
     const garageController = new GarageController()
-    const spotController = new SpotController()
     const liveSpotController = new LiveSpotController()
 
     // Read all registered Garages
@@ -15,44 +11,53 @@ export default (io) => {
         .then((garages) =>
             // Create Socket Network foreach garage
             garages.forEach((garage) => {
-                const LOG_TAG = `GarageSocket(${ garage.id })`
+                const LOG_TAG = `Garage[${ garage.id }]`
+
+                const garageConsumerSockets = io.of(`/${ garage.id }`)
+                const garageBrokerSocket = io.of(`/${ garage.id }-broker`)
+                const garageRegisterSocket = io.of(`/${ garage.id }-register`)
 
                 // On status change of spots sync to listeners
                 liveSpotController.onStatusChange(garage.id, (spots) => {
-                    const freeSpots = spots.reduce((acc, curr) => acc + +curr.isFree, 0)
+                    const freeSpots = spots.reduce((acc, curr) => acc + +curr.status, 0)
+
+                    const logMessage = `Spots changed, Free Spots: ${ freeSpots }/${ spots.length }`
                     Log.tag(LOG_TAG)
-                        .trace(
-                            `Spots changed, Free Spots: ${ freeSpots }/${ spots.length }`,
-                        )
-                    io.of(`/${ garage.id }`)
+                        .trace(logMessage)
+
+                    garageConsumerSockets
                         .emit('update', spots)
                 })
 
+                garageBrokerSocket
+                    .on('connect', (socket) => {
+                        Log.tag(LOG_TAG).info(`BrokerSocket(${socket.id}) Connected`)
+
+                        socket.on('loadSpotsResponse', ({ spots }) => {
+                          Log.tag(LOG_TAG).trace(
+                            `Received ${spots?.length} spots for registration`,
+                          )
+                            garageRegisterSocket.emit('loadSpotsResponse', {
+                            spots,
+                          })
+                        })
+                    })
+
+                garageRegisterSocket
+                    .on("connect", (socket) => {
+                        Log.tag(LOG_TAG).info(`RegisterSocket(${socket.id}) Connected`)
+
+                        socket.on("loadSpots", () => {
+                            Log.tag(LOG_TAG).trace("Requested to load spots for registration")
+                            garageBrokerSocket.emit("loadSpots")
+                        })
+                    })
+
                 // Build Network for garage
-                io.of(`/${ garage.id }`)
+                garageConsumerSockets
                     .on('connect', async (socket) => {
                         Log.tag(LOG_TAG)
-                            .trace(`Socket(${ socket.id }) connected`)
-
-                        socket.emit(
-                            'update',
-                            await liveSpotController.getGarageSpotsOnce(garage.id),
-                        )
-
-                        // Add route for spots to register themselves and store both in live and document database
-                        socket.on('register', (spotId, localIdentifier, x, y, z) => {
-                            const spot = new Spot(garage.id, localIdentifier, x, y, z, spotId)
-                            spotController.setSpot(spot)
-
-                            const liveSpot = new LiveSpot(
-                                0, // Set the starting value to free
-                                spotId,
-                            )
-                            liveSpotController.setLiveSpot(liveSpot)
-
-                            Log.tag(LOG_TAG)
-                                .trace('Registered spot with id', spotId)
-                        })
+                            .info(`Socket(${ socket.id }) connected`)
 
                         // Add route to update a value of a specific live spot in the garage
                         socket.on('update', (id, value) => {
@@ -68,7 +73,7 @@ export default (io) => {
 
                         socket.on('disconnect', () =>
                             Log.tag(LOG_TAG)
-                                .trace(`Socket(${ socket.id }) disconnected`),
+                                .info(`Socket(${ socket.id }) disconnected`),
                         )
                     })
             }),

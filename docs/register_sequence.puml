@@ -1,0 +1,31 @@
+@startuml
+
+actor WebUI
+actor Broker
+actor LoPy
+
+activate LoPy
+LoPy -> LoPy : Check if is registered
+LoPy -> LoPy : Wait for message
+
+activate WebUI
+WebUI -> Broker : Load Spots
+Broker -> LoPy : WhoAreYou
+
+LoPy --> Broker : WhoAmI + HowManySpots
+LoPy -> LoPy : Wait for message
+Broker --> WebUI : All Spots
+
+
+WebUI -> Broker : Signal Spot
+Broker -> LoPy : Signal Spot
+LoPy -> LoPy : Blink
+
+WebUI -> Broker : Register Spot
+Broker -> LoPy : Register Spot
+LoPy -> LoPy : Save registered state
+deactivate LoPy
+
+
+deactivate WebUI
+@enduml

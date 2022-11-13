@@ -22,14 +22,18 @@ garageRouter.get('/overview', async (req, res) => {
   const garages = await garageController.getAll()
 
   const freeSpotsForGarage = (id) =>
-    liveSpots[id]?.reduce((acc, curr) => acc + +!curr.isFree, 0)
+    liveSpots[id]
+      ?.filter((e) => e.status !== undefined)
+      ?.reduce((acc, curr) => acc + curr.status, 0)
 
   res.send(
-    garages.map((garage) => ({
-      ...garage,
-      totalSpots: liveSpots[garage.id]?.length ?? 0,
-      freeSpots: freeSpotsForGarage(garage.id) ?? 0,
-    })),
+    garages
+      .filter((garage) => !(!liveSpots[garage.id]?.length || !freeSpotsForGarage(garage.id)))
+      .map((garage) => ({
+        ...garage,
+        totalSpots: liveSpots[garage.id]?.length,
+        freeSpots: freeSpotsForGarage(garage.id),
+      })),
   )
 })
 
@@ -51,7 +55,9 @@ garageRouter.get('/:id/spots', async (req, res) => {
   }
 
   const spots = await spotController.getAllForGarage(req.params.id)
-  const liveSpots = await liveSpotController.getGarageSpotsOnce(req.params.id).then(s => s.reduce((acc, curr) => ({...acc, [curr.id]: curr}), {}))
+  const liveSpots = await liveSpotController
+    .getGarageSpotsOnce(req.params.id)
+    .then((s) => s.reduce((acc, curr) => ({ ...acc, [curr.id]: curr }), {}))
 
   const combinedSpots = spots.reduce(
     (acc, curr) => ({
@@ -90,15 +96,9 @@ garageRouter.delete('/:id/reset', async (req, res) => {
 })
 
 garageRouter.post('/', async (req, res) => {
-  Log.tag(LOG_TAG).trace(req.body)
-
   // TODO Refresh io listener
 
-  if (
-    ['name', 'address', 'phoneNumber', 'levelDescription'].some(
-      (key) => !(key in req.body),
-    )
-  ) {
+  if (['name', 'address', 'phoneNumber'].some((key) => !(key in req.body))) {
     Log.tag(LOG_TAG).warn(
       'Failed to create garage, some required fields are missing',
     )
@@ -109,13 +109,14 @@ garageRouter.post('/', async (req, res) => {
     return
   }
 
-  const { name, address, phoneNumber, levelDescription } = req.body
-  const garage = new Garage(name, address, phoneNumber, levelDescription)
+  const { name, address, phoneNumber } = req.body
+  const garage = new Garage(name, address, phoneNumber)
   const created = await garageController.addOne(garage)
 
   Log.tag(LOG_TAG).info(`Created Garage`, created.id)
-
   res.status(200).send(created.id)
 })
+
+// TODO Add levelDescription to register spots function
 
 export default garageRouter

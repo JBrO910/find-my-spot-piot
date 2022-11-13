@@ -1,7 +1,6 @@
 <!--suppress TypeScriptUnresolvedFunction -->
 <script lang='ts'>
   import GarageLevelEntry from '$lib/components/GarageLevelEntry.svelte'
-  import AppBarLayout from '$lib/layout/AppBarLayout.svelte'
   import type { CombinedSpot, LiveSpot } from '$lib/types'
   import io from 'socket.io-client'
   import { onMount } from 'svelte'
@@ -11,7 +10,7 @@
   let selectedLevel = 0
 
   onMount(async () => {
-    if (!data.garage.id || !data.spots) {
+    if (!data.garage?.id || !data.spots) {
       return
     }
 
@@ -39,34 +38,26 @@
     }, [])
 </script>
 
-<AppBarLayout error={data.error}>
-  <p
-    class='text-gray-50 text-md italic'
-    slot='content'
-  >
-    {data?.garage?.name}
-  </p>
+<div class='flex gap-4 p-4'>
+  {#each levels as level, i}
+    <p
+      on:click={onSelectLevel(i)}
+      class='underline-offset-2 text-xl font-medium hover:cursor-pointer select-none'
+      class:text-gray-900={selectedLevel === i}
+      class:underline={selectedLevel === i}
+      class:font-bold={selectedLevel === i}
+      class:text-gray-700={selectedLevel !== i}
+    >
+      Level {i} <span class='text-base'>({level.filter(e => !!e.status).length}/{level.length})</span>
+    </p>
+  {/each}
+</div>
 
-  <div class='flex gap-4 p-4'>
-    {#each levels as level, i}
-      <p
-        on:click={onSelectLevel(i)}
-        class='underline-offset-2 text-xl font-medium hover:cursor-pointer select-none'
-        class:text-gray-900={selectedLevel === i}
-        class:underline={selectedLevel === i}
-        class:font-bold={selectedLevel === i}
-        class:text-gray-700={selectedLevel !== i}
-      >
-        Level {i} <span class='text-base'>({level.filter(e => !!e.status).length}/{level.length})</span>
-      </p>
-    {/each}
-  </div>
-  <div class='p-4 flex flex-col gap-4'>
-    {#if data.garage.levelDescription}
-      <GarageLevelEntry
-        definition={data.garage.levelDescription[selectedLevel]}
-        spots={levels[selectedLevel]}
-      />
-    {/if}
-  </div>
-</AppBarLayout>
+<div class='p-4 flex flex-col gap-4'>
+  {#if data.garage?.levelDescription}
+    <GarageLevelEntry
+      definition={data.garage.levelDescription[selectedLevel]}
+      spots={levels[selectedLevel]}
+    />
+  {/if}
+</div>

@@ -29,10 +29,6 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
     mqttClient.on("connect", () => {
         Log.info("Connected to MQTT Client")
 
-        setTimeout(() => {
-            mqttClient.publish(REQUEST_ID_RESPONSE, '{"spots":[1]}')
-        }, 2000)
-
         listenToLoadSpots(async () => {
             // TODO Block requests while setup is currently running and if it is already setup
             Log.info("Loading Spots requested")

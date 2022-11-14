@@ -32,8 +32,7 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
         listenToLoadSpots(async () => {
             // TODO Block requests while setup is currently running and if it is already setup
             Log.info("Loading Spots requested")
-            const requestTime = new Date()
-            mqttClient.publish(REQUEST_ID, requestTime.toLocaleString())
+            mqttClient.publish(REQUEST_ID, "{}")
 
             await sleep(registerSleepTime)
 

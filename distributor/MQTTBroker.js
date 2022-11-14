@@ -15,37 +15,39 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
     const mqttClient = mqtt.connect(process.env.MQTT_BROKER_ADDRESS);
     const registeredSpots = []
 
-    mqttClient.on("connect", () => Log.info("Connected to MQTT Client"));
+    mqttClient.on("connect", () => {
+        Log.info("Connected to MQTT Client")
 
-    listenToLoadSpots(async () => {
-        // TODO Block requests while setup is currently running and if it is already setup
-        Log.info("Loading Spots requested")
-        const requestTime = new Date()
-        mqttClient.publish(REQUEST_ID, requestTime.toLocaleString())
+        // listenToLoadSpots(async () => {
+        //     // TODO Block requests while setup is currently running and if it is already setup
+        //     Log.info("Loading Spots requested")
+        //     const requestTime = new Date()
+        //     mqttClient.publish(REQUEST_ID, requestTime.toLocaleString())
+        //
+        //     await sleep(registerSleepTime)
+        //
+        //     Log.trace(`Register ${registeredSpots.length} spots`)
+        //     emitLoadSpots(registeredSpots)
+        // })
 
-        await sleep(registerSleepTime)
+        const topics = {
+            [UPDATE_SPOT]: mqttToSocketEmit(emitUpdateSpot),
+            [KEEP_ALIVE]: mqttToSocketEmit(emitKeepAliveSpot),
+            [REQUEST_ID_RESPONSE]: (message) => {
+                const { spots } = JSON.parse(message.toString());
 
-        Log.trace(`Register ${registeredSpots.length} spots`)
-        emitLoadSpots(registeredSpots)
-    })
+                Log.trace("Register spot", spots);
+                registeredSpots.push(...spots);
+            },
+        };
 
-    const topics = {
-      [UPDATE_SPOT]: mqttToSocketEmit(emitUpdateSpot),
-      [KEEP_ALIVE]: mqttToSocketEmit(emitKeepAliveSpot),
-      [REQUEST_ID_RESPONSE]: (message) => {
-        const { spots } = JSON.parse(message.toString());
-
-        Log.trace("Register spot", spots);
-        registeredSpots.push(...spots);
-      },
-    };
-
-    Object.keys(topics).forEach((topic) => {
-        Log.trace(`Listen to topic "${topic}"`)
-        mqttClient.subscribe(
-            topic,
-            (err) => err && Log.error(`Topic "${topic}" failed with`, err)
-        );
+        Object.keys(topics).forEach((topic) => {
+            Log.trace(`Listen to topic "${topic}"`)
+            mqttClient.subscribe(
+                topic,
+                (err) => err && Log.error(`Topic "${topic}" failed with`, err)
+            );
+        });
     });
 
     mqttClient.on("message", (topic, message) => {

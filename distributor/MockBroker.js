@@ -20,6 +20,9 @@ const register = async (
     Log.tag(LOG_TAG).info("Listen to register");
 
     listenToLoadSpots(async () => {
+      // Clear all spots
+      registeredSpots.splice(0)
+
       Log.tag(LOG_TAG).info("Loading Spots requested");
 
       for (let i = 0; i < amountOfControllers; i++) {

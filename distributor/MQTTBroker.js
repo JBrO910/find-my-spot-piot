@@ -7,6 +7,7 @@ import {
     emitUpdateSpot,
     mqttToSocketEmit,
 } from './socket'
+import { KEEP_ALIVE, REQUEST_ID, REQUEST_ID_RESPONSE, UPDATE_SPOT } from './topics'
 import { sleep } from './utils'
 
 // ? Sleep time defaults to 10 seconds
@@ -20,7 +21,7 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
         // TODO Block requests while setup is currently running and if it is already setup
         Log.info("Loading Spots requested")
         const requestTime = new Date()
-        mqttClient.publish("WhoAreYou", requestTime.toLocaleString())
+        mqttClient.publish(REQUEST_ID, requestTime.toLocaleString())
 
         await sleep(registerSleepTime)
 
@@ -29,9 +30,9 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
     })
 
     const topics = {
-      "live-spot": mqttToSocketEmit(emitUpdateSpot),
-      "keep-alive": mqttToSocketEmit(emitKeepAliveSpot),
-      "who-am-i": (message) => {
+      [UPDATE_SPOT]: mqttToSocketEmit(emitUpdateSpot),
+      [KEEP_ALIVE]: mqttToSocketEmit(emitKeepAliveSpot),
+      [REQUEST_ID_RESPONSE]: (message) => {
         const { spots } = JSON.parse(message.toString());
 
         Log.trace("Register spot", spots);

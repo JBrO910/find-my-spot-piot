@@ -39,7 +39,7 @@
       return
     }
 
-    const socket = io(`ws://127.0.0.1:3000/${ data.garage.id }-register`)
+    const socket = io(`ws://192.168.218.111:3000/${ data.garage.id }-register`)
     socket.on('connect', () => console.log('Connected to socket'))
 
     socket.on('loadSpotsResponse', ({ spots: sendSpots }) => {

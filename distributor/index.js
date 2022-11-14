@@ -16,7 +16,7 @@
 // }
 
 const mqtt = require('mqtt')
-const client  = mqtt.connect('mqtt://192.168.218.111')
+const client  = mqtt.connect(process.env.MQTT_BROKER_ADDRESS)
 
 client.on('connect', function () {
   client.subscribe('presence', function (err) {

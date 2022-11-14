@@ -9,7 +9,7 @@ const socket = io(
 );
 
 socket.on("connect", () => Log.info("Connected to Socket"));
-socket.on("connect_error", (err) => Log.error("Connection error", err.message));
+socket.on("connect_error", (err) => Log.error("Connection error in socket", err.message));
 
 export const mqttToSocketEmit = (emitEvent) => (message) =>
   emitEvent(JSON.parse(message.toString()));

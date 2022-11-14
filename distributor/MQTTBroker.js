@@ -13,10 +13,23 @@ import { sleep } from './utils'
 // ? Sleep time defaults to 10 seconds
 export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
     const mqttClient = mqtt.connect(process.env.MQTT_BROKER_ADDRESS);
+
     const registeredSpots = []
+    const topics = {
+        [UPDATE_SPOT]: mqttToSocketEmit(emitUpdateSpot),
+        [KEEP_ALIVE]: mqttToSocketEmit(emitKeepAliveSpot),
+        [REQUEST_ID_RESPONSE]: (message) => {
+            const { spots } = JSON.parse(message.toString());
+
+            Log.trace("Register spot", spots);
+            registeredSpots.push(...spots);
+        },
+    };
 
     mqttClient.on("connect", () => {
         Log.info("Connected to MQTT Client")
+
+        mqttClient.publish(REQUEST_ID_RESPONSE, '{"spots":[1]}')
 
         // listenToLoadSpots(async () => {
         //     // TODO Block requests while setup is currently running and if it is already setup
@@ -29,17 +42,6 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
         //     Log.trace(`Register ${registeredSpots.length} spots`)
         //     emitLoadSpots(registeredSpots)
         // })
-
-        const topics = {
-            [UPDATE_SPOT]: mqttToSocketEmit(emitUpdateSpot),
-            [KEEP_ALIVE]: mqttToSocketEmit(emitKeepAliveSpot),
-            [REQUEST_ID_RESPONSE]: (message) => {
-                const { spots } = JSON.parse(message.toString());
-
-                Log.trace("Register spot", spots);
-                registeredSpots.push(...spots);
-            },
-        };
 
         Object.keys(topics).forEach((topic) => {
             Log.trace(`Listen to topic "${topic}"`)

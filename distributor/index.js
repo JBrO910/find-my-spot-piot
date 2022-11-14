@@ -1,33 +1,16 @@
-// import { config } from "dotenv";
-// import setupMockBroker from "./MockBroker";
-// import setupMQTTBroker from "./MQTTBroker";
-//
-// config();
-//
-// const useMock = ["--mock", "-m"].some((flag) => process.argv.includes(flag));
-// const useRegister = ["--register", "-r"].some((flag) =>
-//   process.argv.includes(flag)
-// );
-//
-// if (useMock) {
-//   setupMockBroker(useRegister);
-// } else {
-//   setupMQTTBroker();
-// }
+import { config } from "dotenv";
+import setupMockBroker from "./MockBroker";
+import setupMQTTBroker from "./MQTTBroker";
 
-const mqtt = require('mqtt')
-const client  = mqtt.connect(process.env.MQTT_BROKER_ADDRESS)
+config();
 
-client.on('connect', function () {
-  client.subscribe('presence', function (err) {
-    if (!err) {
-      client.publish('presence', 'Hello mqtt')
-    }
-  })
-})
+const useMock = ["--mock", "-m"].some((flag) => process.argv.includes(flag));
+const useRegister = ["--register", "-r"].some((flag) =>
+  process.argv.includes(flag)
+);
 
-client.on('message', function (topic, message) {
-  // message is Buffer
-  console.log(message.toString())
-  client.end()
-})
+if (useMock) {
+  setupMockBroker(useRegister);
+} else {
+  setupMQTTBroker();
+}

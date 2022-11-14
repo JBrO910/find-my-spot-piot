@@ -23,12 +23,15 @@ export const actions: Actions = {
     cookies.set("keepLoggedIn", keepLoggedIn as string, {
       path: "/",
       httpOnly: true,
+      secure: false,
       sameSite: "strict",
     })
     // TODO Refresh token if necessary
+    // TODO In production remove secure: false
     cookies.set("token", data.token, {
       path: "/",
       httpOnly: true,
+      secure: false,
       sameSite: "strict",
     })
 

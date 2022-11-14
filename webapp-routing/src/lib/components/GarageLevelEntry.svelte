@@ -9,8 +9,10 @@
   import type { CombinedSpot } from '../types'
 
   export let editable = false
+  export let editSpotClick: (mockSpot:any) => CombinedSpot = undefined
   export let spots: Array<CombinedSpot> = []
   export let definition: { x: Number, y: Number }
+
   let selectedSpot: CombinedSpot | undefined = undefined
 
   let referenceTime = new Date()
@@ -23,6 +25,13 @@
       clearInterval(interval)
     }
   })
+
+  const onClickSpot = (spot) => () => {
+    if(!!editSpotClick) {
+      spot = editSpotClick(spot)
+    }
+    selectedSpot = spot
+  }
 
   const onEscape = (e) => {
     if (e.code !== 'Escape') {
@@ -42,7 +51,6 @@
                   : selectedSpot?.hasNotChangedWarning
                     ? [WarnIcon, 'text-yellow-700', 'Occupied for a long time']
                     : [SuccessIcon, 'text-green-700', '']
-  $: selectedSpot = spots[0]
 </script>
 
 <div
@@ -58,7 +66,7 @@
       <SpotListEntry
         {spot}
         {editable}
-        on:click={() => (selectedSpot = spot)}
+        on:click={onClickSpot(spot)}
       />
     {/each}
   </div>
@@ -73,7 +81,7 @@
         on:click|stopPropagation
       >
         <div class='flex gap-1 items-center'>
-          <h5 class='text-2xl font-semibold'>{selectedSpot.id}</h5>
+          <h5 class='text-2xl font-semibold'>{selectedSpot.id ?? 'Empty spot'}</h5>
           {#if spotStatus[2]}
             <svelte:component
               class={`${spotStatus[1]} text-2xl ml-2`}
@@ -85,12 +93,13 @@
         </div>
 
         <div class='flex gap-2 items-center'>
-          <Button disabled={spotDisabled}>Turn off</Button>
-          <Button disabled={spotDisabled}>Signal</Button>
-          <Button disabled={spotDisabled}>Measure</Button>
+          <Button disabled={spotDisabled || !selectedSpot.id}>Turn off</Button>
+          <Button disabled={spotDisabled || !selectedSpot.id}>Signal</Button>
+          <Button disabled={spotDisabled || !selectedSpot.id}>Measure</Button>
             <small class='text-sm font-medium min-w-[24ch]'>Result: No measurement</small>
         </div>
 
+        {#if !editable}
         <h6 class='text-lg font-semibold mt-2'>
           Information
         </h6>
@@ -108,6 +117,7 @@
               <td class='value'>{new Date(selectedSpot.lastKeepAlive).toLocaleString()}</td>
             </tr>
           </table>
+          {/if}
       </div>
     </div>
   {/if}

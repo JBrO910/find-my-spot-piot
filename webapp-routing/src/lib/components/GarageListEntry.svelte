@@ -1,25 +1,35 @@
-<script lang="ts">
-    import { MarkerIcon, PhoneIcon } from '$lib/icons'
-    import type { GarageOverview } from '$lib/types'
+<script lang='ts'>
+  import { MarkerIcon, PhoneIcon } from '$lib/icons'
+  import type { GarageOverview } from '$lib/types'
 
-    export let garage: GarageOverview
+  export let garage: GarageOverview
 </script>
 
-<a href={`/garage/${garage.id}`} class='card'>
-    <div>
-        <h6 class='text-lg'>{garage.name}</h6>
-        <div class='mt-1 flex items-center'>
-            <MarkerIcon class='mr-1 text-sm text-gray-500' />
-            <small class='mr-4 text-sm text-gray-500 font-light'>{garage.address}</small>
-            <PhoneIcon class='mr-1 text-sm text-gray-500' />
-            <small class='text-sm text-gray-500 font-light'>{garage.phoneNumber}</small>
-        </div>
+<a
+  class='card'
+  href={!garage.totalSpots ? `/garage/${garage.id}/setup` : `/garage/${garage.id}`}
+>
+  <div>
+    <h6 class='text-lg'>{garage.name}</h6>
+    <div class='mt-1 flex items-center'>
+      <MarkerIcon class='mr-1 text-sm text-gray-500' />
+      <small class='mr-4 text-sm text-gray-500 font-light'>{garage.address}</small>
+      <PhoneIcon class='mr-1 text-sm text-gray-500' />
+      <small class='text-sm text-gray-500 font-light'>{garage.phoneNumber}</small>
     </div>
-    <div class='divider'></div>
+  </div>
+  <div class='divider'></div>
+  {#if !!garage.totalSpots}
     <div>
-        <p class='min-w-[2em] text-end'>{garage.freeSpots}/{garage.totalSpots}</p>
-        <small class='text-sm text-gray-500'>Free Spots</small>
+      <p class='min-w-[2em] text-end'>{garage.freeSpots}/{garage.totalSpots}</p>
+      <small class='text-sm text-gray-500'>Free Spots</small>
     </div>
+  {:else}
+    <div>
+      <p class='min-w-[2em] text-end'>Not Set Up</p>
+      <small class='text-sm text-gray-500'>Garage is not set up properly</small>
+    </div>
+  {/if}
 </a>
 
 <style lang='postcss'>

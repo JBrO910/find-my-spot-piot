@@ -31,17 +31,17 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
 
         mqttClient.publish(REQUEST_ID_RESPONSE, '{"spots":[1]}')
 
-        // listenToLoadSpots(async () => {
-        //     // TODO Block requests while setup is currently running and if it is already setup
-        //     Log.info("Loading Spots requested")
-        //     const requestTime = new Date()
-        //     mqttClient.publish(REQUEST_ID, requestTime.toLocaleString())
-        //
-        //     await sleep(registerSleepTime)
-        //
-        //     Log.trace(`Register ${registeredSpots.length} spots`)
-        //     emitLoadSpots(registeredSpots)
-        // })
+        listenToLoadSpots(async () => {
+            // TODO Block requests while setup is currently running and if it is already setup
+            Log.info("Loading Spots requested")
+            const requestTime = new Date()
+            mqttClient.publish(REQUEST_ID, requestTime.toLocaleString())
+
+            await sleep(registerSleepTime)
+
+            Log.trace(`Register ${registeredSpots.length} spots`)
+            emitLoadSpots(registeredSpots)
+        })
 
         Object.keys(topics).forEach((topic) => {
             Log.trace(`Listen to topic "${topic}"`)

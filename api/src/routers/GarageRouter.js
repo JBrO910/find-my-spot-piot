@@ -28,7 +28,7 @@ garageRouter.get('/overview', async (req, res) => {
 
   res.send(
     garages
-      .filter((garage) => !(!liveSpots[garage.id]?.length || !freeSpotsForGarage(garage.id)))
+      .filter((garage) => req.user.isAdmin || !!liveSpots[garage.id]?.length)
       .map((garage) => ({
         ...garage,
         totalSpots: liveSpots[garage.id]?.length,

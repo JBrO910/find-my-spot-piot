@@ -1,8 +1,8 @@
 import GarageController from '../controllers/GarageController.js'
 import LiveSpotController from '../controllers/LiveSpotController.js'
-import SpotController from '../controllers/SpotController'
+import SpotController from '../controllers/SpotController.js'
 import LiveSpot from '../models/LiveSpot.js'
-import Spot from '../models/Spot'
+import Spot from '../models/Spot.js'
 import { Log } from '../utils/logger.js'
 
 export default (io) => {

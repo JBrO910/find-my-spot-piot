@@ -35,6 +35,7 @@ export default class LiveSpot {
     return {
       id: this.id,
       status: this.status,
+      garage: this.garage,
       hasLostConnection: this.hasLostConnection,
       hasNotChangedWarning: this.hasNotChangedWarning,
       statusChangedAt: this.statusChangedAt,

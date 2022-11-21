@@ -1,31 +1,33 @@
 import pycom
-from time import sleep
 import machine
 import ubinascii
 import mqtt
+import ENV
 from measure_behavior import SpotBehavior
+from app import App
 
 pycom.heartbeat(False)
 
 # MQTT definition
-mqtt_server = '192.168.204.111'
 client_id = ubinascii.hexlify(machine.unique_id())
 
-
 try:
-    client = mqtt.connect_mqtt(client_id, mqtt_server)
+    client = mqtt.connect_mqtt(client_id, ENV.BROKER_IP)
 except OSError as e:
     mqtt.restart_and_reconnect()
 
-# Sensor definitions
-spot_1 = SpotBehavior('001', 'HY 01', 'P23', 'P22', 'P21', 'P20', timeout=15000, mqtt_client=client)
-spot_2 = SpotBehavior('002', 'HY 02', 'P9', 'P10', 'P11', 'P12', timeout=15000, mqtt_client=client)
-spot_3 = SpotBehavior('003', 'HY 03', 'P3', 'P4', 'P19', 'P8', timeout=15000, mqtt_client=client)
-spot_1.register()
-spot_2.register()
-spot_3.register()
+# Spot definitions
+muid = ubinascii.hexlify(machine.unique_id()).decode()
+spots = []
+spots.append(SpotBehavior(muid + '-001', 'P23', 'P22', 'P20', timeout=15000, mqtt_client=client))
+spots.append(SpotBehavior(muid + '-002', 'P9', 'P10', 'P12', timeout=15000, mqtt_client=client))
+spots.append(SpotBehavior(muid + '-003', 'P3', 'P4', 'P8', timeout=15000, mqtt_client=client))
 
-while True:
+main_app = App(muid, spots, client)
+main_app.loop()
+
+
+""" while True:
     try:
         sleep(0.5)
         print('Sensor 1:')
@@ -37,5 +39,5 @@ while True:
         print('Sensor 3:')
         spot_3.measure()
     except OSError as e:
-        mqtt.restart_and_reconnect()
+        mqtt.restart_and_reconnect() """
     

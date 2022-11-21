@@ -1,4 +1,4 @@
-from umqttsimple import MQTTClient
+from umqttsimple import MQTTClient, MQTTException
 import machine
 import time
 

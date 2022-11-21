@@ -1,1 +1,12 @@
 TRIGGER_DISTANCE = 10
+BROKER_IP = '192.168.218.111'
+# BROKER_IP = '192.168.178.36'
+REQUEST_ID = b'register/request-id'
+REQUEST_ID_RESPONSE = b'register/request-id/response'
+RECEIVE_ID = b'register/receive-id'
+MEASURE_ONCE = b'maintenance/measure'
+MEASURE_ONCE_RESPONSE = b'maintenance/measure/response'
+SIGNAL_LED = b'maintenance/signal-led'
+DISABLE_SPOT = b'maintenance/disable-spot'
+ENABLE_SPOT = b'maintenance/enable-spot'
+KEEP_ALIVE = b'maintenance/keep-alive'

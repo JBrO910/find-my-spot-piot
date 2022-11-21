@@ -15,6 +15,8 @@
   }
   export let data: PageLoadProps
 
+  // TODO Redirect back if it is already set up
+
   let spots = []
   let loadingSpots = false
   let selectedSpot = undefined

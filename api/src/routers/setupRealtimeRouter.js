@@ -50,6 +50,18 @@ export default (io) => {
                         garageRegisterSocket.emit('measureResult', {measure, id})
                         garageConsumerSockets.emit('measureResult', {measure, id})
                     })
+
+                    // Add route to update a value of a specific live spot in the garage
+                    socket.on('update', (id, value) => {
+                        liveSpotController.setLiveSpotStatus(garage.id, id, value)
+                        Log.tag(LOG_TAG)
+                            .trace(`Update spot(${ id }) with status ${ value }`)
+                    })
+
+                    // Add route to receive a keep alive signal from a specific spot in a garage
+                    socket.on('keepAlive', (id) =>
+                        liveSpotController.keepAlive(garage.id, id),
+                    )
                 })
 
                 const registerSpot = (spot) => {
@@ -103,18 +115,6 @@ export default (io) => {
                 garageConsumerSockets.on('connect', async (socket) => {
                     Log.tag(LOG_TAG)
                         .info(`Socket(${ socket.id }) connected`)
-
-                    // Add route to update a value of a specific live spot in the garage
-                    socket.on('update', (id, value) => {
-                        liveSpotController.setLiveSpotStatus(garage.id, id, value)
-                        Log.tag(LOG_TAG)
-                            .trace(`Update spot(${ id }) with status ${ value }`)
-                    })
-
-                    // Add route to receive a keep alive signal from a specific spot in a garage
-                    socket.on('keepAlive', (id) =>
-                        liveSpotController.keepAlive(garage.id, id),
-                    )
 
                     setUpMaintenanceSocket(socket)
 

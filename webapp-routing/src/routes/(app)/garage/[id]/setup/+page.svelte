@@ -7,6 +7,7 @@
   import io from 'socket.io-client'
   import { onMount } from 'svelte'
   import type { PageLoadProps } from './types'
+  import {goto} from "$app/navigation"
 
   const defaultRowsCols = {
     x: 3,
@@ -36,14 +37,16 @@
     const levelCopy = [...levelDescription]
     levelCopy.splice(index, 1)
 
-    if(selectedLevel >= levelCopy.length) selectedLevel = levelCopy.length - 1
+    if (selectedLevel >= levelCopy.length) {
+      selectedLevel = levelCopy.length - 1
+    }
 
     levelDescription = levelCopy
   }
 
   const register = () => {
-    // TODO Register garage and spots in Firebase
-    socket.emit("register", spots)
+    socket.emit('register', spots)
+    goto("/garage/" + data.garage?.id)
   }
 
   onMount(async () => {
@@ -84,7 +87,9 @@
   $: filledSpotsAmount = spots.filter(spot => spot.x === undefined).length
   $: {
     spots = spots.map(spot => {
-      if(spot.z !== selectedSpot) return spot;
+      if (spot.z !== selectedSpot) {
+        return spot
+      }
 
       if (spot.x >= selectedLevelObject.x || spot.y >= selectedLevelObject.y) {
         return { id: spot.id }
@@ -141,11 +146,22 @@
           {spot.id}
         </p>
       {:else}
-        <small class='font-medium text-sm'>No more controllers were found</small>
+        <small class='font-medium text-sm'>
+          {#if loadingSpots}
+            Loading...
+          {:else}
+            No more controllers were found
+          {/if}
+        </small>
       {/each}
     </div>
   </div>
-  <Button disabled={!!filledSpotsAmount || !spots.length} on:click={register} on:keydown={register}>Save Registration</Button>
+  <Button
+    disabled={!!filledSpotsAmount || !spots.length}
+    on:click={register}
+    on:keydown={register}
+  >Save Registration
+  </Button>
 </div>
 
 <div class='flex items-center gap-4 px-4 mt-4'>
@@ -210,13 +226,13 @@
         selectedSpot = undefined
     }}
     editable
-    removable
     on:removeSpot={({detail: spot}) => {
         const index = spots.findIndex(nSpot => nSpot.id === spot.id)
         spots[index].x = undefined
         spots[index].y = undefined
     }}
-    spots={mockSpots}
+    removable
     {socket}
+    spots={mockSpots}
   />
 </div>

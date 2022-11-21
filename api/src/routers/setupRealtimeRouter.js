@@ -1,10 +1,14 @@
 import GarageController from '../controllers/GarageController.js'
 import LiveSpotController from '../controllers/LiveSpotController.js'
+import SpotController from '../controllers/SpotController'
+import LiveSpot from '../models/LiveSpot.js'
+import Spot from '../models/Spot'
 import { Log } from '../utils/logger.js'
 
 export default (io) => {
     const garageController = new GarageController()
     const liveSpotController = new LiveSpotController()
+    const spotController = new SpotController()
 
     // Read all registered Garages
     garageController.getAll()
@@ -48,6 +52,13 @@ export default (io) => {
                     })
                 })
 
+                const registerSpot = (spot) => {
+                    const newSpot = new Spot(garage.id, spot.localIdentifier ?? spot.id, spot.x, spot.y, spot.z, spot.id)
+                    spotController.setSpot(newSpot.serialised)
+                    const newLiveSpot = new LiveSpot(1 /* Occupied */, newSpot.id)
+                    liveSpotController.setLiveSpot(newLiveSpot)
+                }
+
                 const setUpMaintenanceSocket = (socket) => {
                     socket.on('blink', (id) => {
                         Log.tag(LOG_TAG).trace("Requested blink for", id)
@@ -58,12 +69,18 @@ export default (io) => {
                         garageBrokerSocket.emit('measure', id)
                     })
                     socket.on('register', (spots) => {
-                        const ids = spots.reduce((acc, curr) => {
+                        const idSet = spots.reduce((acc, curr) => {
+                            registerSpot(curr)
+
                             acc.add(curr.id.split("-")[0])
+
                             return acc
                         }, new Set())
-                        Log.tag(LOG_TAG).trace("Register spots for controller ids", [...ids])
-                        garageBrokerSocket.emit('register', [...ids])
+                        const ids = [...idSet]
+
+                        Log.tag(LOG_TAG).trace("Register spots for controller ids", ids)
+
+                        garageBrokerSocket.emit('register', ids)
                     })
                 }
 

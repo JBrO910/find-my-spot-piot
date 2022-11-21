@@ -12,6 +12,8 @@
   const dispatch = createEventDispatcher()
 
   export let socket: Socket | undefined = undefined
+  let isSocketSetup = false
+
   export let editable = false
   export let editSpotClick: (mockSpot: any) => CombinedSpot = undefined
   export let removable = false
@@ -58,7 +60,8 @@
   }
 
   $: {
-    if(!!socket) {
+    if(!!socket && !isSocketSetup) {
+      isSocketSetup = true
       socket?.on("measureResult", ({measure, id}) => {
         console.log("Got", measure, "for", id)
         if(id !== selectedSpot?.id) return;

@@ -28,6 +28,7 @@
 <div
   class='relative'
   on:click
+  on:keydown
   style={gridLocationStyle}
 >
   <div class={statusClass + ' flex justify-center items-center px-4 py-4 h-[100px] text-green-50 outline outline-1 outline-gray-300'}>

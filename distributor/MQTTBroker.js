@@ -5,32 +5,51 @@ import {
     listenToLoadSpots,
     emitLoadSpots,
     emitUpdateSpot,
-    mqttToSocketEmit,
+    mqttParseMessage,
+    listenToBlinkMaintain,
+    listenToMeasureMaintain,
+    emitResultOfMeasureMaintain,
+    listenToRegisterMaintain,
 } from './socket'
-import { KEEP_ALIVE, REQUEST_ID, REQUEST_ID_RESPONSE, UPDATE_SPOT } from './topics'
+import {
+    BLINK,
+    KEEP_ALIVE,
+    MEASURE,
+    MEASURE_RESPONSE,
+    RECEIVE_ID,
+    REQUEST_ID,
+    REQUEST_ID_RESPONSE,
+    UPDATE_SPOT,
+} from './topics'
 import { sleep } from './utils'
 
 // ? Sleep time defaults to 10 seconds
 export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
     const mqttClient = mqtt.connect(process.env.MQTT_BROKER_ADDRESS);
 
+    let isRegistering = false
     const registeredSpots = []
     const topics = {
-        [UPDATE_SPOT]: mqttToSocketEmit(emitUpdateSpot),
-        [KEEP_ALIVE]: mqttToSocketEmit(emitKeepAliveSpot),
-        [REQUEST_ID_RESPONSE]: (message) => {
-            const { spots } = JSON.parse(message.toString());
-
+        [MEASURE_RESPONSE]: mqttParseMessage(emitResultOfMeasureMaintain),
+        [UPDATE_SPOT]: mqttParseMessage(emitUpdateSpot),
+        [KEEP_ALIVE]: mqttParseMessage(emitKeepAliveSpot),
+        [REQUEST_ID_RESPONSE]: mqttParseMessage(({ spots }) => {
             Log.trace("Register spot", spots);
             registeredSpots.push(...spots);
-        },
+        }),
     };
 
     mqttClient.on("connect", () => {
         Log.info("Connected to MQTT Client")
 
         listenToLoadSpots(async () => {
-            // TODO Block requests while setup is currently running and if it is already setup
+            if(isRegistering) {
+                Log.warn("Register process was already started")
+                return
+            }
+            isRegistering = true
+            registeredSpots.length = 0  // Clear array
+
             Log.info("Loading Spots requested")
             mqttClient.publish(REQUEST_ID, "{}")
 
@@ -38,6 +57,24 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
 
             Log.trace(`Register ${registeredSpots.length} spots`)
             emitLoadSpots(registeredSpots)
+            isRegistering = false
+        })
+
+        // TODO Listen to spots registered
+
+        // TODO Think about turn off
+
+        listenToBlinkMaintain((id) => {
+            Log.trace("Blink requested for", id)
+            mqttClient.publish(BLINK, JSON.stringify({id}))
+        })
+        listenToMeasureMaintain((id) => {
+            Log.trace("Measure requested for", id)
+            mqttClient.publish(MEASURE, JSON.stringify({id}))
+        })
+        listenToRegisterMaintain((spots) => {
+            Log.trace("Register requested for", spots)
+            mqttClient.publish(RECEIVE_ID, JSON.stringify({spots}))
         })
 
         Object.keys(topics).forEach((topic) => {
@@ -51,10 +88,10 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
 
     mqttClient.on("message", (topic, message) => {
         if (!(topic in topics)) {
-            Log.tag("onMessage").warn(`No listener defined for ${topic}`)
+            Log.tag("GotMessage").warn(`No listener defined for ${topic}`)
             return;
         }
-        Log.tag("onMessage").trace(topic, JSON.parse(message.toString()))
+        Log.tag("GotMessage").trace(topic, JSON.parse(message.toString()))
 
         topics[topic](message);
     });

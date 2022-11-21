@@ -1,5 +1,6 @@
 <!--suppress TypeScriptUnresolvedFunction -->
 <script lang='ts'>
+  import { PUBLIC_BROKER_URL } from '$env/static/public'
   import GarageLevelEntry from '$lib/components/GarageLevelEntry.svelte'
   import type { CombinedSpot, LiveSpot } from '$lib/types'
   import io from 'socket.io-client'
@@ -14,7 +15,7 @@
       return
     }
 
-    const socket = io(`ws://192.168.218.111:3000/${ data.garage.id }`)
+    const socket = io(`${ PUBLIC_BROKER_URL }/${ data.garage.id }`)
     socket.on('connect', () => console.log('Connected to socket'))
     socket.on('update', (sendSpots: Array<LiveSpot>) => {
       sendSpots.forEach(({

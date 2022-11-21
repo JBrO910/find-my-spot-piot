@@ -2,18 +2,37 @@
 <script lang='ts'>
   import Button from '$lib/components/Button.svelte'
   import SpotListEntry from '$lib/components/SpotListEntry.svelte'
-  import { onMount } from 'svelte'
+  import type { Socket } from 'socket.io-client'
+  import { createEventDispatcher, onMount } from 'svelte'
   import ErrorIcon from '../icons/ErrorIcon.svelte'
   import SuccessIcon from '../icons/SuccessIcon.svelte'
   import WarnIcon from '../icons/WarnIcon.svelte'
   import type { CombinedSpot } from '../types'
 
+  const dispatch = createEventDispatcher()
+
+  export let socket: Socket | undefined = undefined
+  let isSocketSetup = false
+
   export let editable = false
-  export let editSpotClick: (mockSpot:any) => CombinedSpot = undefined
+  export let editSpotClick: (mockSpot: any) => CombinedSpot = undefined
+  export let removable = false
   export let spots: Array<CombinedSpot> = []
   export let definition: { x: Number, y: Number }
 
   let selectedSpot: CombinedSpot | undefined = undefined
+
+  let isMeasuring = false
+  let measurement = undefined
+
+  const measureSpot = (spot) => () => {
+    isMeasuring = true
+    socket?.emit("measure", spot.id)
+  }
+
+  const blinkSpot = (spot) => () => {
+    socket?.emit("blink", spot.id)
+  }
 
   let referenceTime = new Date()
   onMount(() => {
@@ -27,7 +46,7 @@
   })
 
   const onClickSpot = (spot) => () => {
-    if(!!editSpotClick) {
+    if (!!editSpotClick) {
       spot = editSpotClick(spot)
     }
     selectedSpot = spot
@@ -38,6 +57,18 @@
       return
     }
     selectedSpot = undefined
+  }
+
+  $: {
+    if(!!socket && !isSocketSetup) {
+      isSocketSetup = true
+      socket?.on("measureResult", ({measure, id}) => {
+        console.log("Got", measure, "for", id)
+        if(id !== selectedSpot?.id) return;
+        isMeasuring = false
+        measurement = measure
+      })
+    }
   }
 
   $: cssGridDef = definition && `--count-cols: ${ definition.x }; --count-rows: ${ definition.y }`
@@ -67,6 +98,7 @@
         {spot}
         {editable}
         on:click={onClickSpot(spot)}
+        on:keydown={onClickSpot(spot)}
       />
     {/each}
   </div>
@@ -75,10 +107,12 @@
     <div
       class='z-10 absolute inset-0 p-[64px] grid place-items-center bg-gray-600/[.6]'
       on:click={() => (selectedSpot = undefined)}
+      on:keydown={() => (selectedSpot = undefined)}
     >
       <div
         class='bg-gray-50 p-4 rounded-md shadow-md flex flex-col gap-2'
         on:click|stopPropagation
+        on:keydown|stopPropagation
       >
         <div class='flex gap-1 items-center'>
           <h5 class='text-2xl font-semibold'>{selectedSpot.id ?? 'Empty spot'}</h5>
@@ -93,16 +127,35 @@
         </div>
 
         <div class='flex gap-2 items-center'>
-          <Button disabled={spotDisabled || !selectedSpot.id}>Turn off</Button>
-          <Button disabled={spotDisabled || !selectedSpot.id}>Signal</Button>
-          <Button disabled={spotDisabled || !selectedSpot.id}>Measure</Button>
-            <small class='text-sm font-medium min-w-[24ch]'>Result: No measurement</small>
+          {#if removable}
+            <Button
+              disabled={spotDisabled || !selectedSpot.id}
+              color='error'
+              on:click={() => {
+                  dispatch("removeSpot", selectedSpot)
+                  selectedSpot = undefined
+              }}
+            >Remove
+            </Button>
+          {/if}
+<!--          <Button disabled={spotDisabled || !selectedSpot.id}>Turn off</Button>-->
+          <Button disabled={spotDisabled || !selectedSpot.id} on:click={blinkSpot(selectedSpot)}>Signal</Button>
+          <Button disabled={spotDisabled || !selectedSpot.id || isMeasuring} on:click={measureSpot(selectedSpot)}>Measure</Button>
+          <small class='text-sm font-medium min-w-[24ch]'>
+            {#if isMeasuring}
+              Loading...
+            {:else if measurement !== undefined}
+              Result: {measurement.toFixed(3)} mm
+            {:else}
+              Result: No measurement
+            {/if}
+          </small>
         </div>
 
         {#if !editable}
-        <h6 class='text-lg font-semibold mt-2'>
-          Information
-        </h6>
+          <h6 class='text-lg font-semibold mt-2'>
+            Information
+          </h6>
           <table class='text-left'>
             <tr>
               <th class='key'>{!!selectedSpot?.status ? "Free for" : "Parked for"}</th>
@@ -117,7 +170,7 @@
               <td class='value'>{new Date(selectedSpot.lastKeepAlive).toLocaleString()}</td>
             </tr>
           </table>
-          {/if}
+        {/if}
       </div>
     </div>
   {/if}

@@ -38,6 +38,10 @@ export const listenToMeasureMaintain = (callback) => {
   socket.on("measure", callback);
 };
 
+export const listenToRegisterMaintain = (callback) => {
+  socket.on("register", callback);
+};
+
 export const emitResultOfMeasureMaintain = (callback) => {
   socket.emit("measureResult", callback);
 };

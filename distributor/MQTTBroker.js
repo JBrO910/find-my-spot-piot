@@ -5,9 +5,22 @@ import {
     listenToLoadSpots,
     emitLoadSpots,
     emitUpdateSpot,
-    mqttParseMessage, listenToBlinkMaintain, listenToMeasureMaintain, emitResultOfMeasureMaintain,
+    mqttParseMessage,
+    listenToBlinkMaintain,
+    listenToMeasureMaintain,
+    emitResultOfMeasureMaintain,
+    listenToRegisterMaintain,
 } from './socket'
-import { BLINK, KEEP_ALIVE, MEASURE, MEASURE_RESPONSE, REQUEST_ID, REQUEST_ID_RESPONSE, UPDATE_SPOT } from './topics'
+import {
+    BLINK,
+    KEEP_ALIVE,
+    MEASURE,
+    MEASURE_RESPONSE,
+    RECEIVE_ID,
+    REQUEST_ID,
+    REQUEST_ID_RESPONSE,
+    UPDATE_SPOT,
+} from './topics'
 import { sleep } from './utils'
 
 // ? Sleep time defaults to 10 seconds
@@ -58,6 +71,10 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
         listenToMeasureMaintain((id) => {
             Log.trace("Measure requested for", id)
             mqttClient.publish(MEASURE, JSON.stringify({id}))
+        })
+        listenToRegisterMaintain((spots) => {
+            Log.trace("Register requested for", spots)
+            mqttClient.publish(RECEIVE_ID, JSON.stringify({spots}))
         })
 
         Object.keys(topics).forEach((topic) => {

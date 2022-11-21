@@ -41,6 +41,11 @@
     levelDescription = levelCopy
   }
 
+  const register = () => {
+    // TODO Register garage and spots in Firebase
+    socket.emit("register", spots)
+  }
+
   onMount(async () => {
     if (!data.garage?.id) {
       return
@@ -140,7 +145,7 @@
       {/each}
     </div>
   </div>
-  <Button disabled={!!filledSpotsAmount || !spots.length}>Save Registration</Button>
+  <Button disabled={!!filledSpotsAmount || !spots.length} on:click={register} on:keydown={register}>Save Registration</Button>
 </div>
 
 <div class='flex items-center gap-4 px-4 mt-4'>

@@ -57,6 +57,14 @@ export default (io) => {
                         Log.tag(LOG_TAG).trace("Requested measure for", id)
                         garageBrokerSocket.emit('measure', id)
                     })
+                    socket.on('register', (spots) => {
+                        const ids = spots.reduce((acc, curr) => {
+                            acc.add(curr.id.split("-")[0])
+                            return acc
+                        }, new Set())
+                        Log.tag(LOG_TAG).trace("Register spots for controller ids", [...ids])
+                        garageBrokerSocket.emit('register', [...ids])
+                    })
                 }
 
                 garageRegisterSocket.on('connect', (socket) => {

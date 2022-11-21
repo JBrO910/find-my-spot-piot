@@ -46,7 +46,6 @@
       return
     }
 
-    console.log(`${ PUBLIC_BROKER_URL }/${ data.garage.id }-register`)
     socket = io(`${ PUBLIC_BROKER_URL }/${ data.garage.id }-register`)
     socket.on('connect', () => console.log('Connected to socket'))
 

@@ -33,13 +33,9 @@ export default class LiveSpot {
 
   get serialised() {
     return {
-      id: this.id,
-      status: this.status,
-      garage: this.garage,
+      ...this,
       hasLostConnection: this.hasLostConnection,
       hasNotChangedWarning: this.hasNotChangedWarning,
-      statusChangedAt: this.statusChangedAt,
-      lastKeepAlive: this.lastKeepAlive,
     }
   }
 

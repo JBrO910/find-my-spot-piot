@@ -53,9 +53,9 @@ export default (io) => {
 
                     // Add route to update a value of a specific live spot in the garage
                     socket.on('update', (id, value) => {
-                        liveSpotController.setLiveSpotStatus(garage.id, id, value)
                         Log.tag(LOG_TAG)
                             .trace(`Update spot(${ id }) with status ${ value }`)
+                        liveSpotController.setLiveSpotStatus(garage.id, id, value)
                     })
 
                     // Add route to receive a keep alive signal from a specific spot in a garage
@@ -107,6 +107,11 @@ export default (io) => {
                             .trace('Requested to load spots for registration')
                         garageBrokerSocket.emit('loadSpots')
                     })
+                    socket.on('update', (id, value) => {
+                        Log.tag(LOG_TAG)
+                            .trace(`REGISTER Update spot(${ id }) with status ${ value }`)
+                        liveSpotController.setLiveSpotStatus(garage.id, id, value)
+                    })
 
                     setUpMaintenanceSocket(socket)
                 })
@@ -122,6 +127,11 @@ export default (io) => {
                         Log.tag(LOG_TAG)
                             .info(`Socket(${ socket.id }) disconnected`),
                     )
+                    socket.on('update', (id, value) => {
+                        Log.tag(LOG_TAG)
+                            .trace(`CONSUMER Update spot(${ id }) with status ${ value }`)
+                        liveSpotController.setLiveSpotStatus(garage.id, id, value)
+                    })
                 })
             }),
         )

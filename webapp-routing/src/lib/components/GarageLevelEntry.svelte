@@ -46,6 +46,8 @@
         isMeasuring = false
         measurement = measure
       })
+    } else {
+      console.log("SOCKET NULL")
     }
 
     return () => {
@@ -66,6 +68,8 @@
     }
     selectedSpot = undefined
   }
+
+  $: console.log("CHANGED SOCKET", socket)
 
   $: cssGridDef = definition && `--count-cols: ${ definition.x }; --count-rows: ${ definition.y }`
   $: parkedFor = [

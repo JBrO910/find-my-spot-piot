@@ -79,6 +79,8 @@
   $: filledSpotsAmount = spots.filter(spot => spot.x === undefined).length
   $: {
     spots = spots.map(spot => {
+      if(spot.z !== selectedSpot) return spot;
+
       if (spot.x >= selectedLevelObject.x || spot.y >= selectedLevelObject.y) {
         return { id: spot.id }
       }

@@ -1,10 +1,11 @@
 import { Log } from "./logger";
 import {
   emitKeepAliveSpot,
-  emitLoadSpots,
-  emitUpdateSpot,
-  listenToLoadSpots,
-} from "./socket";
+  emitLoadSpots, emitResultOfMeasureMaintain,
+  emitUpdateSpot, listenToBlinkMaintain,
+  listenToLoadSpots, listenToMeasureMaintain,
+} from './socket'
+import { BLINK, MEASURE } from './topics'
 import { genHexString, sleep } from "./utils";
 
 const LOG_TAG = "Demo-Distributor";
@@ -58,13 +59,26 @@ const register = async (
 
 export default async function setupMockBroker(
   useRegister,
-  amountOfControllers = 10,
+  amountOfControllers = 2,
   timeBetween = 4000,
   chanceToSkip = 0.8
 ) {
   Log.tag(LOG_TAG).info("Starting up");
 
   const spotStates = {};
+
+  listenToBlinkMaintain((id) => {
+    Log.tag(LOG_TAG).trace("Blink requested for", id)
+  })
+  listenToMeasureMaintain((id) => {
+    Log.tag(LOG_TAG).trace("Measure requested for", id)
+
+    setTimeout(() => {
+      const measure = Math.random() * 50_000
+      Log.tag(LOG_TAG).trace("Return measurement result", measure)
+      emitResultOfMeasureMaintain({measure, id})
+    }, 5000 * Math.random())
+  })
 
   if (useRegister) {
     await register(spotStates, amountOfControllers).catch((err) => {

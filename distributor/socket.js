@@ -8,10 +8,10 @@ const socket = io(
   `${process.env.SOCKET_SERVER_ADDRESS}/${process.env.GARAGE_ID}-broker`
 );
 
-socket.on("connect", () => Log.info("Connected to Socket"));
-socket.on("connect_error", (err) => Log.error("Connection error in socket", err.message));
+socket.on("connect", () => Log.tag("socket").info("Connected to Socket"));
+socket.on("connect_error", (err) => Log.tag("socket").error("Connection error in socket", err.message));
 
-export const mqttToSocketEmit = (emitEvent) => (message) =>
+export const mqttParseMessage = (emitEvent) => (message) =>
   emitEvent(JSON.parse(message.toString()));
 
 export const emitKeepAliveSpot = ({ id }) => {
@@ -26,7 +26,18 @@ export const emitLoadSpots = (spots) => {
   socket.emit("loadSpotsResponse", { spots });
 };
 
-// TODO Check if this is not already registered
 export const listenToLoadSpots = (callback) => {
   socket.on("loadSpots", callback);
+};
+
+export const listenToBlinkMaintain = (callback) => {
+  socket.on("blink", callback);
+};
+
+export const listenToMeasureMaintain = (callback) => {
+  socket.on("measure", callback);
+};
+
+export const emitResultOfMeasureMaintain = (callback) => {
+  socket.emit("measureResult", callback);
 };

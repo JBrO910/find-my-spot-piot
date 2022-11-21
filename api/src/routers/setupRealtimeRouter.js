@@ -54,9 +54,11 @@ export default (io) => {
 
                 const registerSpot = (spot) => {
                     const newSpot = new Spot(garage.id, spot.localIdentifier ?? spot.id, spot.x, spot.y, spot.z, spot.id)
+                    Log.tag(LOG_TAG).trace("Adding Spot to the database", newSpot)
                     spotController.setSpot(newSpot.serialised)
                     const newLiveSpot = new LiveSpot(1 /* Occupied */, newSpot.id)
-                    liveSpotController.setLiveSpot(newLiveSpot)
+                    Log.tag(LOG_TAG).trace("Adding LiveSpot to the database", newLiveSpot)
+                    liveSpotController.setLiveSpot(newLiveSpot.serialised)
                 }
 
                 const setUpMaintenanceSocket = (socket) => {

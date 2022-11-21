@@ -38,18 +38,6 @@
       referenceTime = new Date()
     }, 1000 * 60)
 
-    if(!!socket) {
-      console.log("SETUP SOCKET")
-      socket.on("measureResult", ({measure, id}) => {
-        console.log("Got", measure, "for", id)
-        if(id !== selectedSpot?.id) return;
-        isMeasuring = false
-        measurement = measure
-      })
-    } else {
-      console.log("SOCKET NULL")
-    }
-
     return () => {
       clearInterval(interval)
     }
@@ -69,7 +57,16 @@
     selectedSpot = undefined
   }
 
-  $: console.log("CHANGED SOCKET", socket)
+  $: {
+    if(!!socket) {
+      socket?.on("measureResult", ({measure, id}) => {
+        console.log("Got", measure, "for", id)
+        if(id !== selectedSpot?.id) return;
+        isMeasuring = false
+        measurement = measure
+      })
+    }
+  }
 
   $: cssGridDef = definition && `--count-cols: ${ definition.x }; --count-rows: ${ definition.y }`
   $: parkedFor = [

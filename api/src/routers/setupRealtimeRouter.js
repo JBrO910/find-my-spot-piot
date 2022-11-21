@@ -54,10 +54,10 @@ export default (io) => {
 
                 const registerSpot = (spot) => {
                     const newSpot = new Spot(garage.id, spot.localIdentifier ?? spot.id, spot.x, spot.y, spot.z, spot.id)
-                    Log.tag(LOG_TAG).trace("Adding Spot to the database", newSpot)
+                    Log.tag(LOG_TAG).trace("Adding Spot to the database", newSpot.serialised)
                     spotController.setSpot(newSpot.serialised)
-                    const newLiveSpot = new LiveSpot(1 /* Occupied */, newSpot.id)
-                    Log.tag(LOG_TAG).trace("Adding LiveSpot to the database", newLiveSpot)
+                    const newLiveSpot = new LiveSpot(1 /* Occupied */, garage.id, newSpot.id)
+                    Log.tag(LOG_TAG).trace("Adding LiveSpot to the database", newLiveSpot.serialised)
                     liveSpotController.setLiveSpot(newLiveSpot.serialised)
                 }
 

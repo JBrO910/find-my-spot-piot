@@ -5,17 +5,20 @@ export const STATUS_CHANGE_WARNING_DURATION = 1000 * 60 * 60 * 12 // 12 Hours
 export default class LiveSpot {
   id
   status
+  garage
   statusChangedAt
   lastKeepAlive
 
   constructor(
     status,
+    garage,
     id,
     statusChangedAt = new Date().getTime(),
     lastKeepAlive = new Date().getTime(),
   ) {
     this.id = id
     this.status = status
+    this.garage = garage
     this.statusChangedAt = statusChangedAt
     this.lastKeepAlive = lastKeepAlive
   }
@@ -39,7 +42,7 @@ export default class LiveSpot {
     }
   }
 
-  static fromSerialized({ status, id, statusChangedAt, lastKeepAlive }) {
-    return new LiveSpot(status, id, statusChangedAt, lastKeepAlive)
+  static fromSerialized({ status, garage, id, statusChangedAt, lastKeepAlive }) {
+    return new LiveSpot(status, garage, id, statusChangedAt, lastKeepAlive)
   }
 }

@@ -50,9 +50,11 @@ export default (io) => {
 
                 const setUpMaintenanceSocket = (socket) => {
                     socket.on('blink', (id) => {
+                        Log.tag(LOG_TAG).trace("Requested blink for", id)
                         garageBrokerSocket.emit('blink', id)
                     })
                     socket.on('measure', (id) => {
+                        Log.tag(LOG_TAG).trace("Requested measure for", id)
                         garageBrokerSocket.emit('measure', id)
                     })
                 }

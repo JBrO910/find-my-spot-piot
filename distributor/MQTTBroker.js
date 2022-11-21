@@ -52,9 +52,11 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
         // TODO Think about turn off
 
         listenToBlinkMaintain((id) => {
+            Log.trace("Blink requested for", id)
             mqttClient.publish(BLINK, JSON.stringify({id}))
         })
         listenToMeasureMaintain((id) => {
+            Log.trace("Measure requested for", id)
             mqttClient.publish(MEASURE, JSON.stringify({id}))
         })
 

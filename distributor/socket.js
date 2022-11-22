@@ -19,6 +19,7 @@ export const emitKeepAliveSpot = ({ id }) => {
 };
 
 export const emitUpdateSpot = ({ id, status }) => {
+  Log.tag("socket").trace(id, status, "UPDATE")
   socket.emit("update", id, parseInt(status));
 };
 

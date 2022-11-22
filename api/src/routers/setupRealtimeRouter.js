@@ -50,15 +50,27 @@ export default (io) => {
                         garageRegisterSocket.emit('measureResult', {measure, id})
                         garageConsumerSockets.emit('measureResult', {measure, id})
                     })
+
+                    // Add route to update a value of a specific live spot in the garage
+                    socket.on('update', (id, value) => {
+                        Log.tag(LOG_TAG)
+                            .trace(`Update spot(${ id }) with status ${ value }`)
+                        liveSpotController.setLiveSpotStatus(garage.id, id, value)
+                    })
+
+                    // Add route to receive a keep alive signal from a specific spot in a garage
+                    socket.on('keepAlive', (id) =>
+                        liveSpotController.keepAlive(garage.id, id),
+                    )
                 })
 
                 const registerSpot = (spot) => {
                     const newSpot = new Spot(garage.id, spot.localIdentifier ?? spot.id, spot.x, spot.y, spot.z, spot.id)
                     Log.tag(LOG_TAG).trace("Adding Spot to the database", newSpot.serialised)
-                    spotController.setSpot(newSpot.serialised)
+                    spotController.setSpot(newSpot)
                     const newLiveSpot = new LiveSpot(1 /* Occupied */, garage.id, newSpot.id)
                     Log.tag(LOG_TAG).trace("Adding LiveSpot to the database", newLiveSpot.serialised)
-                    liveSpotController.setLiveSpot(newLiveSpot.serialised)
+                    liveSpotController.setLiveSpot(newLiveSpot)
                 }
 
                 const setUpMaintenanceSocket = (socket) => {
@@ -95,6 +107,11 @@ export default (io) => {
                             .trace('Requested to load spots for registration')
                         garageBrokerSocket.emit('loadSpots')
                     })
+                    socket.on('update', (id, value) => {
+                        Log.tag(LOG_TAG)
+                            .trace(`REGISTER Update spot(${ id }) with status ${ value }`)
+                        liveSpotController.setLiveSpotStatus(garage.id, id, value)
+                    })
 
                     setUpMaintenanceSocket(socket)
                 })
@@ -104,24 +121,17 @@ export default (io) => {
                     Log.tag(LOG_TAG)
                         .info(`Socket(${ socket.id }) connected`)
 
-                    // Add route to update a value of a specific live spot in the garage
-                    socket.on('update', (id, value) => {
-                        liveSpotController.setLiveSpotStatus(garage.id, id, value)
-                        Log.tag(LOG_TAG)
-                            .trace(`Update spot(${ id }) with status ${ value }`)
-                    })
-
-                    // Add route to receive a keep alive signal from a specific spot in a garage
-                    socket.on('keepAlive', (id) =>
-                        liveSpotController.keepAlive(garage.id, id),
-                    )
-
                     setUpMaintenanceSocket(socket)
 
                     socket.on('disconnect', () =>
                         Log.tag(LOG_TAG)
                             .info(`Socket(${ socket.id }) disconnected`),
                     )
+                    socket.on('update', (id, value) => {
+                        Log.tag(LOG_TAG)
+                            .trace(`CONSUMER Update spot(${ id }) with status ${ value }`)
+                        liveSpotController.setLiveSpotStatus(garage.id, id, value)
+                    })
                 })
             }),
         )

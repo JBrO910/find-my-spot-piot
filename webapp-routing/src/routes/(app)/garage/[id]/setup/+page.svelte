@@ -47,7 +47,7 @@
   }
 
   const register = () => {
-    socket.emit('register', spots)
+    socket.emit('register', { spots, levelDescription })
     goto("/garage/" + data.garage?.id)
   }
 

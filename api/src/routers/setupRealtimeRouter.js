@@ -21,6 +21,74 @@ export default (io) => {
                 const garageBrokerSocket = io.of(`/${ garage.id }-broker`)
                 const garageRegisterSocket = io.of(`/${ garage.id }-register`)
 
+                const registerSpot = (spot) => {
+                    const newSpot = new Spot(
+                        garage.id,
+                        spot.localIdentifier ?? spot.id,
+                        spot.x,
+                        spot.y,
+                        spot.z,
+                        spot.id,
+                    )
+                    Log.tag(LOG_TAG)
+                        .trace(
+                            'Adding Spot to the database',
+                            newSpot.serialised,
+                        )
+                    spotController.setSpot(newSpot)
+                    const newLiveSpot = new LiveSpot(
+                        1 /* Occupied */,
+                        garage.id,
+                        newSpot.id,
+                    )
+                    Log.tag(LOG_TAG)
+                        .trace(
+                            'Adding LiveSpot to the database',
+                            newLiveSpot.serialised,
+                        )
+                    liveSpotController.setLiveSpot(newLiveSpot)
+                }
+
+                const registerLevelDescription = (levelDescription) => {
+                    garage.levelDescription = levelDescription
+                    Log.tag(LOG_TAG)
+                        .trace(
+                            'Adding LevelDescription to the garage',
+                            garage.serialised,
+                            levelDescription
+                        )
+                    garageController.updateOne(garage)
+                }
+
+                const setUpMaintenanceSocket = (socket) => {
+                    socket.on('blink', (id) => {
+                        Log.tag(LOG_TAG)
+                            .trace('Requested blink for', id)
+                        garageBrokerSocket.emit('blink', id)
+                    })
+                    socket.on('measure', (id) => {
+                        Log.tag(LOG_TAG)
+                            .trace('Requested measure for', id)
+                        garageBrokerSocket.emit('measure', id)
+                    })
+                    socket.on('register', ({spots, levelDescription}) => {
+                        registerLevelDescription(levelDescription)
+                        const idSet = spots.reduce((acc, curr) => {
+                            registerSpot(curr)
+
+                            acc.add(curr.id.split('-')[0])
+
+                            return acc
+                        }, new Set())
+                        const ids = [...idSet]
+
+                        Log.tag(LOG_TAG)
+                            .trace('Register spots for controller ids', ids)
+
+                        garageBrokerSocket.emit('register', ids)
+                    })
+                }
+
                 // On status change of spots sync to listeners
                 liveSpotController.onStatusChange(garage.id, (spots) => {
                     const freeSpots = spots.reduce((acc, curr) => acc + +curr.status, 0)
@@ -46,7 +114,7 @@ export default (io) => {
 
                     socket.on('measureResult', ({measure, id}) => {
                         Log.tag(LOG_TAG)
-                            .trace(`Received measurement ${ measure } for ${id}`)
+                            .trace(`Received measurement ${ measure } for ${ id }`)
                         garageRegisterSocket.emit('measureResult', {measure, id})
                         garageConsumerSockets.emit('measureResult', {measure, id})
                     })
@@ -64,40 +132,6 @@ export default (io) => {
                     )
                 })
 
-                const registerSpot = (spot) => {
-                    const newSpot = new Spot(garage.id, spot.localIdentifier ?? spot.id, spot.x, spot.y, spot.z, spot.id)
-                    Log.tag(LOG_TAG).trace("Adding Spot to the database", newSpot.serialised)
-                    spotController.setSpot(newSpot)
-                    const newLiveSpot = new LiveSpot(1 /* Occupied */, garage.id, newSpot.id)
-                    Log.tag(LOG_TAG).trace("Adding LiveSpot to the database", newLiveSpot.serialised)
-                    liveSpotController.setLiveSpot(newLiveSpot)
-                }
-
-                const setUpMaintenanceSocket = (socket) => {
-                    socket.on('blink', (id) => {
-                        Log.tag(LOG_TAG).trace("Requested blink for", id)
-                        garageBrokerSocket.emit('blink', id)
-                    })
-                    socket.on('measure', (id) => {
-                        Log.tag(LOG_TAG).trace("Requested measure for", id)
-                        garageBrokerSocket.emit('measure', id)
-                    })
-                    socket.on('register', (spots) => {
-                        const idSet = spots.reduce((acc, curr) => {
-                            registerSpot(curr)
-
-                            acc.add(curr.id.split("-")[0])
-
-                            return acc
-                        }, new Set())
-                        const ids = [...idSet]
-
-                        Log.tag(LOG_TAG).trace("Register spots for controller ids", ids)
-
-                        garageBrokerSocket.emit('register', ids)
-                    })
-                }
-
                 garageRegisterSocket.on('connect', (socket) => {
                     Log.tag(LOG_TAG)
                         .info(`RegisterSocket(${ socket.id }) Connected`)
@@ -109,14 +143,15 @@ export default (io) => {
                     })
                     socket.on('update', (id, value) => {
                         Log.tag(LOG_TAG)
-                            .trace(`REGISTER Update spot(${ id }) with status ${ value }`)
+                            .trace(
+                                `REGISTER Update spot(${ id }) with status ${ value }`,
+                            )
                         liveSpotController.setLiveSpotStatus(garage.id, id, value)
                     })
 
                     setUpMaintenanceSocket(socket)
                 })
 
-                // Build Network for garage
                 garageConsumerSockets.on('connect', async (socket) => {
                     Log.tag(LOG_TAG)
                         .info(`Socket(${ socket.id }) connected`)
@@ -129,7 +164,9 @@ export default (io) => {
                     )
                     socket.on('update', (id, value) => {
                         Log.tag(LOG_TAG)
-                            .trace(`CONSUMER Update spot(${ id }) with status ${ value }`)
+                            .trace(
+                                `CONSUMER Update spot(${ id }) with status ${ value }`,
+                            )
                         liveSpotController.setLiveSpotStatus(garage.id, id, value)
                     })
                 })

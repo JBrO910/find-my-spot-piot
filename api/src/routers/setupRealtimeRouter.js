@@ -57,16 +57,6 @@ export default (io) => {
         }
 
         const setUpMaintenanceSocket = (socket) => {
-            socket.on('blink', (id) => {
-                Log.tag(LOG_TAG)
-                    .trace('Requested blink for', id)
-                garageBrokerSocket.emit('blink', id)
-            })
-            socket.on('measure', (id) => {
-                Log.tag(LOG_TAG)
-                    .trace('Requested measure for', id)
-                garageBrokerSocket.emit('measure', id)
-            })
             socket.on('turnOn', (id) => {
                 Log.tag(LOG_TAG)
                     .trace('Requested turn on for', id)
@@ -78,6 +68,16 @@ export default (io) => {
                     .trace('Requested turn off for', id)
                 liveSpotController.turnOnOff(garage.id, id, true)
                 garageBrokerSocket.emit('turnOff', id)
+            })
+            socket.on('blink', (id) => {
+                Log.tag(LOG_TAG)
+                    .trace('Requested blink for', id)
+                garageBrokerSocket.emit('blink', id)
+            })
+            socket.on('measure', (id) => {
+                Log.tag(LOG_TAG)
+                    .trace('Requested measure for', id)
+                garageBrokerSocket.emit('measure', id)
             })
             socket.on('register', ({spots, levelDescription}) => {
                 registerLevelDescription(levelDescription)
@@ -138,6 +138,11 @@ export default (io) => {
             socket.on('keepAlive', (id) =>
                 liveSpotController.keepAlive(garage.id, id),
             )
+
+            socket.on('disconnect', () =>
+                Log.tag(LOG_TAG)
+                    .info(`BrokerSocket(${ socket.id }) disconnected`),
+            )
         })
 
         garageRegisterSocket.on('connect', (socket) => {
@@ -158,18 +163,17 @@ export default (io) => {
             })
 
             setUpMaintenanceSocket(socket)
+
+            socket.on('disconnect', () =>
+                Log.tag(LOG_TAG)
+                    .info(`RegisterSocket(${ socket.id }) disconnected`),
+            )
         })
 
         garageConsumerSockets.on('connect', async (socket) => {
             Log.tag(LOG_TAG)
                 .info(`Socket(${ socket.id }) connected`)
 
-            setUpMaintenanceSocket(socket)
-
-            socket.on('disconnect', () =>
-                Log.tag(LOG_TAG)
-                    .info(`Socket(${ socket.id }) disconnected`),
-            )
             socket.on('update', (id, value) => {
                 Log.tag(LOG_TAG)
                     .trace(
@@ -177,6 +181,13 @@ export default (io) => {
                     )
                 liveSpotController.setLiveSpotStatus(garage.id, id, value)
             })
+
+            setUpMaintenanceSocket(socket)
+
+            socket.on('disconnect', () =>
+                Log.tag(LOG_TAG)
+                    .info(`Socket(${ socket.id }) disconnected`),
+            )
         })
     }
 

@@ -28,7 +28,7 @@
                     : spot?.type === 'Accessible'
                       ? CheckIcon
                       : undefined
-  $: spotDisplayStatus = spot?.hasLostConnection || spot?.hasNotChangedWarning
+  $: spotDisplayStatus = spot?.isTurnedOff || spot?.hasLostConnection || spot?.hasNotChangedWarning
   $: statusClass = !!editable
                    ? 'bg-gray-600 hover:bg-gray-700'
                    : !spot

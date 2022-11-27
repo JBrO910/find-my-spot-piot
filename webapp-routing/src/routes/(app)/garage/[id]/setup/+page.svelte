@@ -84,6 +84,7 @@
       return spot ?? {
         x,
         y,
+        type: "Normal"
       }
     })
   $: cssGridDef = selectedLevelObject && `--count-cols: ${ selectedLevelObject.x }; --count-rows: ${ selectedLevelObject.y }`

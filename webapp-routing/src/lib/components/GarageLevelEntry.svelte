@@ -65,9 +65,6 @@
     if(!spot) return
 
     selectedSpotIndex = spots.findIndex(e => e.id === spot.id)
-    if(!spots[selectedSpotIndex].type) {
-      spots[selectedSpotIndex].type = "Normal"
-    }
   }
 
   const onEscape = (e) => {

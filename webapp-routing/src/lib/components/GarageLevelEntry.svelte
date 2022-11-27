@@ -144,7 +144,7 @@
           {/if}
 <!--          <Button disabled={spotDisabled || !selectedSpot.id}>Turn off</Button>-->
           <Button disabled={spotDisabled || !selectedSpot.id} on:click={blinkSpot(selectedSpot)}>Signal</Button>
-          <Button disabled={spotDisabled || !selectedSpot.id || isMeasuring} on:click={measureSpot(selectedSpot)}>Measure</Button>
+          <Button disabled={spotDisabled || !selectedSpot.id || measurement[selectedSpot.id] === "Loading..."} on:click={measureSpot(selectedSpot)}>Measure</Button>
           <small class='text-sm font-medium min-w-[24ch]'>
             {#if measurement[selectedSpot?.id] !== undefined}
               Result: {measurement[selectedSpot?.id].toFixed(3)} mm

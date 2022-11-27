@@ -31,14 +31,13 @@
   $: spotDisplayStatus = spot?.isTurnedOff || spot?.hasLostConnection || spot?.hasNotChangedWarning
   $: statusClass = !!editable
                    ? 'bg-gray-600 hover:bg-gray-700'
-                   : !spot
+                   : !spot || spot.isTurnedOff
                      ? 'bg-gray-500'
                      : !!spotDisplayStatus
                        ? 'bg-red-700'
                        : !spot?.status
                          ? 'bg-orange-700'
                          : 'bg-green-700'
-  $: powerStatusClass = spot?.isTurnedOff ? 'opacity-60' : ''
 </script>
 
 <div
@@ -47,7 +46,7 @@
   on:keydown
   style={gridLocationStyle}
 >
-  <div class={`${statusClass} ${powerStatusClass} flex justify-center items-center px-4 py-4 h-[100px] text-green-50 outline outline-1 outline-gray-300`}>
+  <div class={`${statusClass} flex justify-center items-center px-4 py-4 h-[100px] text-green-50 outline outline-1 outline-gray-300`}>
     {spot?.id ?? ""}
   </div>
 

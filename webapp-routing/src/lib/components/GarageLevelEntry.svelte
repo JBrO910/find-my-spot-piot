@@ -70,7 +70,7 @@
 
         if(id !== selectedSpot?.id) return;
 
-        measurement[id] = measure
+        measurement[id] = `${measure.toFixed(3)} cm`
       })
     }
   }
@@ -147,7 +147,7 @@
           <Button disabled={spotDisabled || !selectedSpot.id || measurement[selectedSpot.id] === "Loading..."} on:click={measureSpot(selectedSpot)}>Measure</Button>
           <small class='text-sm font-medium min-w-[24ch]'>
             {#if measurement[selectedSpot?.id] !== undefined}
-              Result: {measurement[selectedSpot?.id].toFixed(3)} mm
+              Result: {measurement[selectedSpot?.id]}
             {:else}
               Result: No measurement
             {/if}

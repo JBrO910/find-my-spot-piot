@@ -79,7 +79,7 @@ export default async function setupMockBroker(
     Log.tag(LOG_TAG).trace("Measure requested for", id)
 
     setTimeout(() => {
-      const measure = Math.random() * 50_000
+      const measure = Math.random() * 100
       Log.tag(LOG_TAG).trace("Return measurement result", measure)
       emitResultOfMeasureMaintain({measure, id})
     }, 5000 * Math.random())

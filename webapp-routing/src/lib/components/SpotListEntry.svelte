@@ -14,7 +14,7 @@
 
   $: gridLocationStyle = `grid-column: ${ spot?.x + 1 }; grid-row: ${ spot?.y + 1 };`
   $: spotStatus = spot?.isTurnedOff
-                  ? [PowerIcon, 'text-gray-700', 'Turned off']
+                  ? [PowerIcon, 'text-red-700', 'Turned off']
                   : spot?.hasLostConnection
                     ? [ErrorIcon, 'text-red-700', 'Connection lost']
                     : spot?.hasNotChangedWarning
@@ -34,13 +34,11 @@
                    ? 'bg-gray-600 hover:bg-gray-700'
                    : !spot
                      ? 'bg-gray-500'
-                     : !!spot?.isTurnedOff
-                       ? 'bg-red-700 bg-opacity-60'
-                       : !!spotDisplayStatus
-                         ? 'bg-red-700'
-                         : !spot?.status
-                           ? 'bg-orange-700'
-                           : 'bg-green-700'
+                     : !!spotDisplayStatus || spot?.isTurnedOff
+                       ? 'bg-red-700'
+                       : !spot?.status
+                         ? 'bg-orange-700'
+                         : 'bg-green-700'
 </script>
 
 <div

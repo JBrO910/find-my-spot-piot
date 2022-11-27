@@ -23,7 +23,7 @@
   let selectedSpot: CombinedSpot | undefined = undefined
 
   let isMeasuring = false
-  let measurement = undefined
+  let measurement = {}
 
   const measureSpot = (spot) => () => {
     isMeasuring = true
@@ -66,7 +66,7 @@
         console.log("Got", measure, "for", id)
         if(id !== selectedSpot?.id) return;
         isMeasuring = false
-        measurement = measure
+        measurement[id] = measure
       })
     }
   }
@@ -144,8 +144,8 @@
           <small class='text-sm font-medium min-w-[24ch]'>
             {#if isMeasuring}
               Loading...
-            {:else if measurement !== undefined}
-              Result: {measurement.toFixed(3)} mm
+            {:else if measurement[selectedSpot?.id] !== undefined}
+              Result: {measurement[selectedSpot?.id].toFixed(3)} mm
             {:else}
               Result: No measurement
             {/if}

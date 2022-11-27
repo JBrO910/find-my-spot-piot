@@ -36,11 +36,11 @@ export const listenToBlinkMaintain = (callback) => {
 };
 
 export const listenToTurnOnMaintain = (callback) => {
-  socket.on("turn-on", callback);
+  socket.on("turnOn", callback);
 };
 
 export const listenToTurnOffMaintain = (callback) => {
-  socket.on("turn-off", callback);
+  socket.on("turnOff", callback);
 };
 
 export const listenToMeasureMaintain = (callback) => {

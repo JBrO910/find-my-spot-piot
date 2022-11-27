@@ -67,17 +67,17 @@ export default (io) => {
                     .trace('Requested measure for', id)
                 garageBrokerSocket.emit('measure', id)
             })
-            socket.on('turn-on', (id) => {
+            socket.on('turnOn', (id) => {
                 Log.tag(LOG_TAG)
                     .trace('Requested turn on for', id)
                 liveSpotController.turnOnOff(garage.id, id, false)
-                garageBrokerSocket.emit('turn-on', id)
+                garageBrokerSocket.emit('turnOn', id)
             })
-            socket.on('turn-off', (id) => {
+            socket.on('turnOff', (id) => {
                 Log.tag(LOG_TAG)
                     .trace('Requested turn off for', id)
                 liveSpotController.turnOnOff(garage.id, id, true)
-                garageBrokerSocket.emit('turn-off', id)
+                garageBrokerSocket.emit('turnOff', id)
             })
             socket.on('register', ({spots, levelDescription}) => {
                 registerLevelDescription(levelDescription)

@@ -10,12 +10,14 @@
   export let data: PageLoadProps
   let selectedLevel = 0
 
+  let socket = undefined
+
   onMount(async () => {
     if (!data.garage?.id || !data.spots) {
       return
     }
 
-    const socket = io(`${ PUBLIC_BROKER_URL }/${ data.garage.id }`)
+    socket = io(`${ PUBLIC_BROKER_URL }/${ data.garage.id }`)
     socket.on('connect', () => console.log('Connected to socket'))
     socket.on('update', (sendSpots: Array<LiveSpot>) => {
       sendSpots.forEach(({
@@ -59,6 +61,7 @@
     <GarageLevelEntry
       definition={data.garage.levelDescription[selectedLevel]}
       spots={levels[selectedLevel]}
+      {socket}
     />
   {/if}
 </div>

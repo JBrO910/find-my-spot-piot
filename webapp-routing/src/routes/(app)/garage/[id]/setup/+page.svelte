@@ -202,7 +202,8 @@
     color='secondary'
     on:click={addLevel}
     on:keydown={addLevel}
-  >Add level
+  >
+    Add level
   </Button>
 </div>
 

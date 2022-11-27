@@ -31,7 +31,7 @@ const register = async (
           const spotId = id + "-" + String(j).padStart(3, "0");
 
           registeredSpots.push(spotId);
-          spotStates[spotId] = 0;
+          spotStates[spotId] = 1;
         }
       }
 
@@ -95,7 +95,7 @@ export default async function setupMockBroker(
       const id = PRE_GENERATED_IDS[i];
       for (let j = 1; j <= 4; j++) {
         const spotId = id + "-" + String(j).padStart(3, "0");
-        spotStates[spotId] = 0;
+        spotStates[spotId] = 1;
       }
     }
   }
@@ -121,8 +121,6 @@ export default async function setupMockBroker(
 
       const status = +!spotStates[id];
       spotStates[id] = status;
-
-      console.log(id, status, spotStates)
 
       setTimeout(doUpdateSpot(id, status), Math.random() * timeBetween);
     }

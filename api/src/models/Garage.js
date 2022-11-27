@@ -26,8 +26,6 @@ export default class Garage {
   }
 
   static fromSerialized({ id, name, address, phoneNumber, levelDescription }) {
-    const g = new Garage(name, address, phoneNumber, id, levelDescription)
-    console.log("Created garage", g.constructor.name, g)
-    return g
+    return new Garage(name, address, phoneNumber, id, levelDescription)
   }
 }

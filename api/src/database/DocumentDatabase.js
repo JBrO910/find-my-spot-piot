@@ -35,9 +35,12 @@ export default class DocumentDatabase {
     async onChange(table, transform, listener, type) {
         return onSnapshot(collection(documentDatabase, table), (snapshot) => {
             snapshot.docChanges().forEach(change => {
+                console.log(change.type, change)
                 if(!type || change.type !== type) return;
 
-                listener({id: change.doc.id, ...change.doc.data()})
+                const element = transform({id: change.doc.id, ...change.doc.data()})
+
+                listener(element)
             })
         })
     }

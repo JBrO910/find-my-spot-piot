@@ -22,11 +22,14 @@
 
   let selectedSpot: CombinedSpot | undefined = undefined
 
-  let isMeasuring = false
+  let measurementTimeout = undefined
   let measurement = {}
 
   const measureSpot = (spot) => () => {
-    isMeasuring = true
+    measurement[spot.id] = "Loading..."
+    measurementTimeout = setTimeout(() => {
+      measurement[spot.id] = "Timeout"
+    }, 5000)
     socket?.emit("measure", spot.id)
   }
 
@@ -62,11 +65,11 @@
   $: {
     if(!!socket && !isSocketSetup) {
       isSocketSetup = true
-      // TODO Set timeout
       socket?.on("measureResult", ({measure, id}) => {
-        console.log("Got", measure, "for", id)
+        clearTimeout(measurementTimeout)
+
         if(id !== selectedSpot?.id) return;
-        isMeasuring = false
+
         measurement[id] = measure
       })
     }
@@ -143,9 +146,7 @@
           <Button disabled={spotDisabled || !selectedSpot.id} on:click={blinkSpot(selectedSpot)}>Signal</Button>
           <Button disabled={spotDisabled || !selectedSpot.id || isMeasuring} on:click={measureSpot(selectedSpot)}>Measure</Button>
           <small class='text-sm font-medium min-w-[24ch]'>
-            {#if isMeasuring}
-              Loading...
-            {:else if measurement[selectedSpot?.id] !== undefined}
+            {#if measurement[selectedSpot?.id] !== undefined}
               Result: {measurement[selectedSpot?.id].toFixed(3)} mm
             {:else}
               Result: No measurement

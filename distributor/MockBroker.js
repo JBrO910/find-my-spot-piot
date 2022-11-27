@@ -103,19 +103,17 @@ export default async function setupMockBroker(
   Log.tag(LOG_TAG).info("Starting Simulation");
 
   const doUpdateSpot = (id, status) => () =>
-    emitUpdateSpot(
-      JSON.stringify({
-        id,
-        status,
-      })
-    );
+    emitUpdateSpot({
+      id,
+      status,
+    });
 
   // * Simulate Spots
   for (let run = 0; run <= 10; run++) {
     Log.tag(LOG_TAG).trace("Run", run + 1);
 
     for (let id of Object.keys(spotStates)) {
-      emitKeepAliveSpot(JSON.stringify({ id }));
+      emitKeepAliveSpot({ id });
 
       if (Math.random() <= chanceToSkip) {
         continue;

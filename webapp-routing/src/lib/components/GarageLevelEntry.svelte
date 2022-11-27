@@ -146,6 +146,7 @@
             <svelte:component
               class="text-2xl ml-2"
               this={spotType}
+              title={spots[selectedSpotIndex].type}
             />
           {/if}
           <h5 class='text-2xl font-semibold'>{spots[selectedSpotIndex].id ?? 'Empty spot'}</h5>

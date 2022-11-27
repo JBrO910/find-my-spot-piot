@@ -63,7 +63,7 @@
 
   {#if spotType}
     <div class='absolute top-0 left-0 bg-gray-50 m-2 p-1 rounded'>
-      <svelte:component this={spotType} />
+      <svelte:component this={spotType} title={spot.type} />
     </div>
   {/if}
 </div>

@@ -57,7 +57,7 @@ const register = async (
         reject("Timed out");
       }
 
-      resolve();
+      resolve(spotStates);
     });
   });
 };
@@ -70,7 +70,7 @@ export default async function setupMockBroker(
 ) {
   Log.tag(LOG_TAG).info("Starting up");
 
-  const spotStates = {};
+  let spotStates = {};
 
   listenToBlinkMaintain((id) => {
     Log.tag(LOG_TAG).trace("Blink requested for", id)
@@ -86,7 +86,7 @@ export default async function setupMockBroker(
   })
 
   if (useRegister) {
-    await register(spotStates, amountOfControllers).catch((err) => {
+    spotStates = await register(spotStates, amountOfControllers).catch((err) => {
       Log.tag(LOG_TAG).error("Registration failed", err);
       process.exit(1);
     });
@@ -123,6 +123,8 @@ export default async function setupMockBroker(
 
       const status = +!spotStates[id];
       spotStates[id] = status;
+
+      console.log(id, status, spotStates)
 
       setTimeout(doUpdateSpot(id, status), Math.random() * timeBetween);
     }

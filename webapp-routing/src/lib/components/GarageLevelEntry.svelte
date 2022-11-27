@@ -62,6 +62,7 @@
   $: {
     if(!!socket && !isSocketSetup) {
       isSocketSetup = true
+      // TODO Set timeout
       socket?.on("measureResult", ({measure, id}) => {
         console.log("Got", measure, "for", id)
         if(id !== selectedSpot?.id) return;

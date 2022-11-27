@@ -85,7 +85,7 @@
       selectedSpot.type = "Normal"
     }
   }
-  $: selectedSpotIndex = spots.findIndex(e => e.id === selectedSpot.id)
+  $: selectedSpotIndex = !selectedSpot ? undefined : spots.findIndex(e => e.id === selectedSpot?.id)
 
   $: cssGridDef = definition && `--count-cols: ${ definition.x }; --count-rows: ${ definition.y }`
   $: parkedFor = [

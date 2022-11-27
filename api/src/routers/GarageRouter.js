@@ -117,6 +117,4 @@ garageRouter.post('/', async (req, res) => {
   res.status(200).send(created.id)
 })
 
-// TODO Add levelDescription to register spots function
-
 export default garageRouter

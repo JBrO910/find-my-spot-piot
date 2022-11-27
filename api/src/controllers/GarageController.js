@@ -13,6 +13,10 @@ export default class GarageController {
         return this.#database.getAllFrom(GarageController.TABLE, Garage.fromSerialized)
     }
 
+    onAdded(listener) {
+        return this.#database.onChange(GarageController.TABLE, Garage.fromSerialized, listener, "added")
+    }
+
     async getSingle(id) {
         return this.#database.getSingleFrom(GarageController.TABLE, id, Garage.fromSerialized)
     }

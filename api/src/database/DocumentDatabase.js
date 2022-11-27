@@ -10,6 +10,7 @@ import {
     setDoc,
     updateDoc,
     where,
+    onSnapshot,
 } from 'firebase/firestore'
 import { documentDatabase } from './firebaseClient.js'
 
@@ -29,6 +30,16 @@ export default class DocumentDatabase {
     async getAllFrom(table, transform) {
         const query = await getDocs(collection(documentDatabase, table))
         return query.docs.map((doc) => transform({id: doc.id, ...doc.data()}))
+    }
+
+    async onChange(table, transform, listener, type) {
+        return onSnapshot(collection(documentDatabase, table), (snapshot) => {
+            snapshot.docChanges().forEach(change => {
+                if(!type || change.type !== type) return;
+
+                listener({id: change.doc.id, ...change.doc.data()})
+            })
+        })
     }
 
     async getSingleFrom(table, id, transform) {

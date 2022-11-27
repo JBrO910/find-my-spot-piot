@@ -5,7 +5,7 @@ import {
   emitUpdateSpot, listenToBlinkMaintain,
   listenToLoadSpots, listenToMeasureMaintain, listenToRegisterMaintain,
 } from './socket'
-import { genHexString, PRE_GENERATED_IDS, sleep } from './utils'
+import { PRE_GENERATED_IDS, sleep } from './utils'
 
 const LOG_TAG = "Demo-Distributor";
 
@@ -95,7 +95,9 @@ export default async function setupMockBroker(
       const id = PRE_GENERATED_IDS[i];
       for (let j = 1; j <= 4; j++) {
         const spotId = id + "-" + String(j).padStart(3, "0");
-        spotStates[spotId] = 1;
+        const status = Math.random() > 0.5 ? 0 : 1;
+        spotStates[spotId] = status;
+        emitUpdateSpot({id, status})
       }
     }
   }

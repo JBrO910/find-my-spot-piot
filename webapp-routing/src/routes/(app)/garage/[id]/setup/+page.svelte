@@ -25,6 +25,8 @@
   const onSelectLevel = (level) => () => selectedLevel = level
 
   let socket = undefined
+  let socketTimeout = undefined
+  let socketError = ""
 
   let levelDescription = [
     { ...defaultRowsCols },
@@ -62,7 +64,8 @@
 
     socket.on('loadSpotsResponse', ({ spots: sendSpots }) => {
       loadingSpots = false
-      spots = sendSpots.map(id => ({ id }))
+      spots = sendSpots.map(id => ({ id, type: "Normal" }))
+      clearTimeout(socketTimeout)
     })
   })
 
@@ -71,7 +74,9 @@
       return
     }
 
+    socketTimeout = setTimeout(() => socketError = "Timed out", 5000)
     loadingSpots = true
+    socketError = ""
     socket.emit('loadSpots')
   }
 
@@ -84,7 +89,6 @@
       return spot ?? {
         x,
         y,
-        type: "Normal"
       }
     })
   $: cssGridDef = selectedLevelObject && `--count-cols: ${ selectedLevelObject.x }; --count-rows: ${ selectedLevelObject.y }`
@@ -110,12 +114,14 @@
       bind:value={selectedLevelObject.x}
       placeholder='Columns'
       type='number'
+      min='1'
       wrapperClass='flex-1'
     />
     <Input
       bind:value={selectedLevelObject.y}
       placeholder='Rows'
       type='number'
+      min='1'
       wrapperClass='flex-1'
     />
   </div>
@@ -129,8 +135,10 @@
         on:click={loadSpots}
         on:keydown={loadSpots}
       >
-        {#if loadingSpots}
+        {#if loadingSpots && !socketError}
           Loading...
+        {:else if socketError}
+          {socketError}
         {:else}
           Load controllers
         {/if}

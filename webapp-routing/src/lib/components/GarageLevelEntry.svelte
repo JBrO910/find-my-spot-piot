@@ -54,10 +54,16 @@
   })
 
   const onClickSpot = (spot) => () => {
+    if(!spot) return
+
     if (!!editSpotClick) {
       spot = editSpotClick(spot)
     }
+
     selectedSpotIndex = spots.findIndex(e => e.id === spot.id)
+    if(!spots[selectedSpotIndex].type) {
+      spots[selectedSpotIndex].type = "Normal"
+    }
   }
 
   const onEscape = (e) => {
@@ -77,12 +83,6 @@
 
         measurement[id] = `${measure.toFixed(3)} cm`
       })
-    }
-  }
-
-  $: {
-    if(!!selectedSpotIndex && !spots[selectedSpotIndex].type) {
-      spots[selectedSpotIndex].type = "Normal"
     }
   }
 

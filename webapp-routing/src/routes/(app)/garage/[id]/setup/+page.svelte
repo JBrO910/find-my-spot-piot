@@ -49,7 +49,6 @@
   }
 
   const register = () => {
-    console.log({ spots, levelDescription })
     socket.emit('register', { spots, levelDescription })
     goto("/garage/" + data.garage?.id)
   }
@@ -74,7 +73,11 @@
       return
     }
 
-    socketTimeout = setTimeout(() => socketError = "Timed out", 5000)
+    socketTimeout = setTimeout(() => {
+      socketError = "Timed out"
+      loadingSpots = false
+    }, 5000)
+
     loadingSpots = true
     socketError = ""
     socket.emit('loadSpots')
@@ -159,8 +162,10 @@
         </p>
       {:else}
         <small class='font-medium text-sm'>
-          {#if loadingSpots}
+          {#if loadingSpots && !socketError}
             Loading...
+          {:else if socketError}
+            {socketError}
           {:else}
             No more controllers were found
           {/if}

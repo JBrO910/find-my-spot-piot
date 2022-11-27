@@ -25,7 +25,7 @@
   export let spots: Array<CombinedSpot> = []
   export let definition: { x: Number, y: Number }
 
-  let selectedSpot: CombinedSpot | undefined = undefined
+  let selectedSpotIndex: number | undefined = undefined
 
   let measurementTimeout = undefined
   let measurement = {}
@@ -57,14 +57,14 @@
     if (!!editSpotClick) {
       spot = editSpotClick(spot)
     }
-    selectedSpot = spot
+    selectedSpotIndex = spots.findIndex(e => e.id === spot.id)
   }
 
   const onEscape = (e) => {
     if (e.code !== 'Escape') {
       return
     }
-    selectedSpot = undefined
+    selectedSpotIndex = undefined
   }
 
   $: {
@@ -73,7 +73,7 @@
       socket?.on("measureResult", ({measure, id}) => {
         clearTimeout(measurementTimeout)
 
-        if(id !== selectedSpot?.id) return;
+        if(id !== spots[selectedSpotIndex]?.id) return;
 
         measurement[id] = `${measure.toFixed(3)} cm`
       })
@@ -81,32 +81,31 @@
   }
 
   $: {
-    if(!!selectedSpot && !selectedSpot.type) {
-      selectedSpot.type = "Normal"
+    if(!!selectedSpotIndex && !spots[selectedSpotIndex].type) {
+      spots[selectedSpotIndex].type = "Normal"
     }
   }
-  $: selectedSpotIndex = !selectedSpot ? undefined : spots.findIndex(e => e.id === selectedSpot?.id)
 
   $: cssGridDef = definition && `--count-cols: ${ definition.x }; --count-rows: ${ definition.y }`
   $: parkedFor = [
-    (referenceTime.getTime() - selectedSpot?.statusChangedAt) / 1000 / 60 / 60,
-    ((referenceTime.getTime() - selectedSpot?.statusChangedAt) / 1000 / 60) % 60,
+    (referenceTime.getTime() - spots[selectedSpotIndex]?.statusChangedAt) / 1000 / 60 / 60,
+    ((referenceTime.getTime() - spots[selectedSpotIndex]?.statusChangedAt) / 1000 / 60) % 60,
   ].map(e => Math.abs(Math.floor(e)))
-  $: spotDisabled = selectedSpot?.hasLostConnection || selectedSpot?.hasNotChangedWarning
-  $: spotStatus = selectedSpot?.isTurnedOff
+  $: spotDisabled = spots[selectedSpotIndex]?.hasLostConnection || spots[selectedSpotIndex]?.hasNotChangedWarning
+  $: spotStatus = spots[selectedSpotIndex]?.isTurnedOff
                   ? [ErrorIcon, 'text-red-700', 'Turned off']
-                  : selectedSpot?.hasLostConnection
+                  : spots[selectedSpotIndex]?.hasLostConnection
                     ? [ErrorIcon, 'text-red-700', 'Connection lost']
-                    : selectedSpot?.hasNotChangedWarning
+                    : spots[selectedSpotIndex]?.hasNotChangedWarning
                       ? [WarnIcon, 'text-yellow-700', 'Occupied for a long time']
                       : [SuccessIcon, 'text-green-700', '']
-  $: spotType = selectedSpot?.type === 'Family'
+  $: spotType = spots[selectedSpotIndex]?.type === 'Family'
                 ? GroupIcon
-                : selectedSpot?.type === 'Small'
+                : spots[selectedSpotIndex]?.type === 'Small'
                   ? SmallIcon
-                  : selectedSpot?.type === 'Wide'
+                  : spots[selectedSpotIndex]?.type === 'Wide'
                     ? BigIcon
-                    : selectedSpot?.type === 'Accessible'
+                    : spots[selectedSpotIndex]?.type === 'Accessible'
                       ? CheckIcon
                       : undefined
 </script>
@@ -130,11 +129,11 @@
     {/each}
   </div>
 
-  {#if selectedSpot}
+  {#if spots[selectedSpotIndex]}
     <div
       class='z-10 absolute inset-0 p-[64px] grid place-items-center bg-gray-600/[.6]'
-      on:click={() => (selectedSpot = undefined)}
-      on:keydown={() => (selectedSpot = undefined)}
+      on:click={() => (selectedSpotIndex = undefined)}
+      on:keydown={() => (selectedSpotIndex = undefined)}
     >
       <div
         class='bg-gray-50 p-4 rounded-md shadow-md flex flex-col gap-2'
@@ -148,7 +147,7 @@
               this={spotType}
             />
           {/if}
-          <h5 class='text-2xl font-semibold'>{selectedSpot.id ?? 'Empty spot'}</h5>
+          <h5 class='text-2xl font-semibold'>{spots[selectedSpotIndex].id ?? 'Empty spot'}</h5>
           {#if spotStatus[2]}
             <svelte:component
               class={`${spotStatus[1]} text-2xl ml-2`}
@@ -174,28 +173,28 @@
         <div class='flex gap-2 items-center'>
           {#if removable}
             <Button
-              disabled={spotDisabled || !selectedSpot.id}
+              disabled={spotDisabled || !spots[selectedSpotIndex].id}
               color='error'
               on:click={() => {
-                  dispatch("removeSpot", selectedSpot)
-                  selectedSpot = undefined
+                  dispatch("removeSpot", spots[selectedSpotIndex])
+                  selectedSpotIndex = undefined
               }}
             >
               Remove
             </Button>
           {/if}
           {#if !editable}
-            {#if !selectedSpot.isTurnedOff}
-              <Button disabled={spotDisabled || !selectedSpot.id}>Turn off</Button>
+            {#if !spots[selectedSpotIndex].isTurnedOff}
+              <Button disabled={spotDisabled || !spots[selectedSpotIndex].id}>Turn off</Button>
               {:else}
-              <Button disabled={spotDisabled || !selectedSpot.id}>Turn on</Button>
+              <Button disabled={spotDisabled || !spots[selectedSpotIndex].id}>Turn on</Button>
             {/if}
           {/if}
-          <Button disabled={spotDisabled || !selectedSpot.id} on:click={blinkSpot(selectedSpot)}>Signal</Button>
-          <Button disabled={spotDisabled || !selectedSpot.id || measurement[selectedSpot.id] === "Loading..."} on:click={measureSpot(selectedSpot)}>Measure</Button>
+          <Button disabled={spotDisabled || !spots[selectedSpotIndex].id} on:click={blinkSpot(spots[selectedSpotIndex])}>Signal</Button>
+          <Button disabled={spotDisabled || !spots[selectedSpotIndex].id || measurement[spots[selectedSpotIndex].id] === "Loading..."} on:click={measureSpot(spots[selectedSpotIndex])}>Measure</Button>
           <small class='text-sm font-medium min-w-[24ch]'>
-            {#if measurement[selectedSpot?.id] !== undefined}
-              Result: {measurement[selectedSpot?.id]}
+            {#if measurement[spots[selectedSpotIndex]?.id] !== undefined}
+              Result: {measurement[spots[selectedSpotIndex]?.id]}
             {:else}
               Result: No measurement
             {/if}
@@ -208,16 +207,16 @@
           </h6>
           <table class='text-left'>
             <tr>
-              <th class='key'>{!!selectedSpot?.status ? "Free for" : "Parked for"}</th>
+              <th class='key'>{!!spots[selectedSpotIndex]?.status ? "Free for" : "Parked for"}</th>
               <td class='value'>{parkedFor[0]} H {parkedFor[1]} mins</td>
             </tr>
             <tr>
               <th class='key'>Last updated at</th>
-              <td class='value'>{new Date(selectedSpot.statusChangedAt).toLocaleString()}</td>
+              <td class='value'>{new Date(spots[selectedSpotIndex].statusChangedAt).toLocaleString()}</td>
             </tr>
             <tr>
               <th class='key'>Last keep alive</th>
-              <td class='value'>{new Date(selectedSpot.lastKeepAlive).toLocaleString()}</td>
+              <td class='value'>{new Date(spots[selectedSpotIndex].lastKeepAlive).toLocaleString()}</td>
             </tr>
           </table>
         {/if}

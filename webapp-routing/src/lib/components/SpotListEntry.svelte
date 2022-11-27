@@ -4,6 +4,7 @@
   import CheckIcon from '../icons/CheckIcon.svelte'
   import ErrorIcon from '../icons/ErrorIcon.svelte'
   import GroupIcon from '../icons/GroupIcon.svelte'
+  import PowerIcon from '../icons/PowerIcon.svelte'
   import SmallIcon from '../icons/SmallIcon.svelte'
   import SuccessIcon from '../icons/SuccessIcon.svelte'
   import WarnIcon from '../icons/WarnIcon.svelte'
@@ -13,7 +14,7 @@
 
   $: gridLocationStyle = `grid-column: ${ spot?.x + 1 }; grid-row: ${ spot?.y + 1 };`
   $: spotStatus = spot?.isTurnedOff
-                  ? [ErrorIcon, 'text-red-700', 'Turned off']
+                  ? [PowerIcon, 'text-gray-700', 'Turned off']
                   : spot?.hasLostConnection
                     ? [ErrorIcon, 'text-red-700', 'Connection lost']
                     : spot?.hasNotChangedWarning
@@ -34,7 +35,7 @@
                    : !spot
                      ? 'bg-gray-500'
                      : !!spot?.isTurnedOff
-                       ? 'bg-gray-700'
+                       ? 'bg-red-700 bg-opacity-60'
                        : !!spotDisplayStatus
                          ? 'bg-red-700'
                          : !spot?.status
@@ -44,12 +45,11 @@
 
 <div
   class='relative'
-  class:opacity-[.7]={spot.isTurnedOff}
   on:click
   on:keydown
   style={gridLocationStyle}
 >
-  <div class={`${statusClass} flex justify-center items-center px-4 py-4 h-[100px] text-green-50 outline outline-1 outline-gray-300`}>
+  <div class={`${statusClass} flex justify-center items-center px-4 py-4 h-[100px] text-gray-50 outline outline-1 outline-gray-300`}>
     {spot?.id ?? ""}
   </div>
 

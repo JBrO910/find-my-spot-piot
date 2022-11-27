@@ -24,6 +24,7 @@ export default (io) => {
                 spot.x,
                 spot.y,
                 spot.z,
+                spot.type,
                 spot.id,
             )
             Log.tag(LOG_TAG)
@@ -81,6 +82,7 @@ export default (io) => {
             })
             socket.on('register', ({spots, levelDescription}) => {
                 registerLevelDescription(levelDescription)
+
                 const idSet = spots.reduce((acc, curr) => {
                     registerSpot(curr)
 

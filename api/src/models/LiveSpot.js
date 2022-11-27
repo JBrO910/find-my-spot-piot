@@ -27,11 +27,11 @@ export default class LiveSpot {
   }
 
   get hasLostConnection() {
-    return new Date().getTime() - this.lastKeepAlive > MAX_KEEP_ALIVE_GAP
+    return !this.isTurnedOff && new Date().getTime() - this.lastKeepAlive > MAX_KEEP_ALIVE_GAP
   }
 
   get hasNotChangedWarning() {
-    return new Date().getTime() - this.statusChangedAt > STATUS_CHANGE_WARNING_DURATION
+    return !this.isTurnedOff && new Date().getTime() - this.statusChangedAt > STATUS_CHANGE_WARNING_DURATION
   }
 
   get serialised() {

@@ -5,7 +5,11 @@
   import SpotListEntry from '$lib/components/SpotListEntry.svelte'
   import type { Socket } from 'socket.io-client'
   import { createEventDispatcher, onMount } from 'svelte'
+  import BigIcon from '../icons/BigIcon.svelte'
+  import CheckIcon from '../icons/CheckIcon.svelte'
   import ErrorIcon from '../icons/ErrorIcon.svelte'
+  import GroupIcon from '../icons/GroupIcon.svelte'
+  import SmallIcon from '../icons/SmallIcon.svelte'
   import SuccessIcon from '../icons/SuccessIcon.svelte'
   import WarnIcon from '../icons/WarnIcon.svelte'
   import type { CombinedSpot } from '../types'
@@ -82,11 +86,22 @@
     ((referenceTime.getTime() - selectedSpot?.statusChangedAt) / 1000 / 60) % 60,
   ].map(e => Math.abs(Math.floor(e)))
   $: spotDisabled = selectedSpot?.hasLostConnection || selectedSpot?.hasNotChangedWarning
-  $: spotStatus = selectedSpot?.hasLostConnection
-                  ? [ErrorIcon, 'text-red-700', 'Connection lost']
-                  : selectedSpot?.hasNotChangedWarning
-                    ? [WarnIcon, 'text-yellow-700', 'Occupied for a long time']
-                    : [SuccessIcon, 'text-green-700', '']
+  $: spotStatus = selectedSpot?.isTurnedOff
+                  ? [ErrorIcon, 'text-red-700', 'Turned off']
+                  : selectedSpot?.hasLostConnection
+                    ? [ErrorIcon, 'text-red-700', 'Connection lost']
+                    : selectedSpot?.hasNotChangedWarning
+                      ? [WarnIcon, 'text-yellow-700', 'Occupied for a long time']
+                      : [SuccessIcon, 'text-green-700', '']
+  $: spotType = selectedSpot?.type === 'Family'
+                ? GroupIcon
+                : selectedSpot?.type === 'Small'
+                  ? SmallIcon
+                  : selectedSpot?.type === 'Wide'
+                    ? BigIcon
+                    : selectedSpot?.type === 'Accessible'
+                      ? CheckIcon
+                      : undefined
 </script>
 
 <div
@@ -121,6 +136,12 @@
       >
         <div class='flex gap-1 items-center'>
           <h5 class='text-2xl font-semibold'>{selectedSpot.id ?? 'Empty spot'}</h5>
+          {#if spotType}
+            <svelte:component
+              class="text-2xl ml-2"
+              this={spotType}
+            />
+          {/if}
           {#if spotStatus[2]}
             <svelte:component
               class={`${spotStatus[1]} text-2xl ml-2`}
@@ -128,6 +149,17 @@
               title={spotStatus[2]}
             />
             <span class='text-red-700 text-sm font-medium'>{spotStatus[2]}</span>
+          {/if}
+          {#if editable}
+            <Input
+              bind:value={selectedSpot.type ?? "Normal"}
+              id='type'
+              name='type'
+              placeholder='Type'
+              required
+              type='select'
+              selectOptions={["Normal", "Accessible", "Wide", "Small", "Family"]}
+            />
           {/if}
         </div>
 
@@ -143,16 +175,14 @@
             >
               Remove
             </Button>
-            <Input
-              id='type'
-              name='type'
-              placeholder='Type'
-              required
-              type='select'
-              selectOptions={["Normal", "Wide", "Small", "Accessibility", "Family"]}
-            />
           {/if}
-<!--          <Button disabled={spotDisabled || !selectedSpot.id}>Turn off</Button>-->
+          {#if !editable}
+            {#if !selectedSpot.isTurnedOff}
+              <Button disabled={spotDisabled || !selectedSpot.id}>Turn off</Button>
+              {:else}
+              <Button disabled={spotDisabled || !selectedSpot.id}>Turn on</Button>
+            {/if}
+          {/if}
           <Button disabled={spotDisabled || !selectedSpot.id} on:click={blinkSpot(selectedSpot)}>Signal</Button>
           <Button disabled={spotDisabled || !selectedSpot.id || measurement[selectedSpot.id] === "Loading..."} on:click={measureSpot(selectedSpot)}>Measure</Button>
           <small class='text-sm font-medium min-w-[24ch]'>

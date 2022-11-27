@@ -56,6 +56,12 @@ export default class LiveSpotController {
     })
   }
 
+  turnOnOff(garage, id, isTurnedOff) {
+    return this.#database.updateSerializable(this.getSpotId(garage, id), {
+      isTurnedOff,
+    })
+  }
+
   async getGarageSpotsOnce(garageId) {
     return this.#database
       .getOnce(garageId)

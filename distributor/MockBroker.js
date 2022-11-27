@@ -3,7 +3,7 @@ import {
   emitKeepAliveSpot,
   emitLoadSpots, emitResultOfMeasureMaintain,
   emitUpdateSpot, listenToBlinkMaintain,
-  listenToLoadSpots, listenToMeasureMaintain, listenToRegisterMaintain,
+  listenToLoadSpots, listenToMeasureMaintain, listenToRegisterMaintain, listenToTurnOffMaintain, listenToTurnOnMaintain,
 } from './socket'
 import { PRE_GENERATED_IDS, sleep } from './utils'
 
@@ -71,9 +71,18 @@ export default async function setupMockBroker(
   Log.tag(LOG_TAG).info("Starting up");
 
   let spotStates = {};
+  let spotsOn = {};
 
   listenToBlinkMaintain((id) => {
     Log.tag(LOG_TAG).trace("Blink requested for", id)
+  })
+  listenToTurnOnMaintain((id) => {
+    Log.tag(LOG_TAG).trace("Turn on", id)
+    spotsOn[id] = true
+  })
+  listenToTurnOffMaintain((id) => {
+    Log.tag(LOG_TAG).trace("Turn off", id)
+    spotsOn[id] = false
   })
   listenToMeasureMaintain((id) => {
     Log.tag(LOG_TAG).trace("Measure requested for", id)
@@ -90,15 +99,20 @@ export default async function setupMockBroker(
       Log.tag(LOG_TAG).error("Registration failed", err);
       process.exit(1);
     });
-  } else {
-    for (let i = 0; i < amountOfControllers; i++) {
-      const id = PRE_GENERATED_IDS[i];
-      for (let j = 1; j <= 4; j++) {
-        const spotId = id + "-" + String(j).padStart(3, "0");
-        const status = Math.random() > 0.5 ? 0 : 1;
+  }
+
+  for (let i = 0; i < amountOfControllers; i++) {
+    const id = PRE_GENERATED_IDS[i];
+    for (let j = 1; j <= 4; j++) {
+      const spotId = id + "-" + String(j).padStart(3, "0");
+      const status = Math.random() > 0.5 ? 0 : 1;
+
+      if(!(spotId in spotStates)) {
         spotStates[spotId] = status;
         emitUpdateSpot({id, status})
       }
+
+      spotsOn[spotId] = true;
     }
   }
 

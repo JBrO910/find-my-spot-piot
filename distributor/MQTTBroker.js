@@ -9,7 +9,7 @@ import {
     listenToBlinkMaintain,
     listenToMeasureMaintain,
     emitResultOfMeasureMaintain,
-    listenToRegisterMaintain,
+    listenToRegisterMaintain, listenToTurnOnMaintain, listenToTurnOffMaintain,
 } from './socket'
 import {
     BLINK,
@@ -18,7 +18,7 @@ import {
     MEASURE_RESPONSE,
     RECEIVE_ID,
     REQUEST_ID,
-    REQUEST_ID_RESPONSE,
+    REQUEST_ID_RESPONSE, TURN_OFF, TURN_ON,
     UPDATE_SPOT,
 } from './topics'
 import { sleep } from './utils'
@@ -71,6 +71,14 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
         listenToMeasureMaintain((id) => {
             Log.trace("Measure requested for", id)
             mqttClient.publish(MEASURE, JSON.stringify({id}))
+        })
+        listenToTurnOnMaintain((id) => {
+            Log.trace("Turn on", id)
+            mqttClient.publish(TURN_ON, JSON.stringify({id}))
+        })
+        listenToTurnOffMaintain((id) => {
+            Log.trace("Turn off", id)
+            mqttClient.publish(TURN_OFF, JSON.stringify({id}))
         })
         listenToRegisterMaintain((spots) => {
             Log.trace("Register requested for", spots)

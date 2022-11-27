@@ -45,12 +45,14 @@ export interface Spot {
   x: number
   y: number
   z: number
+  type: "Normal" | "Accessible" | "Wide" | "Small" | "Family"
 }
 
 export interface LiveSpot {
   id: string
 
   status: 0 | 1
+  isTurnedOff: boolean
   statusChangedAt: number
   lastKeepAlive: number
   hasLostConnection: boolean

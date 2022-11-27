@@ -168,13 +168,6 @@ export default (io) => {
         })
     }
 
-    // Read all registered Garages
-    garageController.getAll()
-        .then((garages) =>
-            // Create Socket Network foreach garage
-            garages.forEach(setupGarage),
-        )
-
     garageController.onAdded(garage => {
         Log.trace("Added garage, connect new listeners")
         setupGarage(garage)

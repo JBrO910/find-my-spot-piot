@@ -141,13 +141,13 @@
         on:keydown|stopPropagation
       >
         <div class='flex gap-1 items-center'>
-          <h5 class='text-2xl font-semibold'>{selectedSpot.id ?? 'Empty spot'}</h5>
           {#if spotType}
             <svelte:component
               class="text-2xl ml-2"
               this={spotType}
             />
           {/if}
+          <h5 class='text-2xl font-semibold'>{selectedSpot.id ?? 'Empty spot'}</h5>
           {#if spotStatus[2]}
             <svelte:component
               class={`${spotStatus[1]} text-2xl ml-2`}
@@ -162,6 +162,7 @@
               id='type'
               name='type'
               placeholder='Type'
+              wrapperClass='ml-4'
               required
               type='select'
               selectOptions={["Normal", "Accessible", "Wide", "Small", "Family"]}

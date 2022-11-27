@@ -13,7 +13,7 @@ export default (io) => {
     const setupGarage = (garage) => {
         const LOG_TAG = `Garage[${ garage.id }]`
 
-        Log.trace(garage)
+        Log.trace(garage.constructor.name, garage)
 
         const garageConsumerSockets = io.of(`/${ garage.id }`)
         const garageBrokerSocket = io.of(`/${ garage.id }-broker`)

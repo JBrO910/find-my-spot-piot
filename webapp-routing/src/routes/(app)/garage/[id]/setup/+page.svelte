@@ -88,7 +88,7 @@
   $: filledSpotsAmount = spots.filter(spot => spot.x === undefined).length
   $: {
     spots = spots.map(spot => {
-      if (spot.z !== selectedSpot) {
+      if (spot.z !== selectedLevel) {
         return spot
       }
 

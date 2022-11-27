@@ -31,17 +31,20 @@
   $: spotDisplayStatus = spot?.isTurnedOff || spot?.hasLostConnection || spot?.hasNotChangedWarning
   $: statusClass = !!editable
                    ? 'bg-gray-600 hover:bg-gray-700'
-                   : !spot || spot.isTurnedOff
+                   : !spot
                      ? 'bg-gray-500'
-                     : !!spotDisplayStatus
-                       ? 'bg-red-700'
-                       : !spot?.status
-                         ? 'bg-orange-700'
-                         : 'bg-green-700'
+                     : !!spot?.isTurnedOff
+                       ? 'bg-gray-700'
+                       : !!spotDisplayStatus
+                         ? 'bg-red-700'
+                         : !spot?.status
+                           ? 'bg-orange-700'
+                           : 'bg-green-700'
 </script>
 
 <div
   class='relative'
+  class:opacity-[.7]={spot.isTurnedOff}
   on:click
   on:keydown
   style={gridLocationStyle}

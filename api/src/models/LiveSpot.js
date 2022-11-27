@@ -8,6 +8,7 @@ export default class LiveSpot {
   garage
   statusChangedAt
   lastKeepAlive
+  isTurnedOff
 
   constructor(
     status,
@@ -15,12 +16,14 @@ export default class LiveSpot {
     id,
     statusChangedAt = new Date().getTime(),
     lastKeepAlive = new Date().getTime(),
+      isTurnedOff=false
   ) {
     this.id = id
     this.status = status
     this.garage = garage
     this.statusChangedAt = statusChangedAt
     this.lastKeepAlive = lastKeepAlive
+    this.isTurnedOff = isTurnedOff
   }
 
   get hasLostConnection() {
@@ -39,7 +42,7 @@ export default class LiveSpot {
     }
   }
 
-  static fromSerialized({ status, garage, id, statusChangedAt, lastKeepAlive }) {
-    return new LiveSpot(status, garage, id, statusChangedAt, lastKeepAlive)
+  static fromSerialized({ status, garage, id, statusChangedAt, lastKeepAlive, isTurnedOff }) {
+    return new LiveSpot(status, garage, id, statusChangedAt, lastKeepAlive, isTurnedOff)
   }
 }

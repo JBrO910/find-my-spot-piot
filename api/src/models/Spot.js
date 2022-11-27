@@ -5,14 +5,16 @@ export default class Spot {
     x
     y
     z
+    type
 
-    constructor(garage, localIdentifier, x, y, z, id) {
+    constructor(garage, localIdentifier, x, y, z, type="", id) {
         this.id = id;
         this.garage = garage;
         this.localIdentifier = localIdentifier ?? id ?? "";
         this.x = x;
         this.y = y;
         this.z = z;
+        this.type = type;
     }
 
     get serialised() {
@@ -20,7 +22,7 @@ export default class Spot {
     }
 
     static fromSerialized(values) {
-        const { id, garage, localIdentifier, x, y, z } = values
-        return new Spot(garage, localIdentifier, x, y, z, id)
+        const { id, garage, localIdentifier, x, y, z, type } = values
+        return new Spot(garage, localIdentifier, x, y, z, type, id)
     }
 }

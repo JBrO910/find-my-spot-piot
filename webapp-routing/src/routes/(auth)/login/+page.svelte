@@ -6,6 +6,7 @@
   import type { ApiError } from '$lib/types'
 
   let error: ApiError = undefined
+  let loading = false
 </script>
 
 <h5 class='text-blue-500 font-medium text-4xl'>FindMySpot</h5>
@@ -15,12 +16,14 @@
   method='POST'
   action='?/login'
   use:enhance={() => {
+      loading = true
           error = undefined
           return async ({result}) => {
               if(result.type === "invalid") {
                   error = result.data.error
                   return
               }
+              loading = false
               await applyAction(result)
           }
       }}
@@ -50,6 +53,6 @@
   {#if error}
     <small class='text-red-700 text-sm font-medium mt-[-16px]'>{error.message}</small>
   {/if}
-  <Button type='submit'>Login</Button>
+  <Button disabled={loading} type='submit'>Login</Button>
   <a href='/register' class='text-blue-500 hover:text-blue-700 hover:underline underline-offset-2 text-sm'>Register account</a>
 </form>

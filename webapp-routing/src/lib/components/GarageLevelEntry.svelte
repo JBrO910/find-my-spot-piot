@@ -1,6 +1,7 @@
 <!--suppress ReservedWordAsName -->
 <script lang='ts'>
   import Button from '$lib/components/Button.svelte'
+  import Input from '$lib/components/Input.svelte'
   import SpotListEntry from '$lib/components/SpotListEntry.svelte'
   import type { Socket } from 'socket.io-client'
   import { createEventDispatcher, onMount } from 'svelte'
@@ -139,8 +140,17 @@
                   dispatch("removeSpot", selectedSpot)
                   selectedSpot = undefined
               }}
-            >Remove
+            >
+              Remove
             </Button>
+            <Input
+              id='type'
+              name='type'
+              placeholder='Type'
+              required
+              type='select'
+              selectOptions={["Normal", "Wide", "Small", "Accessibility", "Family"]}
+            />
           {/if}
 <!--          <Button disabled={spotDisabled || !selectedSpot.id}>Turn off</Button>-->
           <Button disabled={spotDisabled || !selectedSpot.id} on:click={blinkSpot(selectedSpot)}>Signal</Button>

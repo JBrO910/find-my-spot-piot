@@ -42,6 +42,11 @@
     socket?.emit("blink", spot.id)
   }
 
+  const turnSpotPower = (spot, turnOff) => () => {
+    const event = turnOff ? "turn-off" : "turn-on"
+    socket?.emit(event, spot.id)
+  }
+
   let referenceTime = new Date()
   onMount(() => {
     const interval = setInterval(() => {
@@ -184,9 +189,9 @@
           {/if}
           {#if !editable}
             {#if !spots[selectedSpotIndex].isTurnedOff}
-              <Button disabled={spotDisabled || !spots[selectedSpotIndex].id}>Turn off</Button>
+              <Button on:click={turnSpotPower(spots[selectedSpotIndex], true)} disabled={spotDisabled || !spots[selectedSpotIndex].id}>Turn off</Button>
               {:else}
-              <Button disabled={spotDisabled || !spots[selectedSpotIndex].id}>Turn on</Button>
+              <Button on:click={turnSpotPower(spots[selectedSpotIndex], false)} disabled={spotDisabled || !spots[selectedSpotIndex].id}>Turn on</Button>
             {/if}
           {/if}
           <Button disabled={spotDisabled || !spots[selectedSpotIndex].id} on:click={blinkSpot(spots[selectedSpotIndex])}>Signal</Button>

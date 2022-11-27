@@ -54,13 +54,11 @@
   })
 
   const onClickSpot = (spot) => () => {
-    if(!spot) return
-
     if (!!editSpotClick) {
       spot = editSpotClick(spot)
     }
+    if(!spot) return
 
-    console.log(spots, spot)
     selectedSpotIndex = spots.findIndex(e => e.id === spot.id)
     if(!spots[selectedSpotIndex].type) {
       spots[selectedSpotIndex].type = "Normal"

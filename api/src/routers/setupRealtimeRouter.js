@@ -169,7 +169,7 @@ export default (io) => {
     }
 
     garageController.onAdded(garage => {
-        Log.trace("Added garage, connect new listeners")
+        Log.trace(`Added garage, "${ garage.id }" , connect listeners`)
         setupGarage(garage)
     })
 }

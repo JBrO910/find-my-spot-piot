@@ -3,10 +3,9 @@ import {
   emitKeepAliveSpot,
   emitLoadSpots, emitResultOfMeasureMaintain,
   emitUpdateSpot, listenToBlinkMaintain,
-  listenToLoadSpots, listenToMeasureMaintain,
+  listenToLoadSpots, listenToMeasureMaintain, listenToRegisterMaintain,
 } from './socket'
-import { BLINK, MEASURE } from './topics'
-import { genHexString, sleep } from "./utils";
+import { genHexString, PRE_GENERATED_IDS, sleep } from './utils'
 
 const LOG_TAG = "Demo-Distributor";
 
@@ -27,7 +26,7 @@ const register = async (
       Log.tag(LOG_TAG).info("Loading Spots requested");
 
       for (let i = 0; i < amountOfControllers; i++) {
-        const id = genHexString(8);
+        const id = PRE_GENERATED_IDS[i];
         for (let j = 1; j <= spotsPerController; j++) {
           const spotId = id + "-" + String(j).padStart(3, "0");
 
@@ -39,7 +38,13 @@ const register = async (
       Log.tag(LOG_TAG).trace(`Register ${registeredSpots.length} spots`);
 
       emitLoadSpots(registeredSpots);
+
       Log.tag(LOG_TAG).info("Done registering");
+
+      listenToRegisterMaintain((spots) => {
+        Log.tag(LOG_TAG).trace("Spots are registered", spots.length)
+        registeredSpots.splice(0)
+      })
 
       let timeoutCheck = 0;
       const TIMEOUT = 60 * 5 // * 5 minutes
@@ -85,6 +90,14 @@ export default async function setupMockBroker(
       Log.tag(LOG_TAG).error("Registration failed", err);
       process.exit(1);
     });
+  } else {
+    for (let i = 0; i < amountOfControllers; i++) {
+      const id = PRE_GENERATED_IDS[i];
+      for (let j = 1; j <= 4; j++) {
+        const spotId = id + "-" + String(j).padStart(3, "0");
+        spotStates[spotId] = 0;
+      }
+    }
   }
 
   Log.tag(LOG_TAG).info("Starting Simulation");

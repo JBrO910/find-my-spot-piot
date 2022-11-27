@@ -44,6 +44,7 @@
 
   const turnSpotPower = (spot, turnOff) => () => {
     const event = turnOff ? "turn-off" : "turn-on"
+    console.log(event, spot.id, !!socket)
     socket?.emit(event, spot.id)
   }
 

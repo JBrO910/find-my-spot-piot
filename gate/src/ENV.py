@@ -1,0 +1,6 @@
+BROKER_IP = '192.168.218.111'
+SEND_UID = b'gate/send-uid'
+SEND_UID_RESPONSE = b'gate/send-uid/response'
+REQUEST_ID = b'register/request-id'
+REQUEST_ID_RESPONSE = b'register/request-id/response'
+RECEIVE_ID = b'register/receive-id'

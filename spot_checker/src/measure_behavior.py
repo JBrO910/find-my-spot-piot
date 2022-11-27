@@ -3,8 +3,9 @@ from hcsr04 import HCSR04
 from machine import Pin
 from umqttsimple import MQTTClient
 from ENV import TRIGGER_DISTANCE
+from time import sleep
 
-topic_spot_update = b'live-spot'
+topic_spot_update = b'spot/update'
 
 class SpotBehavior:
     def __init__(self, id, trigger_pin, echo_pin, led, mqtt_client=None, timeout=10000):
@@ -28,6 +29,7 @@ class SpotBehavior:
                     self.led.value(0)
                     if not self.is_occupied and self.mqtt_client is not None:
                         msg = json.dumps({"id": self.id, "status": "0", })
+                        sleep(0.5)
                         self.mqtt_client.publish(topic_spot_update, msg)
                     self.is_occupied = True
                 else:
@@ -35,6 +37,7 @@ class SpotBehavior:
                     self.led.value(1)
                     if self.is_occupied and self.mqtt_client is not None:
                         msg = json.dumps({"id": self.id, "status": "1", })
+                        sleep(0.5)
                         self.mqtt_client.publish(topic_spot_update, msg)
                     self.is_occupied = False
             except Exception as ex:

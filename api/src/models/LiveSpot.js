@@ -35,15 +35,11 @@ export default class LiveSpot {
   }
 
   get serialised() {
-    const data = {
+    return {
       ...this,
       hasLostConnection: this.hasLostConnection,
       hasNotChangedWarning: this.hasNotChangedWarning,
     }
-    if(!data.id) {
-      delete data.id
-    }
-    return data
   }
 
   static fromSerialized({ status, garage, id, statusChangedAt, lastKeepAlive, isTurnedOff }) {

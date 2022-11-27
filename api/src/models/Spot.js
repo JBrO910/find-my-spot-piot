@@ -18,11 +18,7 @@ export default class Spot {
     }
 
     get serialised() {
-        const data = {...this}
-        if(!data.id) {
-            delete data.id
-        }
-        return data
+        return {...this}
     }
 
     static fromSerialized(values) {

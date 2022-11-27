@@ -47,8 +47,9 @@
   }
 
   const register = () => {
-    socket.emit('register', { spots, levelDescription })
-    goto("/garage/" + data.garage?.id)
+    console.log({ spots, levelDescription })
+    // socket.emit('register', { spots, levelDescription })
+    // goto("/garage/" + data.garage?.id)
   }
 
   onMount(async () => {
@@ -106,13 +107,13 @@
   <div class='flex gap-2'>
     <Input
       bind:value={selectedLevelObject.x}
-      placeholder='Rows'
+      placeholder='Columns'
       type='number'
       wrapperClass='flex-1'
     />
     <Input
       bind:value={selectedLevelObject.y}
-      placeholder='Columns'
+      placeholder='Rows'
       type='number'
       wrapperClass='flex-1'
     />

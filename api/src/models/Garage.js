@@ -14,11 +14,15 @@ export default class Garage {
   }
 
   get serialised() {
-    return {
+    const data = {
       name: this.name,
       address: this.address,
       phoneNumber: this.phoneNumber,
     }
+    if(!!this.levelDescription) {
+      data.levelDescription = this.levelDescription
+    }
+    return data
   }
 
   static fromSerialized({ id, name, address, phoneNumber, levelDescription }) {

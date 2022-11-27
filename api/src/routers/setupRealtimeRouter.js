@@ -13,6 +13,8 @@ export default (io) => {
     const setupGarage = (garage) => {
         const LOG_TAG = `Garage[${ garage.id }]`
 
+        Log.trace(garage)
+
         const garageConsumerSockets = io.of(`/${ garage.id }`)
         const garageBrokerSocket = io.of(`/${ garage.id }-broker`)
         const garageRegisterSocket = io.of(`/${ garage.id }-register`)
@@ -175,5 +177,8 @@ export default (io) => {
             garages.forEach(setupGarage),
         )
 
-    garageController.onAdded(setupGarage)
+    garageController.onAdded(garage => {
+        Log.trace("Added garage, connect new listeners")
+        setupGarage(garage)
+    })
 }

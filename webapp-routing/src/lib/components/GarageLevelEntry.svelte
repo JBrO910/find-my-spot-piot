@@ -80,6 +80,12 @@
     }
   }
 
+  $: {
+    if(!!selectedSpot && !selectedSpot.type) {
+      selectedSpot.type = "Normal"
+    }
+  }
+
   $: cssGridDef = definition && `--count-cols: ${ definition.x }; --count-rows: ${ definition.y }`
   $: parkedFor = [
     (referenceTime.getTime() - selectedSpot?.statusChangedAt) / 1000 / 60 / 60,
@@ -152,7 +158,7 @@
           {/if}
           {#if editable}
             <Input
-              bind:value={selectedSpot.type ?? "Normal"}
+              bind:value={selectedSpot.type}
               id='type'
               name='type'
               placeholder='Type'

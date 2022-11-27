@@ -84,6 +84,20 @@
   }
 
   $: selectedLevelObject = levelDescription[selectedLevel]
+  $: cssGridDef = selectedLevelObject && `--count-cols: ${ selectedLevelObject.x }; --count-rows: ${ selectedLevelObject.y }`
+  $: filledSpotsAmount = spots.filter(spot => spot.x === undefined).length
+  $: {
+    spots = spots.map(spot => {
+      if (spot.z !== selectedSpot) {
+        return spot
+      }
+
+      if (spot.x >= selectedLevelObject.x || spot.y >= selectedLevelObject.y) {
+        return { ...spot, x: undefined, y: undefined }
+      }
+      return spot
+    })
+  }
   $: mockSpots = Array.from({ length: selectedLevelObject.x * selectedLevelObject.y })
     .map((_, i) => {
       const x = i % selectedLevelObject.x
@@ -94,20 +108,6 @@
         y,
       }
     })
-  $: cssGridDef = selectedLevelObject && `--count-cols: ${ selectedLevelObject.x }; --count-rows: ${ selectedLevelObject.y }`
-  $: filledSpotsAmount = spots.filter(spot => spot.x === undefined).length
-  $: {
-    spots = spots.map(spot => {
-      if (spot.z !== selectedSpot) {
-        return spot
-      }
-
-      if (spot.x >= selectedLevelObject.x || spot.y >= selectedLevelObject.y) {
-        return { id: spot.id }
-      }
-      return spot
-    })
-  }
 </script>
 
 <div class='bg-gray-50 p-4 rounded mx-2 shadow mt-2'>
@@ -177,7 +177,8 @@
     disabled={!!filledSpotsAmount || !spots.length}
     on:click={register}
     on:keydown={register}
-  >Save Registration
+  >
+    Save Registration
   </Button>
 </div>
 

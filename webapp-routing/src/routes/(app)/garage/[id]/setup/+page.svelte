@@ -50,8 +50,8 @@
 
   const register = () => {
     console.log({ spots, levelDescription })
-    // socket.emit('register', { spots, levelDescription })
-    // goto("/garage/" + data.garage?.id)
+    socket.emit('register', { spots, levelDescription })
+    goto("/garage/" + data.garage?.id)
   }
 
   onMount(async () => {

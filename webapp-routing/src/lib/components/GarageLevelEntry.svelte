@@ -60,6 +60,7 @@
       spot = editSpotClick(spot)
     }
 
+    console.log(spots, spot)
     selectedSpotIndex = spots.findIndex(e => e.id === spot.id)
     if(!spots[selectedSpotIndex].type) {
       spots[selectedSpotIndex].type = "Normal"

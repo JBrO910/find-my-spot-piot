@@ -85,6 +85,7 @@
       selectedSpot.type = "Normal"
     }
   }
+  $: selectedSpotIndex = spots.findIndex(e => e.id === selectedSpot.id)
 
   $: cssGridDef = definition && `--count-cols: ${ definition.x }; --count-rows: ${ definition.y }`
   $: parkedFor = [
@@ -140,7 +141,7 @@
         on:click|stopPropagation
         on:keydown|stopPropagation
       >
-        <div class='flex gap-1 items-center'>
+        <div class='flex gap-2 items-center'>
           {#if spotType}
             <svelte:component
               class="text-2xl ml-2"
@@ -158,11 +159,11 @@
           {/if}
           {#if editable}
             <Input
-              bind:value={selectedSpot.type}
+              bind:value={spots[selectedSpotIndex].type}
               id='type'
               name='type'
               placeholder='Type'
-              wrapperClass='ml-4'
+              wrapperClass='ml-2'
               required
               type='select'
               selectOptions={["Normal", "Accessible", "Wide", "Small", "Family"]}

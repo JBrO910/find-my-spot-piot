@@ -30,7 +30,7 @@
   let measurementTimeout = undefined
   let measurement = {}
 
-  const measureSpot = (spot) => () => {
+  const measureSpot = (spot, socket) => () => {
     measurement[spot.id] = "Loading..."
     measurementTimeout = setTimeout(() => {
       measurement[spot.id] = "Timeout"
@@ -38,11 +38,11 @@
     socket?.emit("measure", spot.id)
   }
 
-  const blinkSpot = (spot) => () => {
+  const blinkSpot = (spot, socket) => () => {
     socket?.emit("blink", spot.id)
   }
 
-  const turnSpotPower = (spot, turnOff) => () => {
+  const turnSpotPower = (spot, turnOff, socket) => () => {
     const event = turnOff ? "turnOff" : "turnOn"
     socket?.emit(event, spot.id)
   }
@@ -189,13 +189,13 @@
           {/if}
           {#if !editable}
             {#if !spots[selectedSpotIndex].isTurnedOff}
-              <Button on:click={turnSpotPower(spots[selectedSpotIndex], true)} disabled={spotDisabled || !spots[selectedSpotIndex].id}>Turn off</Button>
+              <Button on:click={turnSpotPower(spots[selectedSpotIndex], true, socket)} disabled={spotDisabled || !spots[selectedSpotIndex].id}>Turn off</Button>
               {:else}
-              <Button on:click={turnSpotPower(spots[selectedSpotIndex], false)} disabled={spotDisabled || !spots[selectedSpotIndex].id}>Turn on</Button>
+              <Button on:click={turnSpotPower(spots[selectedSpotIndex], false, socket)} disabled={spotDisabled || !spots[selectedSpotIndex].id}>Turn on</Button>
             {/if}
           {/if}
-          <Button disabled={spotDisabled || !spots[selectedSpotIndex].id} on:click={blinkSpot(spots[selectedSpotIndex])}>Signal</Button>
-          <Button disabled={spotDisabled || !spots[selectedSpotIndex].id || measurement[spots[selectedSpotIndex].id] === "Loading..."} on:click={measureSpot(spots[selectedSpotIndex])}>Measure</Button>
+          <Button disabled={spotDisabled || !spots[selectedSpotIndex].id} on:click={blinkSpot(spots[selectedSpotIndex], socket)}>Signal</Button>
+          <Button disabled={spotDisabled || !spots[selectedSpotIndex].id || measurement[spots[selectedSpotIndex].id] === "Loading..."} on:click={measureSpot(spots[selectedSpotIndex], socket)}>Measure</Button>
           <small class='text-sm font-medium min-w-[24ch]'>
             {#if measurement[spots[selectedSpotIndex]?.id] !== undefined}
               Result: {measurement[spots[selectedSpotIndex]?.id]}

@@ -4,6 +4,8 @@ export default class Garage {
   address
   phoneNumber
   levelDescription
+  payRate
+  hasToPayOnce
 
   constructor(name, address, phoneNumber, id, levelDescription) {
     this.id = id

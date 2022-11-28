@@ -12,7 +12,7 @@ import {
     listenToRegisterMaintain, listenToTurnOnMaintain, listenToTurnOffMaintain,
 } from './socket'
 import {
-    BLINK,
+    BLINK, GATE_REGISTER_CARD, GATE_REGISTER_CARD_RESPONSE, GATE_SEND_UID, GATE_SEND_UID_RESPONSE,
     KEEP_ALIVE,
     MEASURE,
     MEASURE_RESPONSE,
@@ -29,18 +29,42 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
 
     let isRegistering = false
     const registeredSpots = []
+    const registeredGates = []
     const topics = {
         [MEASURE_RESPONSE]: mqttParseMessage(emitResultOfMeasureMaintain),
         [UPDATE_SPOT]: mqttParseMessage(emitUpdateSpot),
         [KEEP_ALIVE]: mqttParseMessage(emitKeepAliveSpot),
-        [REQUEST_ID_RESPONSE]: mqttParseMessage(({ spots }) => {
-            Log.trace("Register spot", spots);
-            registeredSpots.push(...spots);
+        [REQUEST_ID_RESPONSE]: mqttParseMessage(async ({ type, data }) => {
+            if(type === "spots") {
+                Log.trace("Register spots", data);
+                registeredSpots.push(...data);
+            } else if(type === "gate") {
+                Log.trace("Register gate", data);
+                registeredGates.push(data);
+                await sleep(1000)
+                mqttClient.publish(RECEIVE_ID, JSON.stringify({ spots: [], gates: registeredGates }));
+            }
         }),
+        [GATE_SEND_UID]: mqttParseMessage(({uid, muid}) => {
+            Log.trace("Gate read card with id", uid)
+            const data = {
+                muid,
+                access: !!Math.round(Math.random())
+            }
+            mqttClient.publish(GATE_SEND_UID_RESPONSE, JSON.stringify(data))
+        }),
+        [GATE_REGISTER_CARD_RESPONSE]: mqttParseMessage(({uid}) => {
+            Log.trace("Gate registered card with id", uid)
+        })
     };
 
     mqttClient.on("connect", () => {
         Log.info("Connected to MQTT Client")
+
+        setTimeout(() => {
+            Log.trace("Register card request send")
+            mqttClient.publish(GATE_REGISTER_CARD, "{}")
+        }, 10_000)
 
         listenToLoadSpots(async () => {
             if(isRegistering) {
@@ -49,6 +73,7 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
             }
             isRegistering = true
             registeredSpots.length = 0  // Clear array
+            registeredGates.length = 0  // Clear array
 
             Log.info("Loading Spots requested")
             mqttClient.publish(REQUEST_ID, "{}")
@@ -56,13 +81,11 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
             await sleep(registerSleepTime)
 
             Log.trace(`Register ${registeredSpots.length} spots`)
+            Log.trace(`Register ${registeredGates.length} gates`)
+            // TODO Emit gates as well
             emitLoadSpots(registeredSpots)
             isRegistering = false
         })
-
-        // TODO Listen to spots registered
-
-        // TODO Think about turn off
 
         listenToBlinkMaintain((id) => {
             Log.trace("Blink requested for", id)
@@ -80,10 +103,10 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
             Log.trace("Turn off", id)
             mqttClient.publish(TURN_OFF, JSON.stringify({id}))
         })
-        listenToRegisterMaintain((spots) => {
-            Log.trace("Register requested for", spots)
-            mqttClient.publish(RECEIVE_ID, JSON.stringify({spots}))
-        })
+        listenToRegisterMaintain(({ spots, gates }) => {
+          Log.trace("Register requested for", spots, gates);
+          mqttClient.publish(RECEIVE_ID, JSON.stringify({ spots, gates }));
+        });
 
         Object.keys(topics).forEach((topic) => {
             Log.trace(`Listen to topic "${topic}"`)

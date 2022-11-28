@@ -76,7 +76,7 @@
     socketTimeout = setTimeout(() => {
       socketError = "Timed out"
       loadingSpots = false
-    }, 5000)
+    }, 15_000)
 
     loadingSpots = true
     socketError = ""

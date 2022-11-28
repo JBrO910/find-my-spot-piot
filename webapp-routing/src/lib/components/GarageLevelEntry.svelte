@@ -31,19 +31,19 @@
   let measurement = {}
 
   const measureSpot = (spot) => () => {
-    measurement[spot.id] = "Loading..."
+    measurement[spot.id] = 'Loading...'
     measurementTimeout = setTimeout(() => {
-      measurement[spot.id] = "Timeout"
+      measurement[spot.id] = 'Timeout'
     }, 5000)
-    socket?.emit("measure", spot.id)
+    socket?.emit('measure', spot.id)
   }
 
   const blinkSpot = (spot) => () => {
-    socket?.emit("blink", spot.id)
+    socket?.emit('blink', spot.id)
   }
 
   const turnSpotPower = (spot, turnOff) => () => {
-    const event = turnOff ? "turnOff" : "turnOn"
+    const event = turnOff ? 'turnOff' : 'turnOn'
     socket?.emit(event, spot.id)
   }
 
@@ -62,7 +62,9 @@
     if (!!editSpotClick) {
       spot = editSpotClick(spot)
     }
-    if(!spot) return
+    if (!spot) {
+      return
+    }
 
     selectedSpotIndex = spots.findIndex(e => e.id === spot.id)
   }
@@ -75,15 +77,21 @@
   }
 
   $: {
-    if(!!socket && !isSocketSetup) {
+    if (!!socket && !isSocketSetup) {
       isSocketSetup = true
-      socket?.on("measureResult", ({measure, id}) => {
-        clearTimeout(measurementTimeout)
+      socket?.on(
+        'measureResult', ({
+                            measure,
+                            id,
+                          }) => {
+          clearTimeout(measurementTimeout)
 
-        if(id !== spots[selectedSpotIndex]?.id) return;
+          if (id !== spots[selectedSpotIndex]?.id) {
+            return
+          }
 
-        measurement[id] = `${measure.toFixed(3)} cm`
-      })
+          measurement[id] = `${ measure.toFixed(3) } cm`
+        })
     }
   }
 
@@ -92,7 +100,7 @@
     (referenceTime.getTime() - spots[selectedSpotIndex]?.statusChangedAt) / 1000 / 60 / 60,
     ((referenceTime.getTime() - spots[selectedSpotIndex]?.statusChangedAt) / 1000 / 60) % 60,
   ].map(e => Math.abs(Math.floor(e)))
-  $: spotDisabled = spots[selectedSpotIndex]?.hasLostConnection || spots[selectedSpotIndex]?.hasNotChangedWarning
+  $: spotDisabled = spots[selectedSpotIndex]?.isTurnedOff || spots[selectedSpotIndex]?.hasLostConnection || spots[selectedSpotIndex]?.hasNotChangedWarning
   $: spotStatus = spots[selectedSpotIndex]?.isTurnedOff
                   ? [ErrorIcon, 'text-red-700', 'Turned off']
                   : spots[selectedSpotIndex]?.hasLostConnection
@@ -144,7 +152,7 @@
         <div class='flex gap-2 items-center'>
           {#if spotType}
             <svelte:component
-              class="text-2xl ml-2"
+              class='text-2xl ml-2'
               this={spotType}
               title={spots[selectedSpotIndex].type}
             />
@@ -187,13 +195,34 @@
           {/if}
           {#if !editable}
             {#if !spots[selectedSpotIndex].isTurnedOff}
-              <Button on:click={turnSpotPower(spots[selectedSpotIndex], true)} disabled={spotDisabled || !spots[selectedSpotIndex].id} color='error'>Turn off</Button>
-              {:else}
-              <Button on:click={turnSpotPower(spots[selectedSpotIndex], false)} disabled={spotDisabled || !spots[selectedSpotIndex].id} color='error'>Turn on</Button>
+              <Button
+                on:click={turnSpotPower(spots[selectedSpotIndex], true)}
+                disabled={spotDisabled || !spots[selectedSpotIndex].id}
+                color='error'
+              >
+                Turn off
+              </Button>
+            {:else}
+              <Button
+                on:click={turnSpotPower(spots[selectedSpotIndex], false)}
+                color='error'
+              >
+                Turn on
+              </Button>
             {/if}
           {/if}
-          <Button disabled={spotDisabled || !spots[selectedSpotIndex].id} on:click={blinkSpot(spots[selectedSpotIndex])}>Signal</Button>
-          <Button disabled={spotDisabled || !spots[selectedSpotIndex].id || measurement[spots[selectedSpotIndex].id] === "Loading..."} on:click={measureSpot(spots[selectedSpotIndex])}>Measure</Button>
+          <Button
+            disabled={spotDisabled || !spots[selectedSpotIndex].id || spots[selectedSpotIndex].isTurnedOff}
+            on:click={blinkSpot(spots[selectedSpotIndex])}
+          >
+            Signal
+          </Button>
+          <Button
+            disabled={spotDisabled || !spots[selectedSpotIndex].id || measurement[spots[selectedSpotIndex].id] === "Loading..." || spots[selectedSpotIndex].isTurnedOff}
+            on:click={measureSpot(spots[selectedSpotIndex])}
+          >
+            Measure
+          </Button>
           <small class='text-sm font-medium min-w-[24ch]'>
             {#if measurement[spots[selectedSpotIndex]?.id] !== undefined}
               Result: {measurement[spots[selectedSpotIndex]?.id]}
@@ -203,7 +232,7 @@
           </small>
         </div>
 
-        {#if !editable}
+        {#if !editable && !spots[selectedSpotIndex].isTurnedOff}
           <h6 class='text-lg font-semibold mt-2'>
             Information
           </h6>

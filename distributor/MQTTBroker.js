@@ -62,8 +62,9 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
         Log.info("Connected to MQTT Client")
 
         setTimeout(() => {
+            Log.trace("Register card request send")
             mqttClient.publish(GATE_REGISTER_CARD, "{}")
-        }, 5_000)
+        }, 10_000)
 
         listenToLoadSpots(async () => {
             if(isRegistering) {

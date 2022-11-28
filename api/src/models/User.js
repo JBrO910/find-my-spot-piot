@@ -3,6 +3,7 @@ export default class User {
   username
   password
   isAdmin
+  cardID
   balance
   checkedIn
 

@@ -12,7 +12,7 @@ import {
     listenToRegisterMaintain, listenToTurnOnMaintain, listenToTurnOffMaintain,
 } from './socket'
 import {
-    BLINK, GATE_SEND_UID, GATE_SEND_UID_RESPONSE,
+    BLINK, GATE_REGISTER_CARD, GATE_REGISTER_CARD_RESPONSE, GATE_SEND_UID, GATE_SEND_UID_RESPONSE,
     KEEP_ALIVE,
     MEASURE,
     MEASURE_RESPONSE,
@@ -52,11 +52,18 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
                 access: !!Math.round(Math.random())
             }
             mqttClient.publish(GATE_SEND_UID_RESPONSE, JSON.stringify(data))
+        }),
+        [GATE_REGISTER_CARD_RESPONSE]: mqttParseMessage(({uid}) => {
+            Log.trace("Gate registered card with id", uid)
         })
     };
 
     mqttClient.on("connect", () => {
         Log.info("Connected to MQTT Client")
+
+        setTimeout(() => {
+            mqttClient.publish(GATE_REGISTER_CARD, "{}")
+        }, 5_000)
 
         listenToLoadSpots(async () => {
             if(isRegistering) {

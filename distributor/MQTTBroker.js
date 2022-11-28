@@ -12,7 +12,7 @@ import {
     listenToRegisterMaintain, listenToTurnOnMaintain, listenToTurnOffMaintain,
 } from './socket'
 import {
-    BLINK,
+    BLINK, GATE_SEND_UID, GATE_SEND_UID_RESPONSE,
     KEEP_ALIVE,
     MEASURE,
     MEASURE_RESPONSE,
@@ -37,6 +37,14 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
             Log.trace("Register spot", spots);
             registeredSpots.push(...spots);
         }),
+        [GATE_SEND_UID]: mqttParseMessage(({uid, muid}) => {
+            Log.trace(uid)
+            const data = {
+                muid,
+                access: !!Math.round(Math.random())
+            }
+            mqttClient.publish(GATE_SEND_UID_RESPONSE, JSON.stringify(data))
+        })
     };
 
     mqttClient.on("connect", () => {
@@ -59,10 +67,6 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
             emitLoadSpots(registeredSpots)
             isRegistering = false
         })
-
-        // TODO Listen to spots registered
-
-        // TODO Think about turn off
 
         listenToBlinkMaintain((id) => {
             Log.trace("Blink requested for", id)

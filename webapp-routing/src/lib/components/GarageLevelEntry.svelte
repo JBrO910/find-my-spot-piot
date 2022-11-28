@@ -197,7 +197,6 @@
             {#if !spots[selectedSpotIndex].isTurnedOff}
               <Button
                 on:click={turnSpotPower(spots[selectedSpotIndex], true)}
-                disabled={spotDisabled || !spots[selectedSpotIndex].id}
                 color='error'
               >
                 Turn off

@@ -4,6 +4,7 @@ import mqtt
 import json
 from read import Reader
 
+
 class App:
 
     def __init__(self, muid, mqtt_client):
@@ -17,15 +18,22 @@ class App:
         self.mqtt_client.subscribe(ENV.REQUEST_ID)
         self.topics[ENV.RECEIVE_ID] = self.receive_id
         self.mqtt_client.subscribe(ENV.RECEIVE_ID)
-        self.topics[ENV.SEND_UID] = self.send_uid
-        self.mqtt_client.subscribe(ENV.SEND_UID)
+        self.topics[ENV.SEND_UID_RESPONSE] = self.receive_uid
+        self.mqtt_client.subscribe(ENV.SEND_UID_RESPONSE)
+        self.topics[ENV.REGISTER_CARD] = self.register_card
+        self.mqtt_client.subscribe(ENV.REGISTER_CARD)
         self.reader = Reader(muid, mqtt_client)
 
     def read_loop(self):
         try:
             while True:
                 if self.is_registered():
-                    self.reader.do_read()
+                    uid = self.reader.do_read()
+                    if uid is None:
+                        continue
+                    msg = json.dumps({"muid": self.muid, "uid": uid})
+                    self.mqtt_client.publish(ENV.SEND_UID, msg)
+                    self.mqtt_client.wait_msg()
                 else:
                     print('WAIT FOR REGISTER')
                     self.mqtt_client.wait_msg()
@@ -46,7 +54,7 @@ class App:
             self.is_registered_bool = False
             return self.is_registered_bool
 
-    def send_uid(self, msg):
+    def receive_uid(self, msg):
         if self.reader.muid == msg["muid"]:
             if msg["access"]:
                 print('Access granted!')
@@ -56,14 +64,22 @@ class App:
                 print('Access denied!')
                 print('Please create an account.')
 
+    def register_card(self):
+        uid = None
+        while uid is None:
+          uid = self.reader.do_read()
+
+        msg = json.dumps({"uid": uid})
+        self.mqtt_client.publish(ENV.REGISTER_CARD_RESPONSE, msg)
+
     def request_id(self, msg):
         if not self.is_registered():
-            msg = json.dumps({"spots": [spot.id for spot in self.spots]})
+            msg = json.dumps({"data": self.muid, "type": "gate"})
             self.mqtt_client.publish(ENV.REQUEST_ID_RESPONSE, msg)
 
     def receive_id(self, msg):
         if not self.is_registered():
-            if self.muid in msg["spots"]:
+            if self.muid in msg["gates"]:
                 file = open('id.txt', 'w')
                 file.write(self.muid)
                 file.close()

@@ -18,39 +18,26 @@ class Reader:
         self.muid = muid
 
     def do_read(self):
-        print("")
-        print('READER')
-        print("Place card before reader to read from address 0x08")
-        print("")
+        # print("")
+        # print('READER')
+        # print("Place card before reader to read from address 0x08")
+        # print("")
 
         (stat, tag_type) = self.rdr.request(self.rdr.REQIDL)
 
-        if stat == self.rdr.OK:
+        if stat != self.rdr.OK:
+            return
+        (stat, raw_uid) = self.rdr.anticoll()
+        uid = "0x%02x%02x%02x%02x" % (raw_uid[0], raw_uid[1], raw_uid[2], raw_uid[3])
 
-            (stat, raw_uid) = self.rdr.anticoll()
-            uid = "0x%02x%02x%02x%02x" % (raw_uid[0], raw_uid[1], raw_uid[2], raw_uid[3])
+        if stat != self.rdr.OK:
+            return
+        print("New card detected")
+        print("  - tag type: 0x%02x" % tag_type)
+        print("  - uid	 : ", uid)
+        print("")
 
-            if stat == self.rdr.OK:
-                print("New card detected")
-                print("  - tag type: 0x%02x" % tag_type)
-                print("  - uid	 : ", uid)
-                print("")
-
-                if self.rdr.select_tag(raw_uid) == self.rdr.OK:
-
-                    key = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
-
-                    if self.rdr.auth(self.rdr.AUTHENT1A, 8, key, raw_uid) == self.rdr.OK:
-                        print("Address 8 data: %s" % self.rdr.read(8))
-                        self.rdr.stop_crypto1()
-                    else:
-                        print("Authentication error")
-                else:
-                    print("Failed to select tag")
-
-                msg = json.dumps({"muid": self.muid, "uid": uid})
-                self.mqtt_client.publish(SEND_UID, msg)
-                self.mqtt_client.wait_msg()
+        return uid
 
     def open_gate(self):
         for duty in range(0, 100):

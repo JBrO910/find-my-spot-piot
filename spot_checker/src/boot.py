@@ -10,7 +10,7 @@ station.connect(ssid=ssid,auth=(WLAN.WPA2, password))
 
 start = time.time()
 while station.isconnected() == False:
-    if time.time() - start > 10:
+    if time.time() - start > 5:
         machine.reset()
     pass
 

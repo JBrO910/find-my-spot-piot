@@ -22,9 +22,7 @@ class SpotBehavior:
             try:
                 distance = self.sensor.distance_cm()
                 print('Distance:', distance, 'cm')
-                average = self._measure_avg(distance)
-                print('Average:', average, 'cm')
-                if average < TRIGGER_DISTANCE:
+                if distance < TRIGGER_DISTANCE:
                     # Spot is occupied
                     self.led.value(0)
                     if not self.is_occupied and self.mqtt_client is not None:
@@ -43,11 +41,3 @@ class SpotBehavior:
             except Exception as ex:
                 print(ex)
     
-    def _measure_avg(self, distance):
-        self.measurements.append(distance)
-        average = sum(self.measurements) / len(self.measurements)
-        if len(self.measurements) == 5:
-            del self.measurements[0]
-            print(self.measurements)
-        
-        return average

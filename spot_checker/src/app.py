@@ -68,7 +68,7 @@ class App:
 
     def measure_once(self, msg):
         for spot in self.spots:
-            if spot.id == msg["id"]:
+            if spot.id == msg["id"] and not spot.is_disabled:
                 distance = spot.sensor.distance_cm()
                 msg = json.dumps({"id": spot.id, "measure": distance})
                 self.mqtt_client.publish(ENV.MEASURE_ONCE_RESPONSE, msg)
@@ -77,7 +77,7 @@ class App:
 
     def signal_led(self, msg):
         for spot in self.spots:
-            if spot.id == msg["id"]:
+            if spot.id == msg["id"] and not spot.is_disabled:
                 for i in range(5):
                     spot.led.value(1)
                     sleep(0.5)
@@ -104,7 +104,7 @@ class App:
 
     def request_id(self, msg):
         if not self.is_registered():
-            msg = json.dumps({"spots": [spot.id for spot in self.spots]})
+            msg = json.dumps({"data": [spot.id for spot in self.spots], "type": "spots"})
             self.mqtt_client.publish(ENV.REQUEST_ID_RESPONSE, msg)
 
     def receive_id(self, msg):

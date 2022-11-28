@@ -3,6 +3,8 @@ export default class User {
   username
   password
   isAdmin
+  balance
+  checkedIn
 
   constructor(username, password, isAdmin=false, id) {
     this.id = id

@@ -12,6 +12,21 @@ const parkingSessionController = new ParkingSessionController()
 const userController = new UserController()
 const garageController = new GarageController()
 
+const paySession = async (session, user) => {
+    if (user.balance < session.totalCost) {
+        Log.tag(LOG_TAG).warn(
+            'User does not have enough balance to pay for session',
+        )
+        return 'User does not have enough balance to pay for session'
+    }
+
+    user.balance -= session.totalCost
+    await userController.updateOne(user)
+
+    session.pay()
+    await parkingSessionController.updateOne(session)
+}
+
 const getValidateParkingSessionRequest = async (req, res, next) => {
   if (['cardID'].some((key) => !(key in req.body))) {
     Log.tag(LOG_TAG).warn('Missing cardID', req.body)
@@ -51,64 +66,7 @@ const getValidateParkingSessionRequest = async (req, res, next) => {
 }
 
 parkingSessionRouter.post(
-  '/:garage/checkin',
-  getValidateParkingSessionRequest,
-  async (req, res) => {
-    const { user, garage } = req.validated
-    const openSession = await parkingSessionController.getOpenSession(
-      user.id,
-      garage.id,
-    )
-    if (!!openSession) {
-      Log.tag(LOG_TAG).warn('User already has an open session', req.body)
-      res.status(400).send({
-        code: 400,
-        message: 'User already has an open session',
-      })
-      return
-    }
-
-    if(garage.ensureUserBalance && user.balance < garage.maxRate) {
-      Log.tag(LOG_TAG).warn('User does not have enough balance')
-      res.status(400).send({
-        code: 400,
-        message: 'User does not have enough balance',
-      })
-      return
-    }
-
-    const session = new ParkingSession(
-      user.id,
-      garage.id,
-      garage.hourlyRate,
-      garage.maxRate,
-    )
-    parkingSessionController.addOne(session)
-    res.status(200).send({
-      code: 200,
-      message: 'Session created',
-      data: session,
-    })
-  },
-)
-
-const paySession = async (session, user) => {
-    if (user.balance < session.totalCost) {
-        Log.tag(LOG_TAG).warn(
-            'User does not have enough balance to pay for session',
-        )
-        return 'User does not have enough balance to pay for session'
-    }
-
-    user.balance -= session.totalCost
-    await userController.updateOne(user)
-
-    session.pay()
-    await parkingSessionController.updateOne(session)
-}
-
-parkingSessionRouter.post(
-  '/:garage/checkout',
+  '/:garage/toggleSession',
   getValidateParkingSessionRequest,
   async (req, res) => {
     const { user, garage } = req.validated
@@ -117,10 +75,26 @@ parkingSessionRouter.post(
       garage.id,
     )
     if (!openSession) {
-      Log.tag(LOG_TAG).warn('User does not have an open session', req.body)
-      res.status(400).send({
-        code: 400,
-        message: 'User does not have an open session',
+      if (garage.ensureUserBalance && user.balance < garage.maxRate) {
+        Log.tag(LOG_TAG).warn('User does not have enough balance')
+        res.status(400).send({
+          code: 400,
+          message: 'User does not have enough balance',
+        })
+        return
+      }
+
+      const session = new ParkingSession(
+        user.id,
+        garage.id,
+        garage.hourlyRate,
+        garage.maxRate,
+      )
+      parkingSessionController.addOne(session)
+      res.status(200).send({
+        code: 200,
+        message: 'Session created',
+        data: session,
       })
       return
     }

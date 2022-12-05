@@ -32,7 +32,8 @@ app.use((req, res, next) => {
 app.use('/auth', authRouter)
 app.use('/user', authenticated, userRouter)
 app.use('/garage', authenticated, garageRouter)
-app.use('/parkingSession', authenticated, parkingSessionRouter)
+// TODO add authentication for distributor
+app.use('/parkingSession', parkingSessionRouter)
 
 setupRealtimeGarageRouter(io)
 

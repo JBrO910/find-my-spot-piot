@@ -1,3 +1,5 @@
+import machine
+
 import ENV
 import uos
 import mqtt
@@ -20,14 +22,15 @@ class App:
         self.mqtt_client.subscribe(ENV.RECEIVE_ID)
         self.topics[ENV.SEND_UID_RESPONSE] = self.receive_uid
         self.mqtt_client.subscribe(ENV.SEND_UID_RESPONSE)
-        self.topics[ENV.REGISTER_CARD] = self.register_card
-        self.mqtt_client.subscribe(ENV.REGISTER_CARD)
+        self.topics[ENV.CARD_REGISTER] = self.register_card
+        self.mqtt_client.subscribe(ENV.CARD_REGISTER)
         self.reader = Reader(muid, mqtt_client)
 
     def read_loop(self):
         try:
             while True:
                 if self.is_registered():
+                    self.mqtt_client.check_msg()
                     uid = self.reader.do_read()
                     if uid is None:
                         continue
@@ -62,15 +65,15 @@ class App:
                 self.reader.open_gate()
             else:
                 print('Access denied!')
-                print('Please create an account.')
 
-    def register_card(self):
+    def register_card(self, msg):
         uid = None
         while uid is None:
-          uid = self.reader.do_read()
+            machine.idle()
+            uid = self.reader.do_read()
 
         msg = json.dumps({"uid": uid})
-        self.mqtt_client.publish(ENV.REGISTER_CARD_RESPONSE, msg)
+        self.mqtt_client.publish(ENV.CARD_REGISTER_RESPONSE, msg)
 
     def request_id(self, msg):
         if not self.is_registered():

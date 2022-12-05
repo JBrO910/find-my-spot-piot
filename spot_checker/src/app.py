@@ -33,8 +33,7 @@ class App:
         
         
 
-    def loop(self):
-           
+    def loop(self):  
         while True:
             try:
                 if self.is_registered():
@@ -43,6 +42,7 @@ class App:
                     sleep(1)  
                     for spot in self.spots:
                         print(spot.id)
+                        spot.send_keep_alive()
                         spot.measure()
                         sleep(0.25)
                     
@@ -98,9 +98,6 @@ class App:
             if spot.id == msg["id"]:
                 spot.is_disabled = False
                 break
-
-    def keep_alive(self, msg):
-        pass
 
     def request_id(self, msg):
         if not self.is_registered():

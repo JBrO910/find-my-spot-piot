@@ -11,6 +11,7 @@ station.connect(ssid, password)
 
 start = time.time()
 while station.isconnected() == False:
+    machine.idle()
     if time.time() - start > 10:
         machine.reset()
     pass

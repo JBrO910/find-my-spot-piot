@@ -54,6 +54,7 @@
                   cardError = result.data.error
                   return
               }
+              cardError = "Card was registered"
               await applyAction(result)
           }
       }}
@@ -89,6 +90,9 @@
         Read card
       </Button>
     </div>
+    {#if cardError}
+      <span class='text-sm font-medium'>{cardError}</span>
+    {/if}
     <Button
       disabled={!balance || !selected || !selectedCard}
       type='submit'

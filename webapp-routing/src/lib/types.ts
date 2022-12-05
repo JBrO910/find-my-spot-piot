@@ -21,6 +21,7 @@ export type WithError<T> = { data?: T, error?: ApiError }
 export interface User {
   username: string,
   isAdmin: boolean,
+  adminGarageId: string,
 }
 
 export interface Garage {

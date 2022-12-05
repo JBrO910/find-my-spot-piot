@@ -130,3 +130,9 @@ export const getUsersToRegister = async (): Response<Array<User>> => {
     .then(handleResponse)
     .catch(handleError)
 }
+
+export const putUserCard = async (data: {cardID: string, balance: number}): Response<void> => {
+  return await instance.put<void>('user', data)
+    .then(handleResponse)
+    .catch(handleError)
+}

@@ -129,6 +129,12 @@ export default (io) => {
                 garageConsumerSockets.emit('measureResult', {measure, id})
             })
 
+            socket.on('readCardResult', ({ uid }) => {
+                Log.tag(LOG_TAG)
+                    .trace(`Received card reading ${ uid }`)
+                garageRegisterSocket.emit('readCardResult', {uid})
+            })
+
             // Add route to update a value of a specific live spot in the garage
             socket.on('update', (id, value) => {
                 Log.tag(LOG_TAG)
@@ -150,6 +156,12 @@ export default (io) => {
         garageRegisterSocket.on('connect', (socket) => {
             Log.tag(LOG_TAG)
                 .info(`RegisterSocket(${ socket.id }) Connected`)
+
+            socket.on('readCard', () => {
+                Log.tag(LOG_TAG)
+                    .trace('Requested to load spots for registration')
+                garageBrokerSocket.emit('readCard')
+            })
 
             socket.on('loadSpots', () => {
                 Log.tag(LOG_TAG)

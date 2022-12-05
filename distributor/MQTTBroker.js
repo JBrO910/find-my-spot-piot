@@ -9,16 +9,24 @@ import {
     listenToBlinkMaintain,
     listenToMeasureMaintain,
     emitResultOfMeasureMaintain,
-    listenToRegisterMaintain, listenToTurnOnMaintain, listenToTurnOffMaintain,
+    listenToRegisterMaintain, listenToTurnOnMaintain, listenToTurnOffMaintain, listenToReadCard, emitResultOfReadCard,
 } from './socket'
 import {
-    BLINK, GATE_REGISTER_CARD, GATE_REGISTER_CARD_RESPONSE, GATE_SEND_UID, GATE_SEND_UID_RESPONSE,
+    BLINK,
+    CARD_REGISTER,
+    CARD_REGISTER_RESPONSE,
+    GATE_REGISTER_CARD,
+    GATE_REGISTER_CARD_RESPONSE,
+    GATE_SEND_UID,
+    GATE_SEND_UID_RESPONSE,
     KEEP_ALIVE,
     MEASURE,
     MEASURE_RESPONSE,
     RECEIVE_ID,
     REQUEST_ID,
-    REQUEST_ID_RESPONSE, TURN_OFF, TURN_ON,
+    REQUEST_ID_RESPONSE,
+    TURN_OFF,
+    TURN_ON,
     UPDATE_SPOT,
 } from './topics'
 import { sleep } from './utils'
@@ -34,6 +42,7 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
         [MEASURE_RESPONSE]: mqttParseMessage(emitResultOfMeasureMaintain),
         [UPDATE_SPOT]: mqttParseMessage(emitUpdateSpot),
         [KEEP_ALIVE]: mqttParseMessage(emitKeepAliveSpot),
+        [CARD_REGISTER_RESPONSE]: mqttParseMessage(emitResultOfReadCard),
         [REQUEST_ID_RESPONSE]: mqttParseMessage(async ({ type, data }) => {
             if(type === "spots") {
                 Log.trace("Register spots", data);
@@ -55,16 +64,16 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
         }),
         [GATE_REGISTER_CARD_RESPONSE]: mqttParseMessage(({uid}) => {
             Log.trace("Gate registered card with id", uid)
-        })
+        }),
     };
 
     mqttClient.on("connect", () => {
         Log.info("Connected to MQTT Client")
 
-        setTimeout(() => {
+        listenToReadCard(() => {
             Log.trace("Register card request send")
             mqttClient.publish(GATE_REGISTER_CARD, "{}")
-        }, 10_000)
+        })
 
         listenToLoadSpots(async () => {
             if(isRegistering) {

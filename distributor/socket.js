@@ -31,6 +31,10 @@ export const listenToLoadSpots = (callback) => {
   socket.on("loadSpots", callback);
 };
 
+export const listenToReadCard = (callback) => {
+  socket.on("readCard", callback);
+};
+
 export const listenToBlinkMaintain = (callback) => {
   socket.on("blink", callback);
 };
@@ -53,4 +57,8 @@ export const listenToRegisterMaintain = (callback) => {
 
 export const emitResultOfMeasureMaintain = (callback) => {
   socket.emit("measureResult", callback);
+};
+
+export const emitResultOfReadCard = (callback) => {
+  socket.emit("readCardResult", callback);
 };

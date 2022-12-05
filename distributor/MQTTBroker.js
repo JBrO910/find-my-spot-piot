@@ -34,6 +34,10 @@ import {
 } from "./topics";
 import { sleep } from "./utils";
 
+console.log(process.env.SOCKET_SERVER_ADDRESS +
+            "/parkingSession/" +
+            process.env.GARAGE_ID +
+            "/toggleSession")
 let instance = axios.create({
     baseURL:
         process.env.SOCKET_SERVER_ADDRESS +

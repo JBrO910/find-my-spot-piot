@@ -7,6 +7,7 @@ config();
 const socket = io(
   `${process.env.SOCKET_SERVER_ADDRESS}/${process.env.GARAGE_ID}-broker`
 );
+console.log(`${process.env.SOCKET_SERVER_ADDRESS}/${process.env.GARAGE_ID}-broker`)
 
 socket.on("connect", () => Log.tag("socket").info("Connected to Socket"));
 socket.on("connect_error", (err) => Log.tag("socket").error("Connection error in socket", err.message));

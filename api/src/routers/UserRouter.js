@@ -34,11 +34,10 @@ userRouter.put('/:id', async (req, res) => {
   }
 
   const { cardID, balance } = req.body
-  const user = userController.getSingle(id)
+  const user = await userController.getSingle(id)
   user.cardID = cardID
   user.balance = balance
-  console.log({user})
-  userController.updateOne(user)
+  await userController.updateOne(user)
   res.sendStatus(200)
 })
 

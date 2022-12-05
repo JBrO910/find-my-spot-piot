@@ -24,7 +24,6 @@ export default class DocumentDatabase {
     }
 
     async updateSerializable(table, id, element) {
-        console.log({table, id, element })
         return await updateDoc(doc(documentDatabase, table, id), element)
     }
 

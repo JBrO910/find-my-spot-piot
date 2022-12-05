@@ -90,7 +90,7 @@ parkingSessionRouter.post(
         garage.hourlyRate,
         garage.maxRate,
       )
-      parkingSessionController.addOne(session)
+      await parkingSessionController.addOne(session)
       res.status(200).send({
         code: 200,
         message: 'Session created',

@@ -68,15 +68,16 @@ export default function setupMQTTBroker(registerSleepTime = 1000 * 10) {
         }),
         [GATE_SEND_UID]: mqttParseMessage(({uid, muid}) => {
             Log.trace("Gate read card with id", uid)
-            instance.post("/", {cardID: uid})
-                .then(res => console.log(res.data))
-                .catch(err => console.log("AXIOS ERROR", err))
-
-            const data = {
-                muid,
-                access: !!Math.round(Math.random())
+            const giveAccess = (access) => () => {
+                const data = {
+                    muid,
+                    access
+                }
+                mqttClient.publish(GATE_SEND_UID_RESPONSE, JSON.stringify(data))
             }
-            mqttClient.publish(GATE_SEND_UID_RESPONSE, JSON.stringify(data))
+            instance.post("/", {cardID: uid})
+                .then(giveAccess(true))
+                .catch(giveAccess(false))
         }),
     };
 

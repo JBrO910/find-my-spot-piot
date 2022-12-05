@@ -76,7 +76,7 @@ parkingSessionRouter.post(
     )
     if (!openSession) {
       if (garage.ensureUserBalance && user.balance < garage.maxRate) {
-        Log.tag(LOG_TAG).warn('User does not have enough balance')
+        Log.tag(LOG_TAG).warn('User does not have enough balance', user, garage)
         res.status(400).send({
           code: 400,
           message: 'User does not have enough balance',

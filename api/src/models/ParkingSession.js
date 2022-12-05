@@ -42,7 +42,9 @@ export default class ParkingSession {
     }
 
     get serialised() {
-        return { ...this }
+        const data = { ...this }
+        if(!data.id) delete data.id
+        return data
     }
 
     static fromSerialized({endTime, hourlyRate, status, maxRate, startTime, totalCost, userId, garageId, id}) {

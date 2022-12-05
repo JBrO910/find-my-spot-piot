@@ -12,10 +12,10 @@ export default class ParkingSession {
 
     status
 
-    constructor(userId, garageId, hourlyRate, maxRate, startTime=new Date().getTime(), endTime, status, totalCost, id) {
+    constructor(userId, garageId, hourlyRate, maxRate, startTime, endTime, status, totalCost, id) {
         this.userId = userId
         this.garageId = garageId
-        this.startTime = startTime
+        this.startTime = startTime ?? new Date().getTime()
         this.endTime = endTime
         this.hourlyRate = hourlyRate
         this.maxRate = maxRate

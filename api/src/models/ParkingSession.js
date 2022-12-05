@@ -41,7 +41,7 @@ export default class ParkingSession {
         this.status = "closed"
     }
 
-    get serialized() {
+    get serialised() {
         return { ...this }
     }
 

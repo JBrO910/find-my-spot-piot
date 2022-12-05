@@ -1,4 +1,5 @@
 <script lang='ts'>
+  import { enhance, applyAction } from '$app/forms'
   import { PUBLIC_BROKER_URL } from '$env/static/public'
   import Button from '$lib/components/Button.svelte'
   import Input from '$lib/components/Input.svelte'
@@ -28,26 +29,6 @@
     }, 10_000)
   }
 
-  const handleSubmit = () => {
-    if (!selectedCard || !balance) {
-      return
-    }
-    isLoadingCard = true
-    putUserCard({
-      cardID: selectedCard,
-      balance,
-    })
-      .then(() => {
-        isLoadingCard = false
-        selectedCard = undefined
-        balance = 0
-      })
-      .catch(err => {
-        isLoadingCard = false
-        cardError = err.message
-      })
-  }
-
   onMount(async () => {
     if (!data.page.user.adminGarageId && !data.page.user.isAdmin) {
       return
@@ -66,7 +47,17 @@
 <div class='grid place-items-center p-4'>
   <form
     class='bg-gray-50 rounded shadow p-4 w-[48rem] gap-2 flex flex-col'
-    on:submit|preventDefault={handleSubmit}
+    use:enhance={() => {
+          isLoadingCard = true
+          return async ({result}) => {
+              isLoadingCard = false
+              if(result.type === "invalid") {
+                  cardError = result.data.error
+                  return
+              }
+              await applyAction(result)
+          }
+      }}
   >
     <h6 class='text-xl font-medium mb-2'>Register user cards</h6>
     <Input
@@ -78,9 +69,11 @@
     <Input
       bind:value={balance}
       placeholder='Balance'
+      name='balance'
       type='number'
     />
     <div class='flex items-center justify-between'>
+      <input type='hidden' value='{selectedCard}' name='cardID'>
       {#if !!selectedCard}
         <span>Selected Card: {selectedCard}</span>
       {:else if isLoadingCard}

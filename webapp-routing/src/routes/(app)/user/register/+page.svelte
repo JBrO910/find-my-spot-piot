@@ -5,7 +5,6 @@
   import Input from '$lib/components/Input.svelte'
   import io from 'socket.io-client'
   import { onMount } from 'svelte'
-  import { putUserCard } from '../../../../lib/server/api'
   import type { PageLoadProps } from './types'
 
   export let data: PageLoadProps

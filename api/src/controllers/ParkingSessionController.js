@@ -16,7 +16,7 @@ export default class ParkingSessionController {
             ["userId", "==", id],
             ["garageId", "==", garageId],
             ["status", "==", "open"]
-        ).then(res => res[0])
+        ).then(res => res)
     }
 
     async getAll() {

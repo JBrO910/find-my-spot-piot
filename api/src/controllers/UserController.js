@@ -43,6 +43,7 @@ export default class UserController {
     }
 
     updateOne(user) {
+        console.log(user.serialised), user.id
         return this.#database.updateSerializable(UserController.TABLE, user.id, user.serialised)
     }
 }

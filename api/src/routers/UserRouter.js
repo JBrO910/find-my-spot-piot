@@ -37,6 +37,7 @@ userRouter.put('/:id', async (req, res) => {
   const user = userController.getSingle(id)
   user.cardID = cardID
   user.balance = balance
+  console.log({user})
   userController.updateOne(user)
   res.sendStatus(200)
 })

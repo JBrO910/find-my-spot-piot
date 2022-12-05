@@ -1,6 +1,6 @@
 <script lang='ts'>
   import GarageListEntry from '../../lib/components/GarageListEntry.svelte'
-  import type { PageLoadProps } from '../types'
+  import type { PageLoadProps } from './types'
 
   export let data: PageLoadProps
 </script>

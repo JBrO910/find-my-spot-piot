@@ -32,6 +32,11 @@ export default class DocumentDatabase {
         return query.docs.map((doc) => transform({id: doc.id, ...doc.data()}))
     }
 
+    async exists(table, id) {
+        const query = await getDoc(doc(documentDatabase, table, id))
+        return query.exists()
+    }
+
     async onChange(table, transform, listener, type) {
         return onSnapshot(collection(documentDatabase, table), (snapshot) => {
             snapshot.docChanges().forEach(change => {
@@ -52,10 +57,10 @@ export default class DocumentDatabase {
         return transform({id: document.id, ...document.data()})
     }
 
-    async getWhere(table, whereColumn, whereCommand, whereValue, transform) {
+    async getWhere(table, transform, ...whereCommands) {
         const q = await query(
             collection(documentDatabase, table),
-            where(whereColumn, whereCommand, whereValue),
+            ...whereCommands.map((command) => where(...command))
         )
         return await getDocs(q)
             .then(({docs}) =>

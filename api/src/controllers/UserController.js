@@ -10,6 +10,10 @@ export default class UserController {
         this.#database = new DocumentDatabase();
     }
 
+    async userExists(id) {
+        return this.#database.exists(UserController.TABLE, id)
+    }
+
     async getAll() {
         return this.#database.getAllFrom(UserController.TABLE, User.fromSerialized)
     }
@@ -19,7 +23,15 @@ export default class UserController {
     }
 
     async getByUsername(username) {
-        return this.#database.getWhere(UserController.TABLE, "username", "==", username, User.fromSerialized).then(res => res?.[0])
+        return this.#database.getWhere(UserController.TABLE, User.fromSerialized, ["username", "==", username]).then(res => res?.[0])
+    }
+
+    async getByCard(cardID) {
+        return this.#database.getWhere(UserController.TABLE, User.fromSerialized, ["cardID", "==", cardID].then(res => res?.[0]))
+    }
+
+    async getUsersToRegister() {
+        return this.#database.getWhere(UserController.TABLE, User.fromSerialized, ["cardID", "==", "no-card"], ["isAdmin", "==", false])
     }
 
     async deleteSingle(id) {

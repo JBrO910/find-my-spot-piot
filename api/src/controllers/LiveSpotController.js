@@ -47,6 +47,7 @@ export default class LiveSpotController {
     return this.#database.updateSerializable(this.getSpotId(garage, id), {
       status: value,
       statusChangedAt: new Date().getTime(),
+      lastKeepAlive: new Date().getTime(),
     })
   }
 

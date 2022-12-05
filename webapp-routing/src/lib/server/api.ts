@@ -124,3 +124,9 @@ export const getUser = async (): Response<User> => {
     .then(handleResponse)
     .catch(handleError)
 }
+
+export const getUsersToRegister = async (): Response<Array<User>> => {
+  return await instance.get<Array<User>>('user/toRegister')
+    .then(handleResponse)
+    .catch(handleError)
+}

@@ -1,7 +1,7 @@
 <script lang='ts'>
   export let placeholder: string
   export let id: string = 'input' + Math.random() * 10_000
-  export let value: string = ''
+  export let value: string
   export let error: string = ''
   export let selectOptions: Array<string> = []
 
@@ -9,7 +9,7 @@
   const onFocus = () => isFocussed = true
   const onBlur = () => isFocussed = false
 
-  $: isRaised = isFocussed || !!value
+  $: isRaised = isFocussed || value !== undefined
   $: colorClasses = !!error ? 'border-red-300 ring-red-300' : 'border-gray-300'
   $: labelColor = !!error ? 'text-red-400' : isRaised
                                              ? isFocussed
@@ -48,7 +48,7 @@
       {...$$restProps}
     >
       {#each selectOptions as option}
-        <option value={option}>{option}</option>
+        <option value={option.value}>{option.label}</option>
       {/each}
     </select>
   {/if}
@@ -56,9 +56,3 @@
     <small class='text-sm text-red-500'>{error}</small>
   {/if}
 </div>
-
-<style>
-  select:after {
-      left: 0
-  }
-</style>

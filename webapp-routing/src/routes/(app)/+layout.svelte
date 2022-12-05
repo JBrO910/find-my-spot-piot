@@ -11,6 +11,9 @@
     const navigateToRegister = () => {
         goto('/garage/register')
     }
+    const navigateToUsers = () => {
+        goto('/user/register')
+    }
 </script>
 
 <svelte:head>
@@ -26,7 +29,16 @@
                     <small class='text-sm text-gray-50'>Hello, {$page.data?.page?.user?.username}</small>
                     {#if $page.data.page.user.isAdmin}
                         <Button color='secondary' type='button' on:click={navigateToRegister}>Add Garage</Button>
+                        <Button color='secondary' type='button' on:click={navigateToUsers}>Register Cards</Button>
+                    {:else}
+                        {#if $page.data.page.user.cardID === "no-card"}
+                            <small class='text-sm text-gray-50'>Card is not yet registered</small>
+                        {:else}
+                            <small class='text-sm text-gray-50'>Current Balance: {$page.data.page.user.balance.toFixed(2)}€</small>
+                        {/if}
                     {/if}
+                {:else}
+                    No user found
                 {/if}
                 <Button color='error'><PowerIcon class='text-xl' slot='iconLeft'/> Logout</Button>
             </form>

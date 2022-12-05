@@ -1,4 +1,4 @@
-import type { ApiError,PageProps, GarageOverview, User } from '../lib/types'
+import type { ApiError,PageProps, GarageOverview, User } from '../../lib/types'
 
 export interface PageLoadProps extends PageProps{
     garages?: Array<GarageOverview>

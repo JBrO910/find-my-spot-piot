@@ -175,7 +175,13 @@
               wrapperClass='ml-2'
               required
               type='select'
-              selectOptions={["Normal", "Accessible", "Wide", "Small", "Family"]}
+              selectOptions={[
+                { value: 'Normal', label: 'Normal' },
+                { value: 'Accessible', label: 'Accessible' },
+                { value: 'Wide', label: 'Wide' },
+                { value: 'Small', label: 'Small' },
+                { value: 'Family', label: 'Family' },
+              ]}
             />
           {/if}
         </div>

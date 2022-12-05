@@ -22,7 +22,7 @@ export default class SpotController {
     }
 
     async getAllForGarage(garageId) {
-        return this.#database.getWhere(SpotController.TABLE, "garage", "==", garageId, Spot.fromSerialized)
+        return this.#database.getWhere(SpotController.TABLE, Spot.fromSerialized, ["garage", "==", garageId])
     }
 
     async deleteForGarage(garageId) {

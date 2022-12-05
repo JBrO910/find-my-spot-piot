@@ -28,7 +28,8 @@ export const actions: Actions = {
       balance: Number(formData.get('balance')),
     })
     if(error) {
-      return invalid(404, { error })
+      console.log("Error while writing card to user", error)
+      return invalid(404, { error: error.message })
     }
   },
 }

@@ -62,9 +62,6 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
             }
             mqttClient.publish(GATE_SEND_UID_RESPONSE, JSON.stringify(data))
         }),
-        [CARD_REGISTER_RESPONSE]: mqttParseMessage(({uid}) => {
-            Log.trace("Gate registered card with id", uid)
-        }),
     };
 
     mqttClient.on("connect", () => {

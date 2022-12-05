@@ -27,8 +27,7 @@ export default class UserController {
     }
 
     async getByCard(cardID) {
-        console.log(cardID)
-        return this.#database.getWhere(UserController.TABLE, User.fromSerialized, ["cardID", "==", cardID].then(res => res?.[0]))
+        return this.#database.getWhere(UserController.TABLE, User.fromSerialized, ["cardID", "==", cardID]).then(res => res?.[0])
     }
 
     async getUsersToRegister() {

@@ -13,19 +13,21 @@ const userController = new UserController()
 const garageController = new GarageController()
 
 const paySession = async (session, user) => {
-    console.log({session, user})
-    if (user.balance < session.totalCost) {
-        Log.tag(LOG_TAG).warn(
-            'User does not have enough balance to pay for session', session, user,
-        )
-        return 'User does not have enough balance to pay for session'
-    }
+  console.log({ session, user })
+  if (user.balance < session.totalCost) {
+    Log.tag(LOG_TAG).warn(
+      'User does not have enough balance to pay for session',
+      session,
+      user,
+    )
+    return 'User does not have enough balance to pay for session'
+  }
 
-    user.balance -= session.totalCost
-    await userController.updateOne(user)
+  user.balance -= session.totalCost
+  await userController.updateOne(user)
 
-    session.pay()
-    await parkingSessionController.updateOne(session)
+  session.pay()
+  await parkingSessionController.updateOne(session)
 }
 
 const getValidateParkingSessionRequest = async (req, res, next) => {
@@ -71,11 +73,12 @@ parkingSessionRouter.post(
   getValidateParkingSessionRequest,
   async (req, res) => {
     const { user, garage } = req.validated
-    const openSession = await parkingSessionController.getOpenSession(
+    const openSessions = await parkingSessionController.getOpenSession(
       user.id,
       garage.id,
     )
-      console.log(openSession)
+    const openSession = openSessions[0]
+    console.log(openSessions)
     if (!openSession) {
       if (garage.ensureUserBalance && user.balance < garage.maxRate) {
         Log.tag(LOG_TAG).warn('User does not have enough balance', user, garage)

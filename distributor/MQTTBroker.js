@@ -62,7 +62,7 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
             }
             mqttClient.publish(GATE_SEND_UID_RESPONSE, JSON.stringify(data))
         }),
-        [GATE_REGISTER_CARD_RESPONSE]: mqttParseMessage(({uid}) => {
+        [CARD_REGISTER_RESPONSE]: mqttParseMessage(({uid}) => {
             Log.trace("Gate registered card with id", uid)
         }),
     };
@@ -72,7 +72,7 @@ export default function setupMQTTBroker(registerSleepTime=1000 * 10) {
 
         listenToReadCard(() => {
             Log.trace("Register card request send")
-            mqttClient.publish(GATE_REGISTER_CARD, "{}")
+            mqttClient.publish(CARD_REGISTER, "{}")
         })
 
         listenToLoadSpots(async () => {

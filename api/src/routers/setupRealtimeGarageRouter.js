@@ -159,7 +159,7 @@ export default (io) => {
 
             socket.on('readCard', () => {
                 Log.tag(LOG_TAG)
-                    .trace('Requested to load spots for registration')
+                    .trace('Requested to read card for registration')
                 garageBrokerSocket.emit('readCard')
             })
 

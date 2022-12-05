@@ -11,8 +11,6 @@ export const TURN_OFF = "maintenance/turn/off";
 
 export const GATE_SEND_UID = "gate/send-uid"
 export const GATE_SEND_UID_RESPONSE = GATE_SEND_UID + "/response"
-export const GATE_REGISTER_CARD = "gate/register"
-export const GATE_REGISTER_CARD_RESPONSE = GATE_REGISTER_CARD + "/response"
 
 export const CARD_REGISTER = "card/register"
 export const CARD_REGISTER_RESPONSE = CARD_REGISTER + "/response"

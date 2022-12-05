@@ -34,10 +34,6 @@ import {
 } from "./topics";
 import { sleep } from "./utils";
 
-console.log(process.env.SOCKET_SERVER_ADDRESS +
-            "/parkingSession/" +
-            process.env.GARAGE_ID +
-            "/toggleSession")
 let instance = axios.create({
     baseURL:
         process.env.SOCKET_SERVER_ADDRESS +
@@ -74,7 +70,7 @@ export default function setupMQTTBroker(registerSleepTime = 1000 * 10) {
             Log.trace("Gate read card with id", uid)
             instance.post("/", {cardID: uid})
                 .then(res => console.log(res.data))
-                .catch(err => console.log(err))
+                .catch(err => console.log("AXIOS ERROR", err))
 
             const data = {
                 muid,

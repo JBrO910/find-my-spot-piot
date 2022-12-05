@@ -28,6 +28,7 @@ const paySession = async (session, user) => {
 }
 
 const getValidateParkingSessionRequest = async (req, res, next) => {
+    console.log("PARKNG SESSION", req.body, res.params)
   if (['cardID'].some((key) => !(key in req.body))) {
     Log.tag(LOG_TAG).warn('Missing cardID', req.body)
     res.status(400).send({

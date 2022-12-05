@@ -21,7 +21,7 @@
 
   const loadCard = () => {
     isLoadingCard = true
-    socket?.emit('loadCard')
+    socket.emit('readCard')
     loadingCardTimeout = setTimeout(() => {
       isLoadingCard = false
       cardError = 'Timeout'

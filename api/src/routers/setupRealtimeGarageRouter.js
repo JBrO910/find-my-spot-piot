@@ -95,7 +95,7 @@ export default (io) => {
                 Log.tag(LOG_TAG)
                     .trace('Register spots for controller ids', ids)
 
-                garageBrokerSocket.emit('register', ids)
+                garageBrokerSocket.emit('register', { spots: ids, gates: [""] })
             })
         }
 

@@ -131,8 +131,8 @@ export const getUsersToRegister = async (): Response<Array<User>> => {
     .catch(handleError)
 }
 
-export const putUserCard = async (data: {cardID: string, balance: number}): Response<void> => {
-  return await instance.put<void>('user', data)
+export const putUserCard = async ({ userID, ...data }: {userID: string, cardID: string, balance: number}): Response<void> => {
+  return await instance.put<void>('user/' + userID, data)
     .then(handleResponse)
     .catch(handleError)
 }

@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import { enhance, applyAction } from '$app/forms'
+  import { applyAction, enhance } from '$app/forms'
   import { PUBLIC_BROKER_URL } from '$env/static/public'
   import Button from '$lib/components/Button.svelte'
   import Input from '$lib/components/Input.svelte'
@@ -62,18 +62,23 @@
     <h6 class='text-xl font-medium mb-2'>Register user cards</h6>
     <Input
       bind:value={selected}
+      name='userID'
       placeholder='User'
       selectOptions={data?.users?.map(e => ({label: e.username, value: e.id}))}
       type='select'
     />
     <Input
       bind:value={balance}
-      placeholder='Balance'
       name='balance'
+      placeholder='Balance'
       type='number'
     />
     <div class='flex items-center justify-between'>
-      <input type='hidden' value='{selectedCard}' name='cardID'>
+      <input
+        name='cardID'
+        type='hidden'
+        value='{selectedCard}'
+      >
       {#if !!selectedCard}
         <span>Selected Card: {selectedCard}</span>
       {:else if isLoadingCard}

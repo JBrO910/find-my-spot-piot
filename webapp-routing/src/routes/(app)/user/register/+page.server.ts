@@ -26,6 +26,7 @@ export const actions: Actions = {
     const { error } = await putUserCard({
       cardID: formData.get('cardID') as string,
       balance: Number(formData.get('balance')),
+      userID: formData.get('userID') as string,
     })
     if(error) {
       console.log("Error while writing card to user", error)

@@ -42,9 +42,7 @@ export default class ParkingSession {
     }
 
     get serialised() {
-        const data = { ...this }
-        if(!data.id) delete data.id
-        return data
+        return Object.fromEntries(Object.entries(this).filter(([,value]) => value !== undefined))
     }
 
     static fromSerialized({endTime, hourlyRate, status, maxRate, startTime, totalCost, userId, garageId, id}) {

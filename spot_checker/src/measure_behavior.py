@@ -2,8 +2,8 @@ import json
 from hcsr04 import HCSR04
 from machine import Pin
 from umqttsimple import MQTTClient
-from ENV import TRIGGER_DISTANCE
-from time import sleep
+from ENV import TRIGGER_DISTANCE, KEEP_ALIVE_DISTANCE, KEEP_ALIVE
+from time import sleep, time
 
 topic_spot_update = b'spot/update'
 
@@ -16,6 +16,7 @@ class SpotBehavior:
         self.is_occupied = None
         self.measurements = []
         self.is_disabled = False
+        self.latest_keep_alive = 0
 
     def measure(self):
         if not self.is_disabled:
@@ -41,3 +42,9 @@ class SpotBehavior:
             except Exception as ex:
                 print(ex)
     
+    def send_keep_alive(self):
+        start = time()
+        if start - self.latest_keep_alive > KEEP_ALIVE_DISTANCE:
+            msg = json.dumps({"id": self.id})
+            self.mqtt_client.publish(KEEP_ALIVE, msg)
+            start = self.latest_keep_alive

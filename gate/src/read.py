@@ -28,6 +28,8 @@ class Reader:
         if stat != self.rdr.OK:
             return
         (stat, raw_uid) = self.rdr.anticoll()
+        if len(raw_uid) < 4:
+            return
         uid = "0x%02x%02x%02x%02x" % (raw_uid[0], raw_uid[1], raw_uid[2], raw_uid[3])
 
         if stat != self.rdr.OK:
@@ -43,6 +45,8 @@ class Reader:
         for duty in range(0, 100):
             self.servo.duty(duty)
             sleep(PAUSE)
+
+        sleep(5)
 
         for duty in range(100, 0, -1):
             self.servo.duty(duty)

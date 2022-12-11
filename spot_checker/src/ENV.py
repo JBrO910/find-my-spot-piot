@@ -10,3 +10,4 @@ SIGNAL_LED = b'maintenance/signal-led'
 DISABLE_SPOT = b'maintenance/turn/off'
 ENABLE_SPOT = b'maintenance/turn/on'
 KEEP_ALIVE = b'maintenance/keep-alive'
+KEEP_ALIVE_DISTANCE = 30

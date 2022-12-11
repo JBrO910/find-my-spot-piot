@@ -138,13 +138,7 @@
         on:click={loadSpots}
         on:keydown={loadSpots}
       >
-        {#if loadingSpots && !socketError}
-          Loading...
-        {:else if socketError}
-          {socketError}
-        {:else}
-          Load controllers
-        {/if}
+        Load controllers
       </Button>
     {:else}
       <small class='ml-2 font-medium text-sm'>[{filledSpotsAmount}/{spots.length}]</small>

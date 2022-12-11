@@ -22,10 +22,8 @@ const paySession = async (session, user) => {
     return 'User does not have enough balance to pay for session'
   }
 
-  user.balance -= session.totalCost
+  user.balance -= session.pay()
   await userController.updateOne(user)
-
-  session.pay()
   await parkingSessionController.updateOne(session)
 }
 
@@ -133,7 +131,32 @@ parkingSessionRouter.post(
   },
 )
 
-parkingSessionRouter.post('/:id/pay', async (req, res) => {
+parkingSessionRouter.get('/history/:id', async (req, res) => {
+  const user = await userController.getSingle(req.params.id)
+  if (!user) {
+    Log.tag(LOG_TAG).warn('User not found', req.body)
+    res.status(404).send({
+      code: 404,
+      message: 'User not found',
+    })
+    return
+  }
+
+  const sessions = await parkingSessionController.getAllForUser(user.id).then(res => res.sort((a, b) => b.startTime - a.startTime))
+  const garageIds = new Set(sessions.map((session) => session.garageId))
+  const garages = await garageController.getAllByIds([...garageIds])
+  const sessionsWithGarage = sessions.map((session) => {
+    const garage = garages.find((garage) => garage.id === session.garageId)
+    return {
+      ...session,
+      garage,
+    }
+  })
+
+  res.status(200).send(sessionsWithGarage)
+})
+
+parkingSessionRouter.post('/pay/:id/user/:user', async (req, res) => {
   const session = await parkingSessionController.getSingle(req.params.id)
   if (!session) {
     Log.tag(LOG_TAG).warn('Session not found', req.body)
@@ -143,8 +166,17 @@ parkingSessionRouter.post('/:id/pay', async (req, res) => {
     })
     return
   }
+  const user = await userController.getSingle(req.params.user)
+  if (!user) {
+    Log.tag(LOG_TAG).warn('User not found', req.body)
+    res.status(404).send({
+      code: 404,
+      message: 'User not found',
+    })
+    return
+  }
 
-  const error = await paySession(session, req.user)
+  const error = await paySession(session, user)
   if (!!error) {
     res.status(400).send({
       code: 400,

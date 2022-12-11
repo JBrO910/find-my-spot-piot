@@ -68,4 +68,28 @@ userRouter.get('/toRegister', async (req, res) => {
   res.send(users)
 })
 
+userRouter.post('/topUp/:user', async (req, res) => {
+    if(!req.body.amount) {
+        res.status(400)
+            .send({
+                code: 400,
+                message: 'Amount is missing',
+            })
+        return
+    }
+    const user = await userController.getSingle(req.user.id)
+    if(!user) {
+        res.status(400)
+            .send({
+                code: 400,
+                message: 'User does not exist',
+            })
+        return
+    }
+    const amount = req.body.amount
+    user.balance += amount
+    await userController.updateOne(user)
+    res.sendStatus(200)
+})
+
 export default userRouter

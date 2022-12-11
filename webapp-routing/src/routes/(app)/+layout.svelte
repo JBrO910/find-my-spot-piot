@@ -14,6 +14,9 @@
     const navigateToUsers = () => {
         goto('/user/register')
     }
+    const navigateToParkingHistory = () => {
+        goto('/user/parkingHistory')
+    }
 </script>
 
 <svelte:head>
@@ -35,6 +38,9 @@
                             <small class='text-sm text-gray-50'>Card is not yet registered</small>
                         {:else}
                             <small class='text-sm text-gray-50'>Current Balance: {$page.data.page.user.balance.toFixed(2)}€</small>
+                            {#if $page.routeId !== "(app)/user/parkingHistory"}
+                                <Button color='secondary' type='button' on:click={navigateToParkingHistory}>Parking History</Button>
+                            {/if}
                         {/if}
                     {/if}
                 {:else}

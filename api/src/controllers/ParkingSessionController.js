@@ -19,6 +19,12 @@ export default class ParkingSessionController {
         ).then(res => res)
     }
 
+    async getAllForUser(id) {
+        return this.#database.getWhere(ParkingSessionController.TABLE, ParkingSession.fromSerialized,
+            ["userId", "==", id]
+        ).then(res => res)
+    }
+
     async getAll() {
         return this.#database.getAllFrom(ParkingSessionController.TABLE, ParkingSession.fromSerialized)
     }

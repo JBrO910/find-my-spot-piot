@@ -73,4 +73,18 @@ export interface LiveSpot {
   hasNotChangedWarning: boolean
 }
 
+export interface ParkingSession {
+  id: string
+
+  userId: string
+  garageId: string
+  startTime: number
+  endTime: number
+  hourlyRate: number
+  maxRate: number
+  totalCost: number
+  status: "open" | "unpaid" | "closed"
+  payedOn: number
+}
+
 export type CombinedSpot = Spot & Partial<LiveSpot>

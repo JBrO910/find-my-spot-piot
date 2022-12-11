@@ -50,6 +50,9 @@ export default class Garage {
     if (!!this.levelDescription) {
       data.levelDescription = this.levelDescription
     }
+    if (!!this.id) {
+      data.id = this.id
+    }
     if (!!this.openingHoursWorkdays) {
       data.openingHoursWorkdays = this.openingHoursWorkdays
     }

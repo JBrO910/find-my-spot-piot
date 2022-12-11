@@ -137,3 +137,21 @@ export const putUserCard = async ({ userID, ...data }: {userID: string, cardID: 
     .then(handleResponse)
     .catch(handleError)
 }
+
+export const getParkingSessions = async (userId: string): Response<Array<any>> => {
+  return await instance.get<Array<any>>("parkingSession/history/" + userId)
+    .then(handleResponse)
+    .catch(handleError)
+}
+
+export const payParkingSession = async (sessionId: string, userId: string): Response<void> => {
+  return await instance.post<void>("parkingSession/pay/" + sessionId + "/user/" + userId)
+    .then(handleResponse)
+    .catch(handleError)
+}
+
+export const topUpBalance = async (userId: string, amount: number): Response<void> => {
+  return await instance.post<void>("user/topUp/" + userId, { amount })
+    .then(handleResponse)
+    .catch(handleError)
+}

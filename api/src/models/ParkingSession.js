@@ -11,6 +11,7 @@ export default class ParkingSession {
   totalCost
 
   status
+  payedOn
 
   constructor(
     userId,
@@ -20,6 +21,7 @@ export default class ParkingSession {
     startTime,
     endTime,
     status,
+    payedOn,
     totalCost,
     id,
   ) {
@@ -29,8 +31,9 @@ export default class ParkingSession {
     this.endTime = endTime
     this.hourlyRate = hourlyRate
     this.maxRate = maxRate
+    this.payedOn = payedOn
     this.totalCost = totalCost
-    this.status = status ?? !this.endTime ? 'open' : 'unpaid'
+    this.status = !status ? !this.endTime ? 'open' : 'unpaid' : status
     this.id = id
   }
 
@@ -49,6 +52,8 @@ export default class ParkingSession {
 
   pay() {
     this.status = 'closed'
+    this.payedOn = new Date().getTime()
+    return this.totalCost
   }
 
   get serialised() {
@@ -65,6 +70,7 @@ export default class ParkingSession {
     startTime,
     endTime,
     status,
+    payedOn,
     totalCost,
     id,
   }) {
@@ -76,6 +82,7 @@ export default class ParkingSession {
       startTime,
       endTime,
       status,
+      payedOn,
       totalCost,
       id,
     )

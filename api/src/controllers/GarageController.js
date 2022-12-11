@@ -13,6 +13,10 @@ export default class GarageController {
         return this.#database.getAllFrom(GarageController.TABLE, Garage.fromSerialized)
     }
 
+    async getAllByIds(ids) {
+        return this.#database.getWhere(GarageController.TABLE, Garage.fromSerialized, ["id", "in", ids])
+    }
+
     onAdded(listener) {
         return this.#database.onChange(GarageController.TABLE, Garage.fromSerialized, listener, "added")
     }

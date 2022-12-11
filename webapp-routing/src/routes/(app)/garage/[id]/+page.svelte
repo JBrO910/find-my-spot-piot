@@ -59,6 +59,7 @@
 <div class='p-4 flex flex-col gap-4'>
   {#if data.garage?.levelDescription}
     <GarageLevelEntry
+      isAdmin='{data.page.user.isAdmin}'
       definition={data.garage.levelDescription[selectedLevel]}
       spots={levels[selectedLevel]}
       {socket}

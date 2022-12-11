@@ -20,6 +20,7 @@
   let isSocketSetup = false
 
   export let editable = false
+  export let isAdmin = false
   export let editSpotClick: (mockSpot: any) => CombinedSpot = undefined
   export let removable = false
   export let spots: Array<CombinedSpot> = []
@@ -199,7 +200,7 @@
               Remove
             </Button>
           {/if}
-          {#if !editable}
+          {#if !editable && isAdmin}
             {#if !spots[selectedSpotIndex].isTurnedOff}
               <Button
                 on:click={turnSpotPower(spots[selectedSpotIndex], true)}
@@ -217,25 +218,27 @@
               </Button>
             {/if}
           {/if}
-          <Button
-            disabled={spotDisabled || !spots[selectedSpotIndex].id || spots[selectedSpotIndex].isTurnedOff}
-            on:click={blinkSpot(spots[selectedSpotIndex])}
-          >
-            Signal
-          </Button>
-          <Button
-            disabled={spotDisabled || !spots[selectedSpotIndex].id || measurement[spots[selectedSpotIndex].id] === "Loading..." || spots[selectedSpotIndex].isTurnedOff}
-            on:click={measureSpot(spots[selectedSpotIndex])}
-          >
-            Measure
-          </Button>
-          <small class='text-sm font-medium min-w-[24ch]'>
-            {#if measurement[spots[selectedSpotIndex]?.id] !== undefined}
-              Result: {measurement[spots[selectedSpotIndex]?.id]}
-            {:else}
-              Result: No measurement
-            {/if}
-          </small>
+            <Button
+              disabled={spotDisabled || !spots[selectedSpotIndex].id || spots[selectedSpotIndex].isTurnedOff}
+              on:click={blinkSpot(spots[selectedSpotIndex])}
+            >
+              Signal
+            </Button>
+            {#if isAdmin}
+            <Button
+              disabled={spotDisabled || !spots[selectedSpotIndex].id || measurement[spots[selectedSpotIndex].id] === "Loading..." || spots[selectedSpotIndex].isTurnedOff}
+              on:click={measureSpot(spots[selectedSpotIndex])}
+            >
+              Measure
+            </Button>
+            <small class='text-sm font-medium min-w-[24ch]'>
+              {#if measurement[spots[selectedSpotIndex]?.id] !== undefined}
+                Result: {measurement[spots[selectedSpotIndex]?.id]}
+              {:else}
+                Result: No measurement
+              {/if}
+            </small>
+          {/if}
         </div>
 
         {#if !editable && !spots[selectedSpotIndex].isTurnedOff}

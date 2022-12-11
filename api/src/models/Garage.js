@@ -4,6 +4,8 @@ export default class Garage {
   address
   phoneNumber
   levelDescription
+  openingHoursWorkdays
+  openingHoursWeekend
   hourlyRate
   maxRate
   ensureUserBalance
@@ -13,6 +15,8 @@ export default class Garage {
     name,
     address,
     phoneNumber,
+    openingHoursWorkdays,
+    openingHoursWeekend,
     hourlyRate,
     maxRate,
     ensureUserBalance,
@@ -23,6 +27,8 @@ export default class Garage {
     this.id = id
     this.name = name
     this.address = address
+    this.openingHoursWorkdays = openingHoursWorkdays
+    this.openingHoursWeekend = openingHoursWeekend
     this.hourlyRate = hourlyRate
     this.maxRate = maxRate
     this.ensureUserBalance = ensureUserBalance
@@ -44,6 +50,12 @@ export default class Garage {
     if (!!this.levelDescription) {
       data.levelDescription = this.levelDescription
     }
+    if (!!this.openingHoursWorkdays) {
+      data.openingHoursWorkdays = this.openingHoursWorkdays
+    }
+    if (!!this.openingHoursWeekend) {
+      data.openingHoursWeekend = this.openingHoursWeekend
+    }
     return data
   }
 
@@ -51,6 +63,8 @@ export default class Garage {
     id,
     name,
     address,
+    openingHoursWorkdays,
+    openingHoursWeekend,
     phoneNumber,
     hourlyRate,
     maxRate,
@@ -62,6 +76,8 @@ export default class Garage {
       name,
       address,
       phoneNumber,
+      openingHoursWorkdays,
+      openingHoursWeekend,
       hourlyRate,
       maxRate,
       ensureUserBalance,

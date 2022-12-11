@@ -245,6 +245,7 @@
         selectedSpot = undefined
     }}
     editable
+    isAdmin
     on:removeSpot={({detail: spot}) => {
         const index = spots.findIndex(nSpot => nSpot.id === spot.id)
         spots[index].x = undefined

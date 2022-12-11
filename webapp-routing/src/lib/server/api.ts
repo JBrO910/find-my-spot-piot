@@ -2,6 +2,7 @@
 import { PUBLIC_API_URL } from '$env/static/public'
 import type { AxiosError, AxiosResponse } from 'axios'
 import axios from 'axios'
+import type { GarageCreationData } from '../types'
 import type { ApiError, CombinedSpot, Garage, GarageOverview, User, WithError } from '../types'
 
 let instance = axios.create({
@@ -80,7 +81,7 @@ export const getGarageSpots = async (id?: string): Response<Record<string, Combi
     .catch(handleError)
 }
 
-export const addGarage = async (garageData: any): Response<string> => {
+export const addGarage = async (garageData: GarageCreationData): Response<string> => {
   if (!garageData) {
     return {
       data: undefined,

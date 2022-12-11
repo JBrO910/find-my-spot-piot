@@ -31,7 +31,7 @@
   {#if $$restProps.type !== 'select'}
     <input
       id={id}
-      class={`${colorClasses} text-gray-900 border border-1 bg-transparent placeholder-opacity-60 focus:ring focus-visible:ring focus-visible:outline-none rounded py-3 px-3 w-full`}
+      class={`${colorClasses} text-gray-900 border border-1 bg-transparent placeholder-opacity-60 disabled:text-opacity-60 focus:ring focus-visible:ring focus-visible:outline-none rounded py-3 px-3 w-full`}
       bind:value={value}
       on:blur={onBlur}
       on:focus={onFocus}

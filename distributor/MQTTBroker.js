@@ -62,8 +62,8 @@ export default function setupMQTTBroker(registerSleepTime = 1000 * 10) {
             } else if (type === "gate") {
                 Log.trace("Register gate", data);
                 registeredGates.push(data);
-                await sleep(1000)
-                mqttClient.publish(RECEIVE_ID, JSON.stringify({spots: [], gates: registeredGates}));
+                // await sleep(1000)
+                // mqttClient.publish(RECEIVE_ID, JSON.stringify({spots: [], gates: registeredGates}));
             }
         }),
         [GATE_SEND_UID]: mqttParseMessage(({uid, muid}) => {

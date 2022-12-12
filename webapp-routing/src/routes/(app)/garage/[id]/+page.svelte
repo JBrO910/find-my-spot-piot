@@ -31,6 +31,8 @@
 
   const onSelectLevel = (level) => () => selectedLevel = level
 
+  const openGate = (gate) => () => socket.emit("openGate", gate)
+
   $: levels = Object.values(data?.spots ?? {})
     .reduce((acc: Array<Array<CombinedSpot>>, curr: CombinedSpot) => {
       if (!Array.isArray(acc[curr.z])) {
@@ -40,6 +42,25 @@
       return acc
     }, [])
 </script>
+
+<div class='pt-4 px-4'>
+  <h6 class='text-xl font-medium mr-2'>Gates:</h6>
+  <div class='flex gap-2'>
+    {#each data.garage as gate}
+      <p
+        on:click={openGate(gate)}
+        on:keydown={openGate(gate)}
+        class={`px-2 py-1 whitespace-nowrap cursor-pointer select-none rounded bg-gray-700 text-gray-50`}
+      >
+        {gate}
+      </p>
+    {:else}
+      <small class='font-medium text-sm'>
+        No gates were registered on garage
+      </small>
+    {/each}
+  </div>
+</div>
 
 <div class='flex gap-4 p-4'>
   {#each levels as level, i}

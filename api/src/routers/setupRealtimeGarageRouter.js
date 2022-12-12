@@ -73,6 +73,11 @@ export default (io) => {
                     .trace('Requested measure for', id)
                 garageBrokerSocket.emit('measure', id)
             })
+            socket.on('openGate', (id) => {
+                Log.tag(LOG_TAG)
+                    .trace('Requested open gate for', id)
+                garageBrokerSocket.emit('openGate', id)
+            })
             socket.on('register', ({spots, levelDescription, gates}) => {
                 registerLevelDescription(levelDescription)
 

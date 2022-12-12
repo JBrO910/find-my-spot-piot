@@ -9,13 +9,13 @@ import {
     emitUpdateSpot,
     listenToBlinkMaintain,
     listenToLoadSpots,
-    listenToMeasureMaintain,
+    listenToMeasureMaintain, listenToOpenGateMaintain,
     listenToReadCard,
     listenToRegisterMaintain,
     listenToTurnOffMaintain,
     listenToTurnOnMaintain,
     mqttParseMessage,
-} from "./socket";
+} from './socket'
 import {
     BLINK,
     CARD_REGISTER,
@@ -24,14 +24,14 @@ import {
     GATE_SEND_UID_RESPONSE,
     KEEP_ALIVE,
     MEASURE,
-    MEASURE_RESPONSE,
+    MEASURE_RESPONSE, OPEN_GATE,
     RECEIVE_ID,
     REQUEST_ID,
     REQUEST_ID_RESPONSE,
     TURN_OFF,
     TURN_ON,
     UPDATE_SPOT,
-} from "./topics";
+} from './topics'
 import { sleep } from "./utils";
 
 let instance = axios.create({
@@ -129,6 +129,10 @@ export default function setupMQTTBroker(registerSleepTime = 1000 * 10) {
         listenToRegisterMaintain((data) => {
             Log.trace("Registered with", data);
             mqttClient.publish(RECEIVE_ID, JSON.stringify(data));
+        });
+        listenToOpenGateMaintain((id) => {
+            Log.trace("Request open gate for id", id);
+            mqttClient.publish(OPEN_GATE, JSON.stringify({id}));
         });
 
         Object.keys(topics)

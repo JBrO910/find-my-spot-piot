@@ -31,6 +31,13 @@ export interface Garage {
   address: string
   phoneNumber: string
   levelDescription: Array<{x: Number, y: Number}>
+  openingHoursWorkdays: [string, string]
+  openingHoursWeekend: [string, string]
+  hourlyRate: number
+  maxRate: number
+  ensureUserBalance: boolean
+  payOnExit: boolean
+  gates: Array<string>
 }
 
 export interface GarageCreationData {

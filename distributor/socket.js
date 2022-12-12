@@ -55,6 +55,10 @@ export const listenToRegisterMaintain = (callback) => {
   socket.on("register", callback);
 };
 
+export const listenToOpenGateMaintain = (callback) => {
+  socket.on("openGate", callback);
+};
+
 export const emitResultOfMeasureMaintain = (callback) => {
   socket.emit("measureResult", callback);
 };

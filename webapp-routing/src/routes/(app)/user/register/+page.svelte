@@ -43,6 +43,7 @@
   })
 </script>
 
+{JSON.stringify(data.page.user)}
 <div class='grid place-items-center p-4'>
   <form
     class='bg-gray-50 rounded shadow p-4 w-[48rem] gap-2 flex flex-col'

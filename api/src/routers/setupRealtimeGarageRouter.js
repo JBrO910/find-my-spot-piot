@@ -80,7 +80,7 @@ export default (io) => {
                     .trace('Requested measure for', id)
                 garageBrokerSocket.emit('measure', id)
             })
-            socket.on('register', ({spots, levelDescription}) => {
+            socket.on('register', ({spots, levelDescription, gates}) => {
                 registerLevelDescription(levelDescription)
 
                 const idSetSpots = spots.reduce((acc, curr) => {
@@ -92,7 +92,7 @@ export default (io) => {
                 }, new Set())
                 const idsSpots = [...idSetSpots]
 
-                const idSetGarages = spots.reduce((acc, curr) => {
+                const idSetGarages = gates.reduce((acc, curr) => {
                     acc.add(curr.id)
                     return acc
                 }, new Set())

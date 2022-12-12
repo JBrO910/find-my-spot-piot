@@ -23,8 +23,8 @@ export const emitUpdateSpot = ({ id, status }) => {
   socket.emit("update", id, parseInt(status));
 };
 
-export const emitLoadSpots = (spots) => {
-  socket.emit("loadSpotsResponse", { spots });
+export const emitLoadSpots = (spots, gates) => {
+  socket.emit("loadSpotsResponse", { spots, gates });
 };
 
 export const listenToLoadSpots = (callback) => {

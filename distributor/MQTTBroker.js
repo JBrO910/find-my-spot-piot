@@ -105,8 +105,8 @@ export default function setupMQTTBroker(registerSleepTime = 1000 * 10) {
 
             Log.trace(`Register ${ registeredSpots.length } spots`)
             Log.trace(`Register ${ registeredGates.length } gates`)
-            // TODO Emit gates as well
-            emitLoadSpots(registeredSpots)
+
+            emitLoadSpots(registeredSpots, registeredGates);
             isRegistering = false
         })
 

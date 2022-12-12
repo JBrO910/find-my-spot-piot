@@ -30,10 +30,9 @@
 
   onMount(async () => {
     if (!data.page.user.adminGarageId && !data.page.user.isAdmin) {
-      console.log("Returned from here")
       return
     }
-    console.log(`${ PUBLIC_BROKER_URL }/${ data.page.user.adminGarageId }-register`)
+
     socket = io(`${ PUBLIC_BROKER_URL }/${ data.page.user.adminGarageId }-register`)
     socket.on('connect', () => console.log('Connected to socket'))
     socket.on('readCardResult', (card: { uid: string }) => {
@@ -44,7 +43,6 @@
   })
 </script>
 
-{JSON.stringify(data.page.user)}
 <div class='grid place-items-center p-4'>
   <form
     class='bg-gray-50 rounded shadow p-4 w-[48rem] gap-2 flex flex-col'

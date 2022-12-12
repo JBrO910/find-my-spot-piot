@@ -28,16 +28,9 @@ export default (io) => {
                 spot.id,
             )
             Log.tag(LOG_TAG)
-                .trace(
-                    'Adding Spot to the database',
-                    newSpot.serialised,
-                )
+                .trace('Adding Spot to the database', newSpot.serialised)
             spotController.setSpot(newSpot)
-            const newLiveSpot = new LiveSpot(
-                1 /* Occupied */,
-                garage.id,
-                newSpot.id,
-            )
+            const newLiveSpot = new LiveSpot(1 /* Occupied */, garage.id, newSpot.id)
             Log.tag(LOG_TAG)
                 .trace(
                     'Adding LiveSpot to the database',
@@ -52,7 +45,7 @@ export default (io) => {
                 .trace(
                     'Adding LevelDescription to the garage',
                     garage.serialised,
-                    levelDescription
+                    levelDescription,
                 )
             garageController.updateOne(garage)
         }
@@ -107,7 +100,12 @@ export default (io) => {
                 Log.tag(LOG_TAG)
                     .trace('Register gates for controller ids', idsGate)
 
-                garageBrokerSocket.emit('register', { spots: idsSpots, gates: idsGate })
+                garageBrokerSocket.emit('register', {
+                    spots: idsSpots,
+                    gates: idsGate,
+                    openingHoursWorkdays: garage.openingHoursWorkdays,
+                    openingHoursWeekend: garage.openingHoursWeekend,
+                })
             })
         }
 
@@ -142,7 +140,7 @@ export default (io) => {
                 garageConsumerSockets.emit('measureResult', {measure, id})
             })
 
-            socket.on('readCardResult', ({ uid }) => {
+            socket.on('readCardResult', ({uid}) => {
                 Log.tag(LOG_TAG)
                     .trace(`Received card reading ${ uid }`)
                 garageRegisterSocket.emit('readCardResult', {uid})
@@ -218,7 +216,7 @@ export default (io) => {
         })
     }
 
-    garageController.onAdded(garage => {
+    garageController.onAdded((garage) => {
         Log.trace(`Added garage, "${ garage.id }" , connect listeners`)
         setupGarage(garage)
     })

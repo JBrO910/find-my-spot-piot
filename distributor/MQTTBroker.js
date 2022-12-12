@@ -126,9 +126,9 @@ export default function setupMQTTBroker(registerSleepTime = 1000 * 10) {
             Log.trace("Turn off", id)
             mqttClient.publish(TURN_OFF, JSON.stringify({id}))
         })
-        listenToRegisterMaintain(({spots, gates}) => {
-            Log.trace("Register requested for", spots, gates);
-            mqttClient.publish(RECEIVE_ID, JSON.stringify({spots, gates}));
+        listenToRegisterMaintain((data) => {
+            Log.trace("Registered with", data);
+            mqttClient.publish(RECEIVE_ID, JSON.stringify(data));
         });
 
         Object.keys(topics)

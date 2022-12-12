@@ -201,8 +201,9 @@
   </Button>
 </div>
 
-<div>
+<div class='pt-4 px-4'>
   <h6 class='text-xl font-medium mr-2'>Gates:</h6>
+  <div class='flex gap-2'>
   {#each gates.filter(e => e.registered) as gate}
     <p
       on:click={() => {gate.registered = false}}
@@ -211,7 +212,12 @@
     >
       {gate.id}
     </p>
+    {:else}
+      <small class='font-medium text-sm'>
+        No gates were registered
+      </small>
   {/each}
+  </div>
 </div>
 
 <div class='flex items-center gap-4 px-4 mt-4'>

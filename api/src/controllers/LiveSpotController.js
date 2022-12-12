@@ -81,7 +81,7 @@ export default class LiveSpotController {
       .then((res) => res.val())
       .then((db) =>
         Object.fromEntries(
-          Object.entries(db).map(([key, values]) => [
+          Object.entries(db ?? {}).map(([key, values]) => [
             key,
             Object.values(values).map(LiveSpot.fromSerialized),
           ]),

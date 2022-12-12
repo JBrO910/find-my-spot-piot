@@ -113,7 +113,7 @@ authRouter.post('/login', async (req, res) => {
 })
 
 authRouter.get('/me', authenticated, async (req, res) => {
-  res.status(200).send(req.user.me)
+  res.status(200).send(req.user?.me)
 })
 
 export default authRouter

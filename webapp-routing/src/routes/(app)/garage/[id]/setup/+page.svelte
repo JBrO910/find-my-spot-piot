@@ -164,7 +164,7 @@
           {:else if socketError}
             {socketError}
           {:else}
-            No more controllers were found
+            No more spots were found
           {/if}
         </small>
       {/each}
@@ -179,6 +179,16 @@
         >
           {gate.id}
         </p>
+      {:else}
+        <small class='font-medium text-sm'>
+          {#if loadingSpots && !socketError}
+            Loading...
+          {:else if socketError}
+            {socketError}
+          {:else}
+            No more gates were found
+          {/if}
+        </small>
       {/each}
     </div>
   </div>

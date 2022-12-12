@@ -46,7 +46,7 @@
 <div class='pt-4 px-4'>
   <h6 class='text-xl font-medium mr-2'>Gates:</h6>
   <div class='flex gap-2'>
-    {#each data.garage as gate}
+    {#each data.garage.gates as gate}
       <p
         on:click={openGate(gate)}
         on:keydown={openGate(gate)}

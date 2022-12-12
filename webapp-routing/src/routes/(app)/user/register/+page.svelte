@@ -30,6 +30,7 @@
 
   onMount(async () => {
     if (!data.page.user.adminGarageId && !data.page.user.isAdmin) {
+      console.log("Returned from here")
       return
     }
 

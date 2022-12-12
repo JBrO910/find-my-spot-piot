@@ -50,7 +50,7 @@
   }
 
   const register = () => {
-    socket.emit('register', { spots, levelDescription })
+    socket.emit('register', { spots, levelDescription, gates: gates.filter(gate => gate.registered) })
     goto("/garage/" + data.garage?.id)
   }
 
@@ -65,8 +65,7 @@
     socket.on('loadSpotsResponse', ({ spots: sendSpots, gates: sendGates }) => {
       loadingSpots = false
       spots = sendSpots.map(id => ({ id, type: "Normal" }))
-      gates = sendGates.map(id => ({ id }))
-      console.log({sendGates})
+      gates = sendGates.map(id => ({ id, registered: false }))
       clearTimeout(socketTimeout)
     })
   })
@@ -148,6 +147,7 @@
     {/if}
   </h6>
   <div class='overflow-x-auto max-w-full mx-2 mt-2'>
+    <h6 class='text-lg font-medium'>Spots</h6>
     <div class='flex gap-2 py-1 mb-2'>
       {#each spots.filter(spot => spot.x === undefined) as spot}
         <p
@@ -169,10 +169,13 @@
         </small>
       {/each}
     </div>
+    <h6 class='text-lg font-medium'>Gates</h6>
     <div class='flex gap-2 py-1 mb-2'>
-      {#each gates as gate}
+      {#each gates.filter(e => !e.registered) as gate}
         <p
-          class={`px-2 py-1 whitespace-nowrap cursor-pointer select-none rounded`}
+          on:click={() => {gate.registered = true}}
+          on:keydown={() => {gate.registered = true}}
+          class={`px-2 py-1 whitespace-nowrap cursor-pointer select-none rounded bg-gray-700 text-gray-50`}
         >
           {gate.id}
         </p>
@@ -186,6 +189,19 @@
   >
     Save Registration
   </Button>
+</div>
+
+<div>
+  <h6 class='text-xl font-medium mr-2'>Gates:</h6>
+  {#each gates.filter(e => e.registered) as gate}
+    <p
+      on:click={() => {gate.registered = false}}
+      on:keydown={() => {gate.registered = false}}
+      class={`px-2 py-1 whitespace-nowrap cursor-pointer select-none rounded bg-gray-700 text-gray-50`}
+    >
+      {gate.id}
+    </p>
+  {/each}
 </div>
 
 <div class='flex items-center gap-4 px-4 mt-4'>

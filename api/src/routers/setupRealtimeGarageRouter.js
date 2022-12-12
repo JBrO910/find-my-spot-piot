@@ -83,19 +83,28 @@ export default (io) => {
             socket.on('register', ({spots, levelDescription}) => {
                 registerLevelDescription(levelDescription)
 
-                const idSet = spots.reduce((acc, curr) => {
+                const idSetSpots = spots.reduce((acc, curr) => {
                     registerSpot(curr)
 
                     acc.add(curr.id.split('-')[0])
 
                     return acc
                 }, new Set())
-                const ids = [...idSet]
+                const idsSpots = [...idSetSpots]
+
+                const idSetGarages = spots.reduce((acc, curr) => {
+                    acc.add(curr.id)
+                    return acc
+                }, new Set())
+                const idsGarages = [...idSetGarages]
 
                 Log.tag(LOG_TAG)
-                    .trace('Register spots for controller ids', ids)
+                    .trace('Register spots for controller ids', idsSpots)
 
-                garageBrokerSocket.emit('register', { spots: ids, gates: [""] })
+                Log.tag(LOG_TAG)
+                    .trace('Register gates for controller ids', idsGarages)
+
+                garageBrokerSocket.emit('register', { spots: idsSpots, gates: idsGarages })
             })
         }
 

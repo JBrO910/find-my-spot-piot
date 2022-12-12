@@ -18,6 +18,7 @@
   // TODO Redirect back if it is already set up
 
   let spots = []
+  let gates = []
   let loadingSpots = false
   let selectedSpot = undefined
 
@@ -61,9 +62,10 @@
     socket = io(`${ PUBLIC_BROKER_URL }/${ data.garage.id }-register`)
     socket.on('connect', () => console.log('Connected to socket'))
 
-    socket.on('loadSpotsResponse', ({ spots: sendSpots }) => {
+    socket.on('loadSpotsResponse', ({ spots: sendSpots, gates: sendGates }) => {
       loadingSpots = false
       spots = sendSpots.map(id => ({ id, type: "Normal" }))
+      gates = sendGates.map(id => ({ id }))
       clearTimeout(socketTimeout)
     })
   })
@@ -164,6 +166,15 @@
             No more controllers were found
           {/if}
         </small>
+      {/each}
+    </div>
+    <div class='flex gap-2 py-1 mb-2'>
+      {#each gates.filter(gate => gate.x === undefined) as gate}
+        <p
+          class={`px-2 py-1 whitespace-nowrap cursor-pointer select-none rounded`}
+        >
+          {gate.id}
+        </p>
       {/each}
     </div>
   </div>

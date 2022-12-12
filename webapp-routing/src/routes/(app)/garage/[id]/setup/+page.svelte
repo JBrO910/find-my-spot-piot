@@ -66,6 +66,7 @@
       loadingSpots = false
       spots = sendSpots.map(id => ({ id, type: "Normal" }))
       gates = sendGates.map(id => ({ id }))
+      console.log({sendGates})
       clearTimeout(socketTimeout)
     })
   })

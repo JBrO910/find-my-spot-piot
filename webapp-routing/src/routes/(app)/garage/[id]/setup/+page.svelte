@@ -169,7 +169,7 @@
       {/each}
     </div>
     <div class='flex gap-2 py-1 mb-2'>
-      {#each gates.filter(gate => gate.x === undefined) as gate}
+      {#each gates as gate}
         <p
           class={`px-2 py-1 whitespace-nowrap cursor-pointer select-none rounded`}
         >

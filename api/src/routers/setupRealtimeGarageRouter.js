@@ -92,19 +92,22 @@ export default (io) => {
                 }, new Set())
                 const idsSpots = [...idSetSpots]
 
-                const idSetGarages = gates.reduce((acc, curr) => {
+                const idSetGate = gates.reduce((acc, curr) => {
+                    garage.addGate(curr.id)
                     acc.add(curr.id)
                     return acc
                 }, new Set())
-                const idsGarages = [...idSetGarages]
+                const idsGate = [...idSetGate]
+
+                garageController.updateOne(garage)
 
                 Log.tag(LOG_TAG)
                     .trace('Register spots for controller ids', idsSpots)
 
                 Log.tag(LOG_TAG)
-                    .trace('Register gates for controller ids', idsGarages)
+                    .trace('Register gates for controller ids', idsGate)
 
-                garageBrokerSocket.emit('register', { spots: idsSpots, gates: idsGarages })
+                garageBrokerSocket.emit('register', { spots: idsSpots, gates: idsGate })
             })
         }
 

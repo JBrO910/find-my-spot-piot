@@ -10,6 +10,7 @@ export default class Garage {
   maxRate
   ensureUserBalance
   payOnExit
+  gates
 
   constructor(
     name,
@@ -21,6 +22,7 @@ export default class Garage {
     maxRate,
     ensureUserBalance,
     payOnExit,
+    gates,
     id,
     levelDescription,
   ) {
@@ -33,8 +35,13 @@ export default class Garage {
     this.maxRate = maxRate
     this.ensureUserBalance = ensureUserBalance
     this.payOnExit = payOnExit
+    this.gates = gates ?? []
     this.phoneNumber = phoneNumber
     this.levelDescription = levelDescription
+  }
+
+  addGate(gate) {
+    this.gates.push(gate)
   }
 
   get serialised() {
@@ -46,6 +53,7 @@ export default class Garage {
       maxRate: this.maxRate,
       ensureUserBalance: this.ensureUserBalance,
       payOnExit: this.payOnExit,
+      gates: this.gates,
     }
     if (!!this.levelDescription) {
       data.levelDescription = this.levelDescription
@@ -73,6 +81,7 @@ export default class Garage {
     maxRate,
     ensureUserBalance,
     payOnExit,
+    gates,
     levelDescription,
   }) {
     return new Garage(
@@ -85,6 +94,7 @@ export default class Garage {
       maxRate,
       ensureUserBalance,
       payOnExit,
+      gates,
       id,
       levelDescription,
     )

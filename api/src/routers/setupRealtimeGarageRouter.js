@@ -120,7 +120,7 @@ export default (io) => {
                         `Received ${ spots?.length } spots for registration`,
                         `Received ${ gates?.length } gates for registration`,
                     )
-                garageRegisterSocket.emit('loadSpotsResponse', {spots, })
+                garageRegisterSocket.emit('loadSpotsResponse', {spots, gates})
             })
 
             socket.on('measureResult', ({measure, id}) => {

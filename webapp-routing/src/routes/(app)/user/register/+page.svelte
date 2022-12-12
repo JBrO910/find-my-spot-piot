@@ -33,7 +33,7 @@
       console.log("Returned from here")
       return
     }
-
+    console.log(`${ PUBLIC_BROKER_URL }/${ data.page.user.adminGarageId }-register`)
     socket = io(`${ PUBLIC_BROKER_URL }/${ data.page.user.adminGarageId }-register`)
     socket.on('connect', () => console.log('Connected to socket'))
     socket.on('readCardResult', (card: { uid: string }) => {

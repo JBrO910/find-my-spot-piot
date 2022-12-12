@@ -114,12 +114,13 @@ export default (io) => {
             Log.tag(LOG_TAG)
                 .info(`BrokerSocket(${ socket.id }) Connected`)
 
-            socket.on('loadSpotsResponse', ({spots}) => {
+            socket.on('loadSpotsResponse', ({spots, gates}) => {
                 Log.tag(LOG_TAG)
                     .trace(
                         `Received ${ spots?.length } spots for registration`,
+                        `Received ${ gates?.length } gates for registration`,
                     )
-                garageRegisterSocket.emit('loadSpotsResponse', {spots})
+                garageRegisterSocket.emit('loadSpotsResponse', {spots, })
             })
 
             socket.on('measureResult', ({measure, id}) => {

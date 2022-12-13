@@ -1,7 +1,6 @@
 from network import WLAN
 import time
 import machine
-import ntptime
 
 ssid = 'JoshuaHotspot'
 password = 'kommrein'
@@ -16,6 +15,11 @@ while station.isconnected() == False:
         machine.reset()
     pass
 
+rtc = machine.RTC()
+rtc.ntp_sync("pool.ntp.org")
+while not rtc.synced():
+    machine.idle()
+
+time.timezone(1*60**2)
 print('Connection successful')
-ntptime.settime()
 print(time.localtime())

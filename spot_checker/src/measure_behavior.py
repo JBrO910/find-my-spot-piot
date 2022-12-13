@@ -47,4 +47,4 @@ class SpotBehavior:
         if start - self.latest_keep_alive > KEEP_ALIVE_DISTANCE:
             msg = json.dumps({"id": self.id})
             self.mqtt_client.publish(KEEP_ALIVE, msg)
-            start = self.latest_keep_alive
+            self.latest_keep_alive = start

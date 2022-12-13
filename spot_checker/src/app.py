@@ -2,7 +2,7 @@ import json
 import ENV
 import uos
 from umqttsimple import MQTTClient
-from time import sleep
+from time import sleep, localtime
 import mqtt
 
 topic_register = b'register'
@@ -65,6 +65,9 @@ class App:
         except OSError:
             self.is_registered_bool = False
             return self.is_registered_bool
+
+#    def check_time(self):
+#       if time.localtime() 
 
     def measure_once(self, msg):
         for spot in self.spots:

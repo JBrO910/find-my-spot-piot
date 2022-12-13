@@ -1,7 +1,7 @@
 import network
 import time
 import machine
-import ntptime
+import ntptime_local
 
 ssid = 'JoshuaHotspot'
 password = 'kommrein'
@@ -18,5 +18,5 @@ while station.isconnected() == False:
     pass
 
 print('Connection successful')
-ntptime.settime()
+ntptime_local.settime()
 print(time.localtime())

@@ -24,6 +24,8 @@ class App:
         self.mqtt_client.subscribe(ENV.SEND_UID_RESPONSE)
         self.topics[ENV.CARD_REGISTER] = self.register_card
         self.mqtt_client.subscribe(ENV.CARD_REGISTER)
+        self.topics[ENV.OPEN_GATE] = self.open_gate
+        self.mqtt_client.subscribe(ENV.OPEN_GATE)
         self.reader = Reader(muid, mqtt_client)
 
     def read_loop(self):
@@ -56,6 +58,10 @@ class App:
         except OSError:
             self.is_registered_bool = False
             return self.is_registered_bool
+
+    def open_gate(self, msg):
+        if self.reader.muid == msg["id"]:
+            self.reader.open_gate()
 
     def receive_uid(self, msg):
         if self.reader.muid == msg["muid"]:

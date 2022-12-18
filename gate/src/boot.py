@@ -18,5 +18,6 @@ while station.isconnected() == False:
     pass
 
 print('Connection successful')
+ntptime_local.timezone = 1
 ntptime_local.settime()
 print(time.localtime())

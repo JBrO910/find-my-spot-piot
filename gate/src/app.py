@@ -1,5 +1,5 @@
 import machine
-
+import opening_times
 import ENV
 import uos
 import mqtt
@@ -14,6 +14,7 @@ class App:
         self.mqtt_client = mqtt_client
         self.mqtt_client.set_callback(self._sub_callback)
         self.is_registered_bool = None
+        self.opening_times = None
 
         self.topics = dict()
         self.topics[ENV.REQUEST_ID] = self.request_id
@@ -52,8 +53,9 @@ class App:
         if self.is_registered_bool != None:
             return self.is_registered_bool
         try:
-            uos.stat('id.txt')
+            uos.stat('id.json')
             self.is_registered_bool = True
+            self.opening_times = opening_times.load_opening_times()
             return self.is_registered_bool
         except OSError:
             self.is_registered_bool = False
@@ -89,9 +91,10 @@ class App:
     def receive_id(self, msg):
         if not self.is_registered():
             if self.muid in msg["gates"]:
-                file = open('id.txt', 'w')
-                file.write(self.muid)
+                file = open('id.json', 'w')
+                file.write(msg)
                 file.close()
+                self.opening_times = opening_times.load_opening_times()
                 self.is_registered_bool = True
 
     def _sub_callback(self, topic, msg):

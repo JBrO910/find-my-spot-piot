@@ -13,6 +13,8 @@ except:
 host = "pool.ntp.org"
 # The NTP socket timeout can be configured at runtime by doing: ntptime.timeout = 2
 timeout = 1
+# The timezone can be configured by doing: ntptime.timezone = 1
+timezone = 0
 
 
 def time():
@@ -47,4 +49,4 @@ def settime():
     import machine
 
     tm = utime.gmtime(t)
-    machine.RTC().datetime((tm[0], tm[1], tm[2], tm[6] + 1, tm[3] + 1, tm[4], tm[5], 1))
+    machine.RTC().datetime((tm[0], tm[1], tm[2], tm[6] + 1, tm[3] + timezone, tm[4], tm[5], 0))

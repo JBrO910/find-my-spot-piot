@@ -2,14 +2,20 @@
   import { applyAction, enhance } from '$app/forms'
   import Button from '$lib/components/Button.svelte'
   import Input from '$lib/components/Input.svelte'
-  import type { ApiError } from '$lib/types'
+  import type { ApiError, Garage } from '$lib/types'
+  import { onMount } from 'svelte'
 
-  export let data
+  export let data: {garage: Garage}
 
   let isOpen24HoursWorkdays = false
   let isOpen24HoursWeekends = false
 
   let error: ApiError | undefined = undefined
+
+  onMount(() => {
+    isOpen24HoursWorkdays = !data.garage.openingHoursWorkdays
+    isOpen24HoursWeekends = !data.garage.openingHoursWeekend
+  })
 </script>
 
 <div class='flex flex-col items-center justify-center gap-2 p-4'>
@@ -29,29 +35,12 @@
           }
       }}
     >
-      <Input
-        id='name'
-        name='name'
-        placeholder='Garage Name'
-        required
-        type='text'
-        wrapperClass='flex-1'
-      />
-      <Input
-        id='address'
-        name='address'
-        placeholder='Address'
-        required
-        type='text'
-        wrapperClass='flex-1'
-      />
-      <Input
-        id='phoneNumber'
-        name='phoneNumber'
-        placeholder='Phone Number'
-        type='text'
-        wrapperClass='flex-1'
-      />
+      <input type='hidden' name='id' value='{data.garage.id}'>
+
+      <h6 class='text-2xl font-medium'>{data.garage.name}</h6>
+      <h6 class='text-lg font-medium'>{data.garage.address}</h6>
+      <h6 class='text-lg font-medium'>{data.garage.phoneNumber}</h6>
+
       <h6 class='text-lg font-medium'>Settings</h6>
 
       <div class='flex flex-col gap-2'>
@@ -72,6 +61,7 @@
             bind:disabled={isOpen24HoursWorkdays}
             id='openFromWorkdays'
             name='openFromWorkdays'
+            value='{data.garage.openingHoursWorkdays?.[0]}'
             on:change={(e) => isOpen24HoursWorkdays = e.target.checked}
             placeholder='Open From'
             required={!isOpen24HoursWorkdays}
@@ -82,6 +72,7 @@
             bind:disabled={isOpen24HoursWorkdays}
             id='openToWorkdays'
             name='openToWorkdays'
+            value='{data.garage.openingHoursWorkdays?.[1]}'
             on:change={(e) => isOpen24HoursWorkdays = e.target.checked}
             placeholder='Open To'
             required={!isOpen24HoursWorkdays}
@@ -105,6 +96,7 @@
             bind:disabled={isOpen24HoursWeekends}
             id='openFromWeekends'
             name='openFromWeekends'
+            value='{data.garage.openingHoursWeekend?.[0]}'
             on:change={(e) => isOpen24HoursWeekends = e.target.checked}
             placeholder='Open From'
             required={!isOpen24HoursWeekends}
@@ -115,6 +107,7 @@
             bind:disabled={isOpen24HoursWeekends}
             id='openToWeekends'
             name='openToWeekends'
+            value='{data.garage.openingHoursWeekend?.[1]}'
             on:change={(e) => isOpen24HoursWeekends = e.target.checked}
             placeholder='Open To'
             required={!isOpen24HoursWeekends}
@@ -134,6 +127,7 @@
             required
             step='0.01'
             min='0'
+            value='{data.garage.hourlyRate}'
             type='number'
             wrapperClass='flex-1'
           />
@@ -144,6 +138,7 @@
             required
             step='0.01'
             min='0'
+            value='{data.garage.maxRate}'
             type='number'
             wrapperClass='flex-1'
           />
@@ -153,6 +148,7 @@
           <input
             id='ensureUserBalance'
             name='ensureUserBalance'
+            checked='{data.garage.ensureUserBalance ? "checked" : undefined}'
             type='checkbox'
           />
           Ensure User has enough Balance
@@ -161,6 +157,7 @@
           <input
             id='payOnExit'
             name='payOnExit'
+            checked='{data.garage.payOnExit ? "checked" : undefined}'
             type='checkbox'
           />
           User pays on Exit
@@ -173,7 +170,7 @@
         </small>
       {/if}
 
-      <Button type='submit'>Create Garage</Button>
+      <Button type='submit'>Save Settings</Button>
     </form>
   </div>
 </div>

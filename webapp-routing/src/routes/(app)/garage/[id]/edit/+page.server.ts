@@ -60,7 +60,7 @@ export const actions: Actions = {
     const {
       data,
       error,
-    } = await updateGarage(garageData)
+    } = await updateGarage(formData.get("id") as string, garageData)
 
     if (error) {
       return invalid(404, { error })

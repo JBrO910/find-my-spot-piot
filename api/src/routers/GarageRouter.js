@@ -140,4 +140,58 @@ garageRouter.post('/', async (req, res) => {
   res.status(200).send(created.id)
 })
 
+garageRouter.put('/:id', async (req, res) => {
+  if (['hourlyRate', 'maxRate', 'ensureUserBalance', 'payOnExit'].some((key) => !(key in req.body))) {
+    Log.tag(LOG_TAG).warn(
+      'Failed to create garage, some required fields are missing',
+    )
+    res.status(400).send({
+      code: 400,
+      message: 'Some fields are missing',
+    })
+    return
+  }
+  const garage = await garageController.getSingle(req.params.id)
+  if (!garage) {
+      res.status(404).send("Garage not found")
+      return
+  }
+
+  garage.openingHoursWeekend = req.body.openingHoursWeekend
+  garage.openingHoursWorkdays = req.body.openingHoursWorkdays
+  garage.hourlyRate = req.body.hourlyRate
+  garage.maxRate = req.body.maxRate
+  garage.ensureUserBalance = req.body.ensureUserBalance
+  garage.payOnExit = req.body.payOnExit
+
+
+  if ((garage.openingHoursWorkdays && garage.openingHoursWorkdays[0] >= garage.openingHoursWorkdays[1]) ||
+      (garage.openingHoursWeekend && garage.openingHoursWeekend[0] >= garage.openingHoursWeekend[1])) {
+    const error = {
+      message: 'Opening hours must be valid',
+      code: 'error',
+    }
+    return res.status(404).send(error)
+  }
+  if (garage.hourlyRate > garage.maxRate) {
+    const error = {
+      message: 'Hourly rate must be lower than max rate',
+      code: 'error',
+    }
+    return res.status(404).send(error)
+  }
+  if (garage.hourlyRate < 0 || garage.maxRate < 0) {
+    const error = {
+      message: 'Hourly rate and max rate must be positive numbers',
+      code: 'error',
+    }
+    return res.status(404).send(error)
+  }
+
+  const updated = await garageController.updateOne(garage)
+
+  Log.tag(LOG_TAG).info(`Updated Garage`, updated.id)
+  res.status(200).send(updated.id)
+})
+
 export default garageRouter

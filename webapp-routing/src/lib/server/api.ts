@@ -94,7 +94,7 @@ export const addGarage = async (garageData: GarageCreationData): Response<string
     .catch(handleError)
 }
 
-export const updateGarage = async (garageData: Omit<GarageCreationData, "name" | "address" | "phoneNumber">): Response<string> => {
+export const updateGarage = async (id: string, garageData: Omit<GarageCreationData, "name" | "address" | "phoneNumber">): Response<string> => {
   if (!garageData) {
     return {
       data: undefined,
@@ -102,7 +102,7 @@ export const updateGarage = async (garageData: Omit<GarageCreationData, "name" |
     }
   }
 
-  return await instance.put<string>(`garage`, garageData)
+  return await instance.put<string>(`garage/${id}`, garageData)
     .then(handleResponse)
     .catch(handleError)
 }

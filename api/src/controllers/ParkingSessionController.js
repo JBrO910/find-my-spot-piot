@@ -22,7 +22,7 @@ export default class ParkingSessionController {
     async getUserDept(id) {
         return this.#database.getWhere(ParkingSessionController.TABLE, ParkingSession.fromSerialized,
             ["userId", "==", id],
-            ["status", "!=", "closed"]
+            ["status", "==", "unpaid"]
         ).then(res => (console.log(res), 0)).catch(err => (console.log("ERROR", err, id), 0))
     }
 

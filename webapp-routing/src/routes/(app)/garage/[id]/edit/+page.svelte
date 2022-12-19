@@ -11,6 +11,7 @@
   let isOpen24HoursWeekends = false
 
   let error: ApiError | undefined = undefined
+  let message: string | undefined = undefined
 
   onMount(() => {
     isOpen24HoursWorkdays = !data.garage.openingHoursWorkdays
@@ -34,11 +35,13 @@
         class='flex flex-col gap-4 py-4'
         use:enhance={() => {
           error = undefined
+          message = undefined
           return async ({result}) => {
               if(result.type === "invalid") {
                   error = result.data.error
                   return
               }
+              message = "Garage was updated successfully"
               await applyAction(result)
           }
       }}
@@ -175,6 +178,11 @@
         {#if error}
           <small class='text-sm font-medium text-red-700'>
             {error.message}
+          </small>
+        {/if}
+        {#if message}
+          <small class='text-sm font-medium text-green-700'>
+            {message}
           </small>
         {/if}
 

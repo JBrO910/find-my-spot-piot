@@ -101,7 +101,7 @@
     (referenceTime.getTime() - spots[selectedSpotIndex]?.statusChangedAt) / 1000 / 60 / 60,
     ((referenceTime.getTime() - spots[selectedSpotIndex]?.statusChangedAt) / 1000 / 60) % 60,
   ].map(e => Math.abs(Math.floor(e)))
-  $: spotDisabled = spots[selectedSpotIndex]?.isTurnedOff || spots[selectedSpotIndex]?.hasLostConnection || spots[selectedSpotIndex]?.hasNotChangedWarning
+  $: spotDisabled = spots[selectedSpotIndex]?.isTurnedOff || spots[selectedSpotIndex]?.hasLostConnection
   $: spotStatus = spots[selectedSpotIndex]?.isTurnedOff
                   ? [ErrorIcon, 'text-red-700', 'Turned off']
                   : spots[selectedSpotIndex]?.hasLostConnection

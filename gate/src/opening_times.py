@@ -26,63 +26,66 @@ def load_opening_times():
     return workday_start, workday_end, weekend_start, weekend_end
 
 
+def _check_time_weekday(workday_start, workday_end, weekend_start, hour, minute, weekday):
+    if not workday_start or not workday_end:
+        return False
+
+    end_time_hour, end_time_minute = workday_end.split(':')  # 12:00
+
+    if end_time_hour < hour or end_time_minute < minute:
+        return False
+
+    # If tomorrow is weekend, look at weekend start
+    if weekday == 4:
+        weekend_start_hour, weekend_start_minute = weekend_start.split(':') if weekend_start else 0, 0
+        _deep_sleep_until(hour, minute, weekend_start_hour, weekend_start_minute)
+        return True
+
+    start_time_hour, start_time_minute = workday_start.split(':')
+    _deep_sleep_until(hour, minute, start_time_hour, start_time_minute)
+    return True
+
+
+def _check_time_weekend(weekend_start, weekend_end, workday_start, hour, minute, weekday):
+    if not weekend_start or not weekend_end:
+        return False
+
+    end_time_hour, end_time_minute = weekend_end.split(':')  # 12:00
+
+    if end_time_hour < hour or end_time_minute < minute:
+        return False
+
+    # If tomorrow is weekend, look at weekend start
+    if weekday == 6:
+        workday_start_hour, workday_start_minute = workday_start.split(':') if workday_start else 0, 0
+        _deep_sleep_until(hour, minute, workday_start_hour, workday_start_minute)
+        return True
+
+    start_time_hour, start_time_minute = weekend_start.split(':')
+    _deep_sleep_until(hour, minute, start_time_hour, start_time_minute)
+    return True
+
+
 def check_time(opening_times_tuple):
+    workday_start, workday_end, weekend_start, weekend_end = opening_times_tuple
+
     localtime = time.localtime()
     weekday = localtime[6]
     hour = localtime[3]
     minute = localtime[4]
+    isTodayWeekday = weekday < 5
 
-    if weekday in range(0, 4):
-        if opening_times_tuple[0] == None:
-            return None
-
-        end_time = opening_times_tuple[1].split(':')
-        end_time_hour = end_time[0]
-        end_time_minute = end_time[1]
-        end_localtime = time.mktime((localtime[0],
-                                     localtime[1],
-                                     localtime[2],
-                                     end_time_hour,
-                                     end_time_minute,
-                                     localtime[5],
-                                     localtime[6],
-                                     localtime[7]))
-
-        # TODO Start time of next day for deepsleep
-        if end_time_hour < hour:
-            _enable_deep_sleep(end_localtime, time.mktime(localtime))
-            return None
-
-        # TODO Start time of next day for deepsleep
-        if end_time_hour == hour and end_time_minute < minute:
-            _enable_deep_sleep(end_localtime, time.mktime(localtime))
-            return None
-
-        start_time = opening_times_tuple[0].split(':')
-        start_time_hour = start_time[0]
-        start_time_minute = start_time[1]
-        start_localtime = time.mktime((localtime[0],
-                                       localtime[1],
-                                       localtime[2],
-                                       start_time_hour,
-                                       start_time_minute,
-                                       localtime[5],
-                                       localtime[6],
-                                       localtime[7]))
-
-        if start_time_hour > hour:
-            _enable_deep_sleep(start_localtime, time.mktime(localtime))
-            return None
-
-        if start_time_hour == hour and start_time_minute > minute:
-            _enable_deep_sleep(start_localtime, time.mktime(localtime))
-            return None
-
+    if isTodayWeekday:
+        _check_time_weekday(workday_start, workday_end, weekend_start, hour, minute, weekday)
     else:
-        if opening_times_tuple[2] == None:
-            return None
+        _check_time_weekend(weekend_start, weekend_end, workday_start, hour, minute, weekday)
 
 
-def _enable_deep_sleep(end_localtime, localtime):
-    diff_ms = (end_localtime - localtime) * 1000
-    machine.deepsleep(diff_ms)
+def _deep_sleep_until(current_hour, current_minute, end_hour, end_minute):
+    end_hour += 23
+    end_hour += end_minute / 60
+
+    current_hour += current_minute / 60
+    time_in_millis += (end_hour - current_hour) * 60 * 60 * 1000
+
+    machine.deepsleep(time_in_millis)

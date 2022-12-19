@@ -17,8 +17,7 @@ const doesUserHaveEnoughBalance = async (value, user) => {
     return value <= (user.balance - dept)
 }
 const paySession = async (session, user) => {
-  let userHasEnoughBalance = await doesUserHaveEnoughBalance(session.totalCost, user)
-  if (!userHasEnoughBalance) {
+  if (user.balance < session.totalCost) {
     Log.tag(LOG_TAG).warn(
       'User', user.username, 'does not have enough balance to pay for session',
       session,

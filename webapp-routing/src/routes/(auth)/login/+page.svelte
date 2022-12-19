@@ -19,11 +19,11 @@
       loading = true
           error = undefined
           return async ({result}) => {
+              loading = false
               if(result.type === "invalid") {
                   error = result.data.error
                   return
               }
-              loading = false
               await applyAction(result)
           }
       }}

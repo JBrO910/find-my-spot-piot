@@ -27,6 +27,8 @@ const paySession = async (session, user) => {
     return 'User does not have enough balance to pay for session'
   }
 
+  Log.tag(LOG_TAG).info('User payed for session', user)
+
   user.balance -= session.pay()
   await userController.updateOne(user)
   await parkingSessionController.updateOne(session)
@@ -91,6 +93,8 @@ parkingSessionRouter.post(
         return
       }
 
+      Log.tag(LOG_TAG).info('User opened session', garage.name, user)
+
       const session = new ParkingSession(
         user.id,
         garage.id,
@@ -105,6 +109,8 @@ parkingSessionRouter.post(
       })
       return
     }
+
+    Log.tag(LOG_TAG).info('User closed session', garage.name, user)
 
     openSession.closeSession()
 

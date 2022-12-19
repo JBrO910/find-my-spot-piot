@@ -58,7 +58,25 @@ def check_time(opening_times_tuple):
             _enable_deep_sleep(end_localtime, time.mktime(localtime))
             return None
 
+        start_time = opening_times_tuple[0].split(':')
+        start_time_hour = start_time[0]
+        start_time_minute = start_time[1]
+        start_localtime = time.mktime((localtime[0],
+                                       localtime[1],
+                                       localtime[2],
+                                       start_time_hour,
+                                       start_time_minute,
+                                       localtime[5],
+                                       localtime[6],
+                                       localtime[7]))
 
+        if start_time_hour > hour:
+            _enable_deep_sleep(start_localtime, time.mktime(localtime))
+            return None
+
+        if start_time_hour == hour and start_time_minute > minute:
+            _enable_deep_sleep(start_localtime, time.mktime(localtime))
+            return None
 
     else:
         if opening_times_tuple[2] == None:

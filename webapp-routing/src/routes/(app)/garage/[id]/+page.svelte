@@ -50,7 +50,7 @@
 </script>
 
 {#if data.page.user.isAdmin}
-  <Button color='secondary' type='button' on:click={navigateToEdit}>Edit Garage</Button>
+  <Button color='secondary' type='button' on:click={navigateToEdit} class='m-2'>Edit Garage</Button>
 
   <div class='pt-4 px-4'>
     <h6 class='text-xl font-medium mr-2'>Gates:</h6>

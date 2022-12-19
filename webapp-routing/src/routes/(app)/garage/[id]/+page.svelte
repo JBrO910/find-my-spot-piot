@@ -1,5 +1,6 @@
 <!--suppress TypeScriptUnresolvedFunction -->
 <script lang='ts'>
+  import { goto } from '$app/navigation'
   import { PUBLIC_BROKER_URL } from '$env/static/public'
   import Button from '$lib/components/Button.svelte'
   import GarageLevelEntry from '$lib/components/GarageLevelEntry.svelte'
@@ -13,6 +14,10 @@
 
   let socket = undefined
 
+  const navigateToEdit = () => {
+    goto(`/garage/${data.garage?.id}/edit`)
+  }
+
   onMount(async () => {
     if (!data.garage?.id || !data.spots) {
       return
@@ -25,7 +30,7 @@
                            id,
                            ...value
                          }) => {
-        data.spots[id] = { ...data.spots[id], ...value }
+        data.spots![id] = { ...data.spots![id], ...value }
       })
     })
   })
@@ -45,7 +50,7 @@
 </script>
 
 {#if data.page.user.isAdmin}
-  <Button :href='/garage/{ data.garage.id }/edit'>Edit</Button>
+  <Button color='secondary' type='button' on:click={navigateToEdit}>Edit Garage</Button>
 
   <div class='pt-4 px-4'>
     <h6 class='text-xl font-medium mr-2'>Gates:</h6>

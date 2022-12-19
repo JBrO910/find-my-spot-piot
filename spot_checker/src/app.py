@@ -4,6 +4,7 @@ import uos
 from umqttsimple import MQTTClient
 from time import sleep, localtime
 import mqtt
+import opening_times
 
 topic_register = b'register'
 
@@ -15,6 +16,7 @@ class App:
         self.mqtt_client = mqtt_client
         self.mqtt_client.set_callback(self._sub_callback)
         self.is_registered_bool = None
+        self.opening_times = None
 
         self.topics = dict()
         self.topics[ENV.REQUEST_ID] = self.request_id
@@ -39,6 +41,7 @@ class App:
                 if self.is_registered():
                     print('I AM IN THE LOOP')
                     self.mqtt_client.check_msg()
+                    opening_times.check_time(self.opening_times)
                     sleep(1)  
                     for spot in self.spots:
                         print(spot.id)
@@ -59,15 +62,14 @@ class App:
         if self.is_registered_bool != None:
             return self.is_registered_bool
         try:
-            uos.stat('id.txt')
+            uos.stat('id.json')
             self.is_registered_bool = True
+            self.opening_times = opening_times.load_opening_times()
             return self.is_registered_bool
         except OSError:
             self.is_registered_bool = False
             return self.is_registered_bool
 
-#    def check_time(self):
-#       if time.localtime() 
 
     def measure_once(self, msg):
         for spot in self.spots:
@@ -110,9 +112,10 @@ class App:
     def receive_id(self, msg):
         if not self.is_registered():
             if self.muid in msg["spots"]:
-                file = open('id.txt', 'w')
-                file.write(self.muid)
+                file = open('id.json', 'w')
+                file.write(msg)
                 file.close()
+                opening_times.load_opening_times()
                 self.is_registered_bool = True
 
     def _sub_callback(self, topic, msg):

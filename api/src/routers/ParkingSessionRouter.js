@@ -13,7 +13,7 @@ const userController = new UserController()
 const garageController = new GarageController()
 
 const doesUserHaveEnoughBalance = async (value, user) => {
-    const dept = await parkingSessionController.getUserDept(user)
+    const dept = await parkingSessionController.getUserDept(user.id)
     return value <= (user.balance - dept)
 }
 const paySession = async (session, user) => {

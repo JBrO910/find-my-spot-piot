@@ -23,7 +23,7 @@ export default class ParkingSessionController {
         return this.#database.getWhere(ParkingSessionController.TABLE, ParkingSession.fromSerialized,
             ["userId", "==", id],
             ["status", "!=", "closed"]
-        ).then(res => (console.log(res), 0))
+        ).then(res => (console.log(res), 0)).catch(err => (console.log("ERROR", err, id), 0))
     }
 
     async getAllForUser(id) {

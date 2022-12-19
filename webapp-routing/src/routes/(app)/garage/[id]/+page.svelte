@@ -1,6 +1,7 @@
 <!--suppress TypeScriptUnresolvedFunction -->
 <script lang='ts'>
   import { PUBLIC_BROKER_URL } from '$env/static/public'
+  import Button from '$lib/components/Button.svelte'
   import GarageLevelEntry from '$lib/components/GarageLevelEntry.svelte'
   import type { CombinedSpot, LiveSpot } from '$lib/types'
   import io from 'socket.io-client'
@@ -43,24 +44,28 @@
     }, [])
 </script>
 
-<div class='pt-4 px-4'>
-  <h6 class='text-xl font-medium mr-2'>Gates:</h6>
-  <div class='flex gap-2'>
-    {#each data.garage.gates as gate}
-      <p
-        on:click={openGate(gate)}
-        on:keydown={openGate(gate)}
-        class={`px-2 py-1 whitespace-nowrap cursor-pointer select-none rounded bg-gray-700 text-gray-50`}
-      >
-        {gate}
-      </p>
-    {:else}
-      <small class='font-medium text-sm'>
-        No gates were registered on garage
-      </small>
-    {/each}
+{#if data.page.user.isAdmin}
+  <Button :href='/garage/{ data.garage.id }/edit'>Edit</Button>
+
+  <div class='pt-4 px-4'>
+    <h6 class='text-xl font-medium mr-2'>Gates:</h6>
+    <div class='flex gap-2'>
+      {#each data.garage.gates as gate}
+        <p
+          on:click={openGate(gate)}
+          on:keydown={openGate(gate)}
+          class={`px-2 py-1 whitespace-nowrap cursor-pointer select-none rounded bg-gray-700 text-gray-50`}
+        >
+          {gate}
+        </p>
+      {:else}
+        <small class='font-medium text-sm'>
+          No gates were registered on garage
+        </small>
+      {/each}
+    </div>
   </div>
-</div>
+{/if}
 
 <div class='flex gap-4 p-4'>
   {#each levels as level, i}

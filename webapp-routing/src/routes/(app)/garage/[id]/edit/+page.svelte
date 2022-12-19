@@ -23,8 +23,7 @@
 {:else}
   <div class='flex flex-col items-center justify-center gap-2 p-4'>
     <div class='rounded bg-gray-50 shadow px-4 py-2 w-1/2'>
-      <h6 class='text-2xl font-medium'>Edit Garage</h6>
-      {JSON.stringify(data.garage || {})}
+      <h6 class='text-2xl font-medium'>Edit Garage "{data.garage.name}"</h6>
       <form
         class='flex flex-col gap-4 py-4'
         use:enhance={() => {
@@ -44,9 +43,10 @@
           value='{data.garage.id}'
         >
 
-        <h6 class='text-2xl font-medium'>{data.garage.name}</h6>
-        <h6 class='text-lg font-medium'>{data.garage.address}</h6>
-        <h6 class='text-lg font-medium'>{data.garage.phoneNumber}</h6>
+        <div class='flex flex-col gap-1'>
+          <p class='text-lg font-medium'>{data.garage.address}</p>
+          <p class='text-lg font-medium'>{data.garage.phoneNumber}</p>
+        </div>
 
         <h6 class='text-lg font-medium'>Settings</h6>
 

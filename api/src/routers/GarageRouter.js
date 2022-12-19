@@ -188,10 +188,10 @@ garageRouter.put('/:id', async (req, res) => {
     return res.status(404).send(error)
   }
 
-  const updated = await garageController.updateOne(garage)
+  await garageController.updateOne(garage)
 
-  Log.tag(LOG_TAG).info(`Updated Garage`, updated.id)
-  res.status(200).send(updated.id)
+  Log.tag(LOG_TAG).info(`Updated Garage`, req.params.id)
+  res.status(200).send(req.params.id)
 })
 
 export default garageRouter

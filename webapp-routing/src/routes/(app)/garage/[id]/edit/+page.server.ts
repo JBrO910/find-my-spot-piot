@@ -1,15 +1,15 @@
-import { addGarage, getGarage, updateGarage } from '$lib/server/api'
+import { getGarage, updateGarage } from '$lib/server/api'
 import type { GarageCreationData } from '$lib/types'
 import type { Actions } from '@sveltejs/kit'
-import { invalid, redirect } from '@sveltejs/kit'
-import type { PageServerLoad } from '../../../../../../.svelte-kit/types/src/routes/(app)/$types'
+import { invalid } from '@sveltejs/kit'
+import type { PageServerLoad } from '../../../../../../.svelte-kit/types/src/routes/(app)/garage/[id]/edit/$types'
 
-export const load: PageServerLoad = ({params, locals}) => {
+export const load: PageServerLoad = async ({params, locals}) => {
   const {
     data: garage,
     error: garageError,
-    // @ts-ignore
   } = await getGarage(params.id)
+
   return {
     garage,
     page: {

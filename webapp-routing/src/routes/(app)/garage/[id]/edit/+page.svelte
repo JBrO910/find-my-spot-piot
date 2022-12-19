@@ -24,6 +24,12 @@
   <div class='flex flex-col items-center justify-center gap-2 p-4'>
     <div class='rounded bg-gray-50 shadow px-4 py-2 w-1/2'>
       <h6 class='text-2xl font-medium'>Edit Garage "{data.garage.name}"</h6>
+
+      <div class='flex flex-col gap-1 mt-1'>
+        <p class='text-lg font-medium'>{data.garage.address}</p>
+        <p class='text-lg font-medium'>{data.garage.phoneNumber}</p>
+      </div>
+
       <form
         class='flex flex-col gap-4 py-4'
         use:enhance={() => {
@@ -42,11 +48,6 @@
           name='id'
           value='{data.garage.id}'
         >
-
-        <div class='flex flex-col gap-1'>
-          <p class='text-lg font-medium'>{data.garage.address}</p>
-          <p class='text-lg font-medium'>{data.garage.phoneNumber}</p>
-        </div>
 
         <h6 class='text-lg font-medium'>Settings</h6>
 

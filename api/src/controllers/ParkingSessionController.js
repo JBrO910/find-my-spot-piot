@@ -19,6 +19,13 @@ export default class ParkingSessionController {
         ).then(res => res)
     }
 
+    async getUserDept(id) {
+        return this.#database.getWhere(ParkingSessionController.TABLE, ParkingSession.fromSerialized,
+            ["userId", "==", id],
+            ["status", "!=", "closed"]
+        ).then(res => (console.log(res), res))
+    }
+
     async getAllForUser(id) {
         return this.#database.getWhere(ParkingSessionController.TABLE, ParkingSession.fromSerialized,
             ["userId", "==", id]

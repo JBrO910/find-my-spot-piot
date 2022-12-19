@@ -12,8 +12,13 @@ const parkingSessionController = new ParkingSessionController()
 const userController = new UserController()
 const garageController = new GarageController()
 
+const doesUserHaveEnoughBalance = async (value, user) => {
+    const dept = await parkingSessionController.getUserDept(user)
+    return value <= (user.balance - dept)
+}
 const paySession = async (session, user) => {
-  if (user.balance < session.totalCost) {
+  let userHasEnoughBalance = await doesUserHaveEnoughBalance(session.totalCost, user)
+  if (!userHasEnoughBalance) {
     Log.tag(LOG_TAG).warn(
       'User does not have enough balance to pay for session',
       session,
@@ -76,7 +81,8 @@ parkingSessionRouter.post(
     )
     const openSession = openSessions[0]
     if (!openSession) {
-      if (garage.ensureUserBalance && user.balance < garage.maxRate) {
+      let userHasEnoughBalance = await doesUserHaveEnoughBalance(garage.maxRate, user)
+      if (garage.ensureUserBalance && !userHasEnoughBalance) {
         Log.tag(LOG_TAG).warn('User does not have enough balance', user, garage)
         res.status(400).send({
           code: 400,

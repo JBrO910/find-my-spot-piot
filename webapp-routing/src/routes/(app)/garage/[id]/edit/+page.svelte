@@ -4,6 +4,8 @@
   import Input from '$lib/components/Input.svelte'
   import type { ApiError } from '$lib/types'
 
+  export let data
+
   let isOpen24HoursWorkdays = false
   let isOpen24HoursWeekends = false
 
@@ -12,7 +14,8 @@
 
 <div class='flex flex-col items-center justify-center gap-2 p-4'>
   <div class='rounded bg-gray-50 shadow px-4 py-2 w-1/2'>
-    <h6 class='text-2xl font-medium'>Register Garage</h6>
+    <h6 class='text-2xl font-medium'>Edit Garage</h6>
+    {JSON.stringify(data.garage || {})}
     <form
       class='flex flex-col gap-4 py-4'
       use:enhance={() => {

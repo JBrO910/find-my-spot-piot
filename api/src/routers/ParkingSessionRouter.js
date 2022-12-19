@@ -20,14 +20,13 @@ const paySession = async (session, user) => {
   let userHasEnoughBalance = await doesUserHaveEnoughBalance(session.totalCost, user)
   if (!userHasEnoughBalance) {
     Log.tag(LOG_TAG).warn(
-      'User does not have enough balance to pay for session',
+      'User', user.username, 'does not have enough balance to pay for session',
       session,
-      user,
     )
     return 'User does not have enough balance to pay for session'
   }
 
-  Log.tag(LOG_TAG).info('User payed for session', user)
+  Log.tag(LOG_TAG).info('User', user.username, 'payed for session')
 
   user.balance -= session.pay()
   await userController.updateOne(user)
@@ -85,7 +84,7 @@ parkingSessionRouter.post(
     if (!openSession) {
       let userHasEnoughBalance = await doesUserHaveEnoughBalance(garage.maxRate, user)
       if (garage.ensureUserBalance && !userHasEnoughBalance) {
-        Log.tag(LOG_TAG).warn('User does not have enough balance', user, garage)
+        Log.tag(LOG_TAG).warn('User', user.username, 'does not have enough balance', garage)
         res.status(400).send({
           code: 400,
           message: 'User does not have enough balance',
@@ -93,7 +92,7 @@ parkingSessionRouter.post(
         return
       }
 
-      Log.tag(LOG_TAG).info('User opened session', garage.name, user)
+      Log.tag(LOG_TAG).info('User', user.username, 'opened session at', garage.name)
 
       const session = new ParkingSession(
         user.id,
@@ -110,7 +109,7 @@ parkingSessionRouter.post(
       return
     }
 
-    Log.tag(LOG_TAG).info('User closed session', garage.name, user)
+    Log.tag(LOG_TAG).info('User', user.username, 'closed session at', garage.name)
 
     openSession.closeSession()
 

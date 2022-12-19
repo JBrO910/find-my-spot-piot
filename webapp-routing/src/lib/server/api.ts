@@ -94,6 +94,19 @@ export const addGarage = async (garageData: GarageCreationData): Response<string
     .catch(handleError)
 }
 
+export const updateGarage = async (garageData: Omit<GarageCreationData, "name" | "address" | "phoneNumber">): Response<string> => {
+  if (!garageData) {
+    return {
+      data: undefined,
+      error: { message: 'No garage data was provided' },
+    }
+  }
+
+  return await instance.put<string>(`garage`, garageData)
+    .then(handleResponse)
+    .catch(handleError)
+}
+
 export const login = async (loginData: any): Response<{ token: string }> => {
   if (!loginData) {
     return {

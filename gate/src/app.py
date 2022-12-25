@@ -35,6 +35,7 @@ class App:
                 if self.is_registered():
                     self.mqtt_client.check_msg()
                     uid = self.reader.do_read()
+                    opening_times.check_time(self.opening_times)
                     if uid is None:
                         continue
                     msg = json.dumps({"muid": self.muid, "uid": uid})

@@ -62,16 +62,23 @@ def _check_time_weekend(weekend_start, weekend_end, workday_start, hour, minute,
 
     end_time_hour, end_time_minute = weekend_end.split(':')  # 12:00
 
-    if end_time_hour < hour or end_time_minute < minute:
+    if end_time_hour > hour or (end_time_hour >= hour and end_time_minute > minute):
         return False
 
     # If tomorrow is weekend, look at weekend start
     if weekday == 6:
-        workday_start_hour, workday_start_minute = workday_start.split(':') if workday_start else 0, 0
+        workday_start_hour, workday_start_minute = workday_start.split(':') if workday_start else [0, 0]
+
+        workday_start_hour = int(workday_start_hour)
+        workday_start_minute = int(workday_start_minute)
+
         _deep_sleep_until(hour, minute, workday_start_hour, workday_start_minute)
         return True
 
     start_time_hour, start_time_minute = weekend_start.split(':')
+    start_time_hour = int(start_time_hour)
+    start_time_minute = int(start_time_minute)
+
     _deep_sleep_until(hour, minute, start_time_hour, start_time_minute)
     return True
 

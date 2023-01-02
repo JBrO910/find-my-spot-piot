@@ -38,6 +38,7 @@ export interface Garage {
   ensureUserBalance: boolean
   payOnExit: boolean
   gates: Array<string>
+  sleepTime: number
 }
 
 export interface GarageCreationData {
@@ -51,6 +52,7 @@ export interface GarageCreationData {
   maxRate: number
   ensureUserBalance: boolean
   payOnExit: boolean
+  sleepTime: number
 }
 
 export interface GarageOverview extends Garage{

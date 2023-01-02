@@ -1,3 +1,4 @@
-node_modules
-findmyspot-firebase-key.json
-findmyspot-firestore-key.json
+/node_modules
+/findmyspot-firebase-key.json
+/findmyspot-firestore-key.json
+/findmyspot-606a5-firebase-adminsdk-ws5my-fa89464904.json

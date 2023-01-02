@@ -110,6 +110,7 @@ export default (io) => {
                     gates: idsGate,
                     openingHoursWorkdays: garage.openingHoursWorkdays,
                     openingHoursWeekend: garage.openingHoursWeekend,
+                    sleepTime: garage.sleepTime,
                 })
             })
         }

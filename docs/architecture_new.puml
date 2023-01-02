@@ -1,0 +1,54 @@
+@startuml
+
+package Garage {
+    package Spot {
+        component "Ultrasonic Sensor [1]" as sensor1
+        component "Light [1]" as actuator1
+
+        component "Ultrasonic Sensor [2]" as sensor2
+        component "Light [2]" as actuator2
+
+        component "Micro Controller" as py
+
+        sensor1 <-d-> py : check depth
+        actuator1 <-d- py : signal
+
+        sensor2 <-u-> py : check depth
+        actuator2 <-u- py : signal
+    }
+
+    package Gate {
+        component "RFID Sensor" as sensorGate
+        component "Micro Controller" as py2
+        component "Servo Motor" as actuatorGate
+
+        sensorGate <-d-> py2 : read chip
+        actuatorGate <-r- py2 : open gate
+    }
+
+    package Gateway {
+        component Distributor as distributor
+    }
+
+    py <--> distributor
+    py2 <--> distributor : Wi-Fi (MQTT)
+}
+
+package Cloud {
+    database "Firebase Realtime DB" as realtimedb
+    database "Firebase Document DB" as documentdb
+
+    component API as api
+
+    component WebUI as web
+
+    api <-r-> web : sockets
+    api <-r-> web : http
+
+    api <-l-> realtimedb : dynamic data
+    api <--> documentdb : static data
+
+    distributor <--> api : sockets
+}
+
+@enduml

@@ -11,6 +11,7 @@ export default class Garage {
   ensureUserBalance
   payOnExit
   gates
+  sleepTime
 
   constructor(
     name,
@@ -23,6 +24,7 @@ export default class Garage {
     ensureUserBalance,
     payOnExit,
     gates,
+    sleepTime,
     id,
     levelDescription,
   ) {
@@ -38,6 +40,7 @@ export default class Garage {
     this.gates = gates ?? []
     this.phoneNumber = phoneNumber
     this.levelDescription = levelDescription
+    this.sleepTime = sleepTime
   }
 
   addGate(gate) {
@@ -54,6 +57,7 @@ export default class Garage {
       ensureUserBalance: this.ensureUserBalance,
       payOnExit: this.payOnExit,
       gates: this.gates,
+      sleepTime: this.sleepTime,
     }
     if (!!this.levelDescription) {
       data.levelDescription = this.levelDescription
@@ -82,6 +86,7 @@ export default class Garage {
     ensureUserBalance,
     payOnExit,
     gates,
+    sleepTime,
     levelDescription,
   }) {
     return new Garage(
@@ -95,6 +100,7 @@ export default class Garage {
       ensureUserBalance,
       payOnExit,
       gates,
+      sleepTime,
       id,
       levelDescription,
     )

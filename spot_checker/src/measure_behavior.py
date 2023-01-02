@@ -22,7 +22,6 @@ class SpotBehavior:
         if not self.is_disabled:
             try:
                 distance = self.sensor.distance_cm()
-                print('Distance:', distance, 'cm')
                 if distance < TRIGGER_DISTANCE:
                     # Spot is occupied
                     self.led.value(0)
@@ -41,7 +40,7 @@ class SpotBehavior:
                     self.is_occupied = False
             except Exception as ex:
                 print(ex)
-    
+
     def send_keep_alive(self):
         start = time()
         if start - self.latest_keep_alive > KEEP_ALIVE_DISTANCE:

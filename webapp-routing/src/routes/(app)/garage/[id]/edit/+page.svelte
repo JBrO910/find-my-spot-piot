@@ -57,6 +57,15 @@
         <div class='flex flex-col gap-2'>
           <h6 class='font-medium'>Opening Times</h6>
 
+          <Input
+            id='sleepTime'
+            name='sleepTime'
+            placeholder='Time between status checks in seconds'
+            type='number'
+            value='{data.garage.sleepTime}'
+            wrapperClass='flex-1'
+          />
+
           <h6 class='text-sm font-medium'>Workdays</h6>
           <div class='flex gap-2 items-center'>
             <label class='mr-2'>

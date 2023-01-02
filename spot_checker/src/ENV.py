@@ -11,7 +11,10 @@ DISABLE_SPOT = b'maintenance/turn/off'
 ENABLE_SPOT = b'maintenance/turn/on'
 KEEP_ALIVE = b'maintenance/keep-alive'
 KEEP_ALIVE_DISTANCE = 30
+
 WORKDAY_START = 'workday_start'
 WORKDAY_END = 'workday_end'
 WEEKEND_START = 'weekend_start'
 WEEKEND_END = 'weekend_end'
+
+SLEEP_TIME = 'sleep_time'

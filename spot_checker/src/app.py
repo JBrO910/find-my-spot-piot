@@ -31,24 +31,33 @@ class App:
         self.mqtt_client.subscribe(ENV.DISABLE_SPOT)
         self.topics[ENV.ENABLE_SPOT] = self.enable_spot
         self.mqtt_client.subscribe(ENV.ENABLE_SPOT)
-        
-        
-        
 
-    def loop(self):  
+    def get_sleep_time():
+        if self.sleep_time != None:
+            return self.sleep_time
+
+        file = open('id.json', 'r')
+        json_object = json.load(file)
+
+        if ENV.SLEEP_TIME in json_object.keys():
+            self.sleep_time = json_object[ENV.SLEEP_TIME]
+
+        file.close()
+        return self.sleep_time
+
+    def loop(self):
         while True:
             try:
                 if self.is_registered():
-                    print('I AM IN THE LOOP')
                     self.mqtt_client.check_msg()
                     opening_times.check_time(self.opening_times)
-                    sleep(1)  
+                    sleep(self.get_sleep_time())
                     for spot in self.spots:
                         print(spot.id)
                         spot.send_keep_alive()
                         spot.measure()
                         sleep(0.25)
-                    
+
                 else:
                     print('WAIT FOR REGISTER')
                     self.mqtt_client.wait_msg()
@@ -56,7 +65,6 @@ class App:
             except OSError as e:
                 mqtt.restart_and_reconnect()
 
-                
 
     def is_registered(self):
         if self.is_registered_bool != None:

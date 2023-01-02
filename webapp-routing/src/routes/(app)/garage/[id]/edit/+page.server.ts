@@ -32,6 +32,7 @@ export const actions: Actions = {
       openingHoursWeekend: formData.get("isOpen24HoursWeekends") !== "on" ? [(formData.get("openFromWeekends") as string), (formData.get("openToWeekends") as string)] : undefined,
       openingHoursWorkdays: formData.get("isOpen24HoursWorkdays") !== "on" ? [(formData.get("openFromWorkdays") as string), (formData.get("openToWorkdays") as string)] : undefined,
       payOnExit: formData.get("payOnExit") === "on",
+      sleepTime: parseFloat(formData.get("sleepTime") as string)
     }
 
     if ((garageData.openingHoursWorkdays && garageData.openingHoursWorkdays[0] >= garageData.openingHoursWorkdays[1]) ||
@@ -55,6 +56,13 @@ export const actions: Actions = {
         code: 'error',
       }
       return invalid(404, { error })
+    }
+    if (garageData.sleepTime <= 0) {
+        const error = {
+            message: 'Sleep time must be a positive number',
+            code: 'error',
+        }
+        return invalid(404, { error })
     }
 
     const {

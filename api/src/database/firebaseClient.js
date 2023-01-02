@@ -2,12 +2,21 @@
 import { initializeApp } from 'firebase/app'
 import { getDatabase } from 'firebase/database'
 import { getFirestore } from 'firebase/firestore'
+import { config } from 'dotenv'
 
-import firebaseConfig from '../../findmyspot-firebase-key.json' assert { type: 'json' }
-import firestoreConfig from '../../findmyspot-firestore-key.json' assert { type: 'json' }
+config()
 
-// Initialize Firebase
-const app = initializeApp({...firebaseConfig, ...firestoreConfig})
+let app
 
-export const documentDatabase = getFirestore(app)
-export const realtimeDatabase = getDatabase(app)
+export function getDocumentDatabase() {
+    if(!app) {
+        app = initializeApp(JSON.parse(process.env.API_KEY))
+    }
+    return getFirestore(app)
+}
+export function getRealtimeDatabase() {
+    if(!app) {
+        app = initializeApp(JSON.parse(process.env.API_KEY))
+    }
+    return getDatabase(app)
+}

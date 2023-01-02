@@ -1,5 +1,8 @@
-import cors from 'cors'
 import { config } from 'dotenv'
+
+config()
+
+import cors from 'cors'
 import express from 'express'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
@@ -10,7 +13,6 @@ import setupRealtimeGarageRouter from './routers/setupRealtimeGarageRouter.js'
 import userRouter from './routers/UserRouter.js'
 import { Log } from './utils/logger.js'
 
-config()
 
 const app = express()
 

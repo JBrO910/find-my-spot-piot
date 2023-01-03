@@ -53,7 +53,6 @@ export default function setupMQTTBroker(registerSleepTime = 1000 * 10) {
         clientId: process.env.GARAGE_ID,
         clean: true,
         hostname: process.env.MQTT_BROKER_ADDRESS,
-        port: 1883,
         protocol: 'ssl',
     } : {}
     Log.trace('MQTT Broker options', options)

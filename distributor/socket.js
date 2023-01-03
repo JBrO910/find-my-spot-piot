@@ -4,6 +4,7 @@ import { Log } from "./logger";
 
 config();
 
+console.log("Trying to connect to socket", `${process.env.SOCKET_SERVER_ADDRESS}/${process.env.GARAGE_ID}-broker`)
 const socket = io(
   `${process.env.SOCKET_SERVER_ADDRESS}/${process.env.GARAGE_ID}-broker`
 );

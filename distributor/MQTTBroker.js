@@ -85,6 +85,10 @@ export default function setupMQTTBroker(registerSleepTime = 1000 * 10) {
         }),
     };
 
+    mqttClient.on("error", (err) => {
+        Log.error("Connection error in MQTT", err.message);
+    })
+
     mqttClient.on("connect", () => {
         Log.info("Connected to MQTT Client")
 

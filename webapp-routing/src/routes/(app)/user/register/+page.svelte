@@ -29,7 +29,7 @@
   }
 
   onMount(async () => {
-    if (!data.page.user.adminGarageId && !data.page.user.isAdmin) {
+    if (!data.page.user?.adminGarageId && !data.page.user?.isAdmin) {
       return
     }
 

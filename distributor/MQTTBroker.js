@@ -55,7 +55,6 @@ export default function setupMQTTBroker(registerSleepTime = 1000 * 10) {
         hostname: process.env.MQTT_BROKER_ADDRESS,
         protocol: 'ssl',
     } : {}
-    Log.trace('MQTT Broker options', options)
     const mqttClient = mqtt.connect(process.env.MQTT_BROKER_ADDRESS, options)
 
     let isRegistering = false

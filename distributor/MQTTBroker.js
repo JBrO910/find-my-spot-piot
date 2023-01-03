@@ -46,7 +46,7 @@ let instance = axios.create({
 })
 
 // ? Sleep time defaults to 10 seconds
-export default function setupMQTTBroker(registerSleepTime = 1000 * 10) {
+export default function setupMQTTBroker(registerSleepTime = 1000 * 5) {
     const options = process.env.ENVIRONMENT === 'production' ? {
         username: process.env.MQTT_BROKER_USERNAME,
         password: process.env.MQTT_BROKER_PASSWORD,

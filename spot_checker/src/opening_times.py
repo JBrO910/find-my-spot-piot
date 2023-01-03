@@ -8,16 +8,14 @@ def load_opening_times():
     file = open('id.json', 'r')
     json_object = json.load(file)
 
-    if ENV.WORKDAY_START and ENV.WORKDAY_END in json_object.keys():
-        workday_start = json_object[ENV.WORKDAY_START]
-        workday_end = json_object[ENV.WORKDAY_END]
+    if ENV.WORKDAYS_OPENING in json_object.keys():
+        workday_start, workday_end = json_object[ENV.WORKDAYS_OPENING]
     else:
         workday_start = None
         workday_end = None
 
-    if ENV.WEEKEND_START and ENV.WEEKEND_END in json_object.keys():
-        weekend_start = json_object[ENV.WEEKEND_START]
-        weekend_end = json_object[ENV.WEEKEND_END]
+    if ENV.WEEKEND_OPENING in json_object.keys():
+        weekend_start, weekend_end = json_object[ENV.WEEKEND_OPENING]
     else:
         weekend_start = None
         weekend_end = None
@@ -106,5 +104,4 @@ def _deep_sleep_until(current_hour, current_minute, end_hour, end_minute):
     time_in_millis = (end_hour - current_hour) * 60 * 60 * 1000
     time_in_millis = int(time_in_millis)
     print(time_in_millis)
-    # machine.deepsleep(time_in_millis)
-    machine.deepsleep(10000)
+    machine.deepsleep(time_in_millis)

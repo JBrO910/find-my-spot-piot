@@ -1,6 +1,9 @@
 TRIGGER_DISTANCE = 10
-BROKER_IP = '192.168.218.111'
+BROKER_IP = b'9ad442f70b0a44f98a7f55588b7f03cf.s2.eu.hivemq.cloud'
+# BROKER_IP = '192.168.218.111'
 # BROKER_IP = '192.168.178.36'
+BROKER_USERNAME = b'find-my-spot'
+BROKER_PASSWORD = b'find-my-spot'
 REQUEST_ID = b'register/request-id'
 REQUEST_ID_RESPONSE = b'register/request-id/response'
 RECEIVE_ID = b'register/receive-id'
@@ -12,9 +15,7 @@ ENABLE_SPOT = b'maintenance/turn/on'
 KEEP_ALIVE = b'maintenance/keep-alive'
 KEEP_ALIVE_DISTANCE = 30
 
-WORKDAY_START = 'workday_start'
-WORKDAY_END = 'workday_end'
-WEEKEND_START = 'weekend_start'
-WEEKEND_END = 'weekend_end'
+WORKDAYS_OPENING = 'openingHoursWorkdays'
+WEEKEND_OPENING = 'openingHoursWeekend'
 
-SLEEP_TIME = 'sleep_time'
+SLEEP_TIME = 'sleepTime'

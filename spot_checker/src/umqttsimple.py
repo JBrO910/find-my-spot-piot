@@ -3,6 +3,7 @@ try:
 except:
     import socket
 import ustruct as struct
+import uselect
 from ubinascii import hexlify
 
 class MQTTException(Exception):
@@ -88,7 +89,7 @@ class MQTTClient:
 
         self.sock.write(premsg, i + 2)
         self.sock.write(msg)
-        #print(hex(len(msg)), hexlify(msg, ":"))
+        # print(hex(len(msg)), hexlify(msg, ":"))
         self._send_str(self.client_id)
         if self.lw_topic:
             self._send_str(self.lw_topic)
@@ -204,4 +205,10 @@ class MQTTClient:
     # the same processing as wait_msg.
     def check_msg(self):
         self.sock.setblocking(False)
+        #return self.wait_msg()
+        poller = uselect.poll()
+        poller.register(self.sock, uselect.POLLIN)
+        res = poller.poll(500)  # time in milliseconds
+        if not res:
+            return None
         return self.wait_msg()

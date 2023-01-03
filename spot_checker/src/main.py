@@ -12,7 +12,7 @@ pycom.heartbeat(False)
 client_id = ubinascii.hexlify(machine.unique_id())
 
 try:
-    client = mqtt.connect_mqtt(client_id, ENV.BROKER_IP)
+    client = mqtt.connect_mqtt(client_id, ENV.BROKER_IP, ENV.BROKER_USERNAME, ENV.BROKER_PASSWORD)
 except OSError as e:
     mqtt.restart_and_reconnect()
 

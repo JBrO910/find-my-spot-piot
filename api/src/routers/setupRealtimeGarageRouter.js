@@ -79,6 +79,7 @@ export default (io) => {
                 garageBrokerSocket.emit('openGate', id)
             })
             socket.on('register', ({spots, levelDescription, gates}) => {
+                console.log("GARAGE BEFORE", garage.sleepTime)
                 registerLevelDescription(levelDescription)
 
                 const idSetSpots = spots.reduce((acc, curr) => {
@@ -105,6 +106,9 @@ export default (io) => {
                 Log.tag(LOG_TAG)
                     .trace('Register gates for controller ids', idsGate)
 
+                Log.tag(LOG_TAG)
+                    .trace('Garage', JSON.stringify(garage.serialised, null, 2), garage.sleepTime)
+
                 garageBrokerSocket.emit('register', {
                     spots: idsSpots,
                     gates: idsGate,
@@ -128,7 +132,7 @@ export default (io) => {
 
         garageBrokerSocket.on('connect', (socket) => {
             Log.tag(LOG_TAG)
-                .info(`BrokerSocket(${ socket.id }) Connected`)
+                .info(`BrokerSocket(${ socket.id }) Connected`, garage.sleepTime)
 
             socket.on('loadSpotsResponse', ({spots, gates}) => {
                 Log.tag(LOG_TAG)

@@ -98,6 +98,9 @@ export default function setupMQTTBroker(registerSleepTime = 1000 * 10) {
     mqttClient.on('connect', () => {
         Log.info('Connected to MQTT Client')
 
+        mqttClient.publish(UPDATE_SPOT, "TEST")
+        Log.trace('Sent update spot message', UPDATE_SPOT)
+
         listenToReadCard(() => {
             Log.trace('Register card request send')
             mqttClient.publish(CARD_REGISTER, '{}')

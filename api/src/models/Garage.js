@@ -99,8 +99,8 @@ export default class Garage {
       maxRate,
       ensureUserBalance,
       payOnExit,
-      gates,
       sleepTime,
+      gates,
       id,
       levelDescription,
     )

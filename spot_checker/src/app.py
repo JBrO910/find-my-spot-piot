@@ -17,6 +17,7 @@ class App:
         self.mqtt_client.set_callback(self._sub_callback)
         self.is_registered_bool = None
         self.opening_times = None
+        self.sleep_time = None
 
         self.topics = dict()
         self.topics[ENV.REQUEST_ID] = self.request_id
@@ -32,7 +33,7 @@ class App:
         self.topics[ENV.ENABLE_SPOT] = self.enable_spot
         self.mqtt_client.subscribe(ENV.ENABLE_SPOT)
 
-    def get_sleep_time():
+    def get_sleep_time(self):
         if self.sleep_time != None:
             return self.sleep_time
 
@@ -41,7 +42,6 @@ class App:
 
         if ENV.SLEEP_TIME in json_object.keys():
             self.sleep_time = json_object[ENV.SLEEP_TIME]
-
         file.close()
         return self.sleep_time
 
@@ -121,9 +121,9 @@ class App:
         if not self.is_registered():
             if self.muid in msg["spots"]:
                 file = open('id.json', 'w')
-                file.write(msg)
+                file.write(json.dumps(msg))
                 file.close()
-                opening_times.load_opening_times()
+                self.opening_times = opening_times.load_opening_times()
                 self.is_registered_bool = True
 
     def _sub_callback(self, topic, msg):

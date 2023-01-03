@@ -45,7 +45,13 @@ let instance = axios.create({
 
 // ? Sleep time defaults to 10 seconds
 export default function setupMQTTBroker(registerSleepTime = 1000 * 10) {
-    const mqttClient = mqtt.connect(process.env.MQTT_BROKER_ADDRESS);
+    const options = process.env.ENVIRONMENT === "production" ? {
+        username: process.env.MQTT_BROKER_USERNAME,
+        password: process.env.MQTT_BROKER_PASSWORD,
+        clientId: process.env.GARAGE_ID,
+        clean: true,
+    } : {}
+    const mqttClient = mqtt.connect(process.env.MQTT_BROKER_ADDRESS, options);
 
     let isRegistering = false
     const registeredSpots = []
@@ -62,8 +68,6 @@ export default function setupMQTTBroker(registerSleepTime = 1000 * 10) {
             } else if (type === "gate") {
                 Log.trace("Register gate", data);
                 registeredGates.push(data);
-                // await sleep(1000)
-                // mqttClient.publish(RECEIVE_ID, JSON.stringify({spots: [], gates: registeredGates}));
             }
         }),
         [GATE_SEND_UID]: mqttParseMessage(({uid, muid}) => {

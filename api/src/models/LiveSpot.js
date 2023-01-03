@@ -1,4 +1,4 @@
-export const KEEP_ALIVE_INTERVAL = 1000 * 60 * 20 // 20 Minutes
+export const KEEP_ALIVE_INTERVAL = 1000 * 30 // 30 Seconds
 export const MAX_KEEP_ALIVE_GAP = 3 * KEEP_ALIVE_INTERVAL // 3 missed keep-alive
 export const STATUS_CHANGE_WARNING_DURATION = 1000 * 60 * 60 * 12 // 12 Hours
 

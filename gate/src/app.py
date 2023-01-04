@@ -93,7 +93,7 @@ class App:
         if not self.is_registered():
             if self.muid in msg["gates"]:
                 file = open('id.json', 'w')
-                file.write(msg)
+                file.write(json.dumps(msg))
                 file.close()
                 self.opening_times = opening_times.load_opening_times()
                 self.is_registered_bool = True

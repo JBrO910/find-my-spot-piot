@@ -3,6 +3,7 @@ try:
 except:
     import socket
 import ustruct as struct
+import uselect
 from ubinascii import hexlify
 
 
@@ -206,4 +207,9 @@ class MQTTClient:
     # the same processing as wait_msg.
     def check_msg(self):
         self.sock.setblocking(False)
+        poller = uselect.poll()
+        poller.register(self.sock, uselect.POLLIN)
+        res = poller.poll(500)  # time in milliseconds
+        if not res:
+            return None
         return self.wait_msg()

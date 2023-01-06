@@ -1,6 +1,6 @@
-import type { PageServerLoad } from '../../../../../../.svelte-kit/types/src/routes/(app)/$types'
 import { getGarage } from '$lib/server/api'
 import type { PageLoadProps } from './types'
+import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async ({
                                              params,
@@ -9,14 +9,12 @@ export const load: PageServerLoad = async ({
   const {
     data: garage,
     error: garageError,
-    // @ts-ignore
-  } = await getGarage(params.id)
+  } = await getGarage(locals.axios, params.id)
 
   return {
     garage,
     page: {
       name: garage?.name ? `Setup garage "${garage?.name}"` : "Garage not found",
-      // @ts-ignore
       user: locals.user,
       error: garageError,
     },

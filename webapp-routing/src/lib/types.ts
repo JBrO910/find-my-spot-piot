@@ -19,6 +19,7 @@ export interface PageProps {
 export type WithError<T> = { data?: T, error?: ApiError }
 
 export interface User {
+  id?: string,
   username: string,
   isAdmin: boolean,
   adminGarageId: string,

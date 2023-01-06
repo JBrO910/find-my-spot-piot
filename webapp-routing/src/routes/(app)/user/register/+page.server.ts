@@ -8,12 +8,11 @@ export const load: PageServerLoad = async ({ locals }): Promise<PageLoadProps> =
   const {
     data: users,
     error,
-  } = await getUsersToRegister()
+  } = await getUsersToRegister(locals.axios)
   return {
     users: users ?? [],
     page: {
       name: 'Register Cards',
-      // @ts-ignore
       user: locals.user,
       error,
     },
@@ -21,9 +20,9 @@ export const load: PageServerLoad = async ({ locals }): Promise<PageLoadProps> =
 }
 
 export const actions: Actions = {
-  default: async ({ request }) => {
+  default: async ({ request, locals }) => {
     const formData = await request.formData()
-    const { error } = await putUserCard({
+    const { error } = await putUserCard(locals.axios, {
       cardID: formData.get('cardID') as string,
       balance: Number(formData.get('balance')),
       userID: formData.get('userID') as string,

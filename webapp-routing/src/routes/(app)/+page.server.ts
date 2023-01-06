@@ -6,13 +6,12 @@ export const load: PageServerLoad = async ({locals}): Promise<PageLoadProps> => 
   const {
     data: garages,
     error,
-  } = await getGarageOverview()
+  } = await getGarageOverview(locals.axios)
 
   return {
     garages,
     page: {
       name: "Overview",
-      // @ts-ignore
       user: locals.user,
       error,
     }

@@ -10,18 +10,17 @@ export const load: PageServerLoad = async ({
     data: garage,
     error: garageError,
     // @ts-ignore
-  } = await getGarage(params.id)
+  } = await getGarage(locals.axios, params.id)
   const {
     data: spots,
     error: spotError,
-  } = await getGarageSpots(garage?.id)
+  } = await getGarageSpots(locals.axios, garage?.id)
 
   return {
     garage,
     spots,
     page: {
       name: garage?.name ?? "",
-      // @ts-ignore
       user: locals.user,
       error: garageError ?? spotError,
     },

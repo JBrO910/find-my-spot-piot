@@ -2,19 +2,18 @@ import { getGarage, updateGarage } from '$lib/server/api'
 import type { GarageCreationData } from '$lib/types'
 import type { Actions } from '@sveltejs/kit'
 import { invalid } from '@sveltejs/kit'
-import type { PageServerLoad } from '../../../../../../.svelte-kit/types/src/routes/(app)/garage/[id]/edit/$types'
+import type { PageServerLoad } from './$types'
 
 export const load: PageServerLoad = async ({params, locals}) => {
   const {
     data: garage,
     error: garageError,
-  } = await getGarage(params.id)
+  } = await getGarage(locals.axios, params.id)
 
   return {
     garage,
     page: {
       name: 'Edit Garage Settings',
-      // @ts-ignore
       user: locals.user,
       error: garageError
     },
@@ -22,7 +21,7 @@ export const load: PageServerLoad = async ({params, locals}) => {
 }
 
 export const actions: Actions = {
-  default: async ({ request }) => {
+  default: async ({ request, locals }) => {
     const formData = await request.formData()
 
     const garageData: Omit<GarageCreationData, "name" | "address" | "phoneNumber"> = {
@@ -68,7 +67,7 @@ export const actions: Actions = {
     const {
       data,
       error,
-    } = await updateGarage(formData.get("id") as string, garageData)
+    } = await updateGarage(locals.axios, formData.get("id") as string, garageData)
 
     if (error) {
       return invalid(404, { error })

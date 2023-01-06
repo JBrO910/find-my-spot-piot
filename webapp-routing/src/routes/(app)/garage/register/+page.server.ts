@@ -12,7 +12,7 @@ export const load = () => {
 }
 
 export const actions: Actions = {
-  default: async ({ request }) => {
+  default: async ({ request, locals }) => {
     const formData = await request.formData()
 
     const garageData: GarageCreationData = {
@@ -61,7 +61,7 @@ export const actions: Actions = {
     const {
       data,
       error,
-    } = await addGarage(garageData)
+    } = await addGarage(locals.axios, garageData)
 
     if (error) {
       return invalid(404, { error })

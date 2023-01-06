@@ -7,14 +7,12 @@ export const load: PageServerLoad = async ({ locals }): Promise<PageLoadProps> =
   const {
     data: parkingHistory,
     error,
-    // @ts-ignore
-  } = await getParkingSessions(locals.user.id)
+  } = await getParkingSessions(locals.axios, locals.user?.id ?? "")
 
   return {
     parkingHistory: parkingHistory ?? [],
     page: {
       name: 'Parking History',
-      // @ts-ignore
       user: locals.user,
       error,
     },
@@ -24,13 +22,11 @@ export const load: PageServerLoad = async ({ locals }): Promise<PageLoadProps> =
 export const actions: Actions = {
   pay: async ({ request, locals }) => {
     const formData = await request.formData()
-    // @ts-ignore
-    await payParkingSession(formData.get("sessionId") as string, locals.user.id)
+    await payParkingSession(locals.axios, formData.get("sessionId") as string, locals.user?.id ?? "")
   },
   topUp: async ({ request, locals }) => {
     const formData = await request.formData()
-    // @ts-ignore
-    await topUpBalance(locals.user.id, parseInt(formData.get("amount") as string))
+    await topUpBalance(locals.axios, locals.user?.id ?? "", parseInt(formData.get("amount") as string))
   },
 }
 

@@ -1,5 +1,7 @@
+import { PUBLIC_API_URL } from '$env/static/public'
 import type { Handle } from '@sveltejs/kit'
-import { getUser, setTokenOnAxios } from './lib/server/api'
+import axios from 'axios'
+import { getUser } from '$lib/server/api'
 
 export const handle: Handle = async ({
                                        event,
@@ -16,13 +18,16 @@ export const handle: Handle = async ({
       })
   }
 
-  // This is not really secure and so on... but I know not to use it
-  if (!!event.cookies.get('keepLoggedIn') && !!token) {
-    const { data: user } = await getUser()
-    // @ts-ignore
-    event.locals.user = user
-    setTokenOnAxios(token)
-  }
+  event.locals.axios =  axios.create({
+    baseURL: PUBLIC_API_URL,
+    withCredentials: false,
+    headers: {
+      Authorization: `Bearer ${ token }`,
+    },
+  })
+
+  const { data: user } = await getUser(event.locals.axios)
+  event.locals.user = user
 
   return resolve(event)
 }

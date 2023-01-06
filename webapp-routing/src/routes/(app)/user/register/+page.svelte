@@ -3,8 +3,7 @@
   import { PUBLIC_BROKER_URL } from '$env/static/public'
   import Button from '$lib/components/Button.svelte'
   import Input from '$lib/components/Input.svelte'
-  import io from 'socket.io-client'
-  import { onMount } from 'svelte'
+  import io, { Socket } from 'socket.io-client'
   import type { PageLoadProps } from './types'
 
   export let data: PageLoadProps
@@ -16,31 +15,31 @@
   let isLoadingCard = false
   let cardError = ''
   let loadingCardTimeout = undefined
+  let selectedGarage = data?.garages?.[0]?.id
 
-  let socket = undefined
+  let socket: Socket | undefined = undefined
+  $: {
+    if(!selectedGarage) {
+      socket = undefined
+    } else {
+      socket = io(`${ PUBLIC_BROKER_URL }/${ selectedGarage }-register`)
+      socket.on('connect', () => console.log('Connected to socket'))
+      socket.on('readCardResult', (card: { uid: string }) => {
+        selectedCard = card.uid
+        isLoadingCard = false
+        clearTimeout(loadingCardTimeout)
+      })
+    }
+  }
 
   const loadCard = () => {
     isLoadingCard = true
-    socket.emit('readCard')
+    socket?.emit('readCard')
     loadingCardTimeout = setTimeout(() => {
       isLoadingCard = false
       cardError = 'Timeout'
     }, 10_000)
   }
-
-  onMount(async () => {
-    if (!data.page.user?.adminGarageId && !data.page.user?.isAdmin) {
-      return
-    }
-
-    socket = io(`${ PUBLIC_BROKER_URL }/${ data.page.user.adminGarageId }-register`)
-    socket.on('connect', () => console.log('Connected to socket'))
-    socket.on('readCardResult', (card: { uid: string }) => {
-      selectedCard = card.uid
-      isLoadingCard = false
-      clearTimeout(loadingCardTimeout)
-    })
-  })
 </script>
 
 <div class='grid place-items-center p-4'>
@@ -68,6 +67,13 @@
       type='select'
     />
     <Input
+      bind:value={selectedGarage}
+      name='garageID'
+      placeholder='Garage with Scanner'
+      selectOptions={data?.garages?.map(e => ({label: e.name, value: e.id}))}
+      type='select'
+    />
+    <Input
       bind:value={balance}
       name='balance'
       placeholder='Balance'
@@ -88,7 +94,7 @@
       {/if}
       <Button
         color='secondary'
-        disabled={isLoadingCard}
+        disabled={isLoadingCard || !selectedGarage}
         on:click={loadCard}
         type='button'
       >

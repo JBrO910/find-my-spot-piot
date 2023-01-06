@@ -1,4 +1,4 @@
-import { getUsersToRegister, putUserCard } from '$lib/server/api'
+import { getGarageOverview, getUsersToRegister, putUserCard } from '$lib/server/api'
 import { invalid } from '@sveltejs/kit'
 import type { Actions } from '@sveltejs/kit'
 import type { PageServerLoad } from '../../../../../.svelte-kit/types/src/routes/(app)/user/register/$types'
@@ -9,12 +9,18 @@ export const load: PageServerLoad = async ({ locals }): Promise<PageLoadProps> =
     data: users,
     error,
   } = await getUsersToRegister(locals.axios)
+  const {
+    data: garages,
+    error: garageError,
+  } = await getGarageOverview(locals.axios)
+
   return {
     users: users ?? [],
+    garages: garages ?? [],
     page: {
       name: 'Register Cards',
       user: locals.user,
-      error,
+      error: error ?? garageError,
     },
   }
 }

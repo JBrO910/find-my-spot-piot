@@ -43,6 +43,9 @@ let instance = axios.create({
         process.env.GARAGE_ID +
         '/toggleSession',
     withCredentials: false,
+    headers: {
+        Authorization: `ApiKey ${ process.env.API_KEY }`,
+    }
 })
 
 // ? Sleep time defaults to 10 seconds

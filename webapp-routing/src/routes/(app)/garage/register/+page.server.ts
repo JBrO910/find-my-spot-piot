@@ -2,8 +2,12 @@ import { addGarage } from '$lib/server/api'
 import type { GarageCreationData } from '$lib/types'
 import type { Actions } from '@sveltejs/kit'
 import { invalid, redirect } from '@sveltejs/kit'
+import type { PageServerLoad } from './$types'
 
-export const load = () => {
+export const load: PageServerLoad = ({locals}) => {
+  if(!locals.user?.isAdmin) {
+    throw redirect(307, '/')
+  }
   return {
     page: {
       name: 'Register Garage',
@@ -74,6 +78,8 @@ export const actions: Actions = {
       return invalid(500, { error })
     }
 
-    throw redirect(307, `/garage/${ data }/setup`)
+    console.log("Garage was created with the following environment\n\n", `GARAGE_ID=${data.id}\n`, `API_KEY=${data.apiKey}\n\n`)
+
+    throw redirect(307, `/garage/${ data.id }/setup`)
   },
 }

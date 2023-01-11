@@ -23,7 +23,11 @@
       return
     }
 
-    socket = io(`${ PUBLIC_BROKER_URL }/${ data.garage.id }`)
+    socket = io(`${ PUBLIC_BROKER_URL }/${ data.garage.id }`, {
+      auth: {
+        token: `ApiKey ${ data.socketAuth }`,
+      },
+    })
     socket.on('connect', () => console.log('Connected to socket'))
     socket.on('update', (sendSpots: Array<LiveSpot>) => {
       sendSpots.forEach(({

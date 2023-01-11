@@ -1,10 +1,14 @@
 import { getGarageOverview, getUsersToRegister, putUserCard } from '$lib/server/api'
-import { invalid } from '@sveltejs/kit'
+import { invalid, redirect } from '@sveltejs/kit'
 import type { Actions } from '@sveltejs/kit'
 import type { PageServerLoad } from '../../../../../.svelte-kit/types/src/routes/(app)/user/register/$types'
 import type { PageLoadProps } from './types'
 
 export const load: PageServerLoad = async ({ locals }): Promise<PageLoadProps> => {
+  if(!locals.user?.isAdmin) {
+    throw redirect(307, '/')
+  }
+
   const {
     data: users,
     error,
@@ -17,6 +21,7 @@ export const load: PageServerLoad = async ({ locals }): Promise<PageLoadProps> =
   return {
     users: users ?? [],
     garages: garages ?? [],
+    socketAuth: locals.socketAuth,
     page: {
       name: 'Register Cards',
       user: locals.user,

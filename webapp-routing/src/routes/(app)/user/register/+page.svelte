@@ -22,7 +22,11 @@
     if(!selectedGarage) {
       socket = undefined
     } else {
-      socket = io(`${ PUBLIC_BROKER_URL }/${ selectedGarage }-register`)
+      socket = io(`${ PUBLIC_BROKER_URL }/${ selectedGarage }-register`, {
+        auth: {
+          token: `ApiKey ${ data.socketAuth }`,
+        },
+      })
       socket.on('connect', () => console.log('Connected to socket'))
       socket.on('readCardResult', (card: { uid: string }) => {
         selectedCard = card.uid

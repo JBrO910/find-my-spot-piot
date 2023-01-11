@@ -8,6 +8,7 @@ declare global {
   namespace App {
       interface Locals {
         user?: User
+        socketAuth?: string
         axios: AxiosInstance
       }
       // interface PageData {}

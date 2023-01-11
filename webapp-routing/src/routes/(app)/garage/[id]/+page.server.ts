@@ -19,6 +19,7 @@ export const load: PageServerLoad = async ({
   return {
     garage,
     spots,
+    socketAuth: locals.socketAuth,
     page: {
       name: garage?.name ?? "",
       user: locals.user,

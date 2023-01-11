@@ -18,13 +18,16 @@ export const handle: Handle = async ({
       })
   }
 
+  const Authorization = `Bearer ${ token }`
+
   event.locals.axios =  axios.create({
     baseURL: PUBLIC_API_URL,
     withCredentials: false,
     headers: {
-      Authorization: `Bearer ${ token }`,
+      Authorization,
     },
   })
+  event.locals.socketAuth = Authorization
 
   const { data: user } = await getUser(event.locals.axios)
   event.locals.user = user

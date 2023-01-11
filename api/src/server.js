@@ -1,8 +1,5 @@
-import { config } from 'dotenv'
-
-config()
-
 import cors from 'cors'
+import { config } from 'dotenv'
 import express from 'express'
 import { createServer } from 'http'
 import { Server } from 'socket.io'
@@ -13,6 +10,7 @@ import setupRealtimeGarageRouter from './routers/setupRealtimeGarageRouter.js'
 import userRouter from './routers/UserRouter.js'
 import { Log } from './utils/logger.js'
 
+config()
 
 const app = express()
 
@@ -21,21 +19,21 @@ app.use(express.json())
 
 const httpServer = createServer(app)
 const io = new Server(httpServer, {
-  cors: {
-    origin: true,
-  },
+    cors: {
+        origin: true,
+    },
 })
 
 app.use((req, res, next) => {
-  Log.tag('Router').trace(req.method, req.originalUrl)
-  next()
+    Log.tag('Router')
+        .trace(req.method, req.originalUrl)
+    next()
 })
 
 app.use('/auth', authRouter)
 app.use('/user', authenticated, userRouter)
 app.use('/garage', authenticated, garageRouter)
-// TODO add authentication for distributor
-app.use('/parkingSession', parkingSessionRouter)
+app.use('/parkingSession', authenticated, parkingSessionRouter)
 
 setupRealtimeGarageRouter(io)
 

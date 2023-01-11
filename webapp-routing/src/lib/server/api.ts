@@ -64,7 +64,7 @@ export const getGarageSpots = async (instance: AxiosInstance, id?: string): Resp
     .catch(handleError)
 }
 
-export const addGarage = async (instance: AxiosInstance, garageData: GarageCreationData): Response<string> => {
+export const addGarage = async (instance: AxiosInstance, garageData: GarageCreationData): Response<{ id: string, apiKey: string }> => {
   if (!garageData) {
     return {
       data: undefined,
@@ -72,7 +72,7 @@ export const addGarage = async (instance: AxiosInstance, garageData: GarageCreat
     }
   }
 
-  return await instance.post<string>(`garage`, garageData)
+  return await instance.post<{ id: string, apiKey: string }>(`garage`, garageData)
     .then(handleResponse)
     .catch(handleError)
 }

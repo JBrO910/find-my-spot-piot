@@ -1,7 +1,10 @@
+import { randomUUID } from 'crypto'
 import { Router } from 'express'
+import ApiController from '../controllers/ApiController.js'
 import GarageController from '../controllers/GarageController.js'
 import LiveSpotController from '../controllers/LiveSpotController.js'
 import SpotController from '../controllers/SpotController.js'
+import ApiKey from '../models/ApiKey.js'
 import Garage from '../models/Garage.js'
 import { Log } from '../utils/logger.js'
 
@@ -11,6 +14,7 @@ const garageRouter = Router()
 const garageController = new GarageController()
 const spotController = new SpotController()
 const liveSpotController = new LiveSpotController()
+const apiController = new ApiController()
 
 garageRouter.get('/', async (req, res) => {
     const garages = await garageController.getAll()
@@ -167,10 +171,13 @@ garageRouter.post('/', async (req, res) => {
         maxRate, ensureUserBalance, payOnExit, sleepTime)
     const created = await garageController.addOne(garage)
 
+    const apiKey = new ApiKey(randomUUID(), created.id)
+    await apiController.add(apiKey)
+
     Log.tag(LOG_TAG)
         .info(`Created Garage`, created.id)
     res.status(200)
-        .send(created.id)
+        .send({id: created.id, apiKey: apiKey.key})
 })
 
 garageRouter.put('/:id', async (req, res) => {

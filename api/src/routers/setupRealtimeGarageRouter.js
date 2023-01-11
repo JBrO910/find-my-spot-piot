@@ -4,6 +4,7 @@ import SpotController from '../controllers/SpotController.js'
 import LiveSpot from '../models/LiveSpot.js'
 import Spot from '../models/Spot.js'
 import { Log } from '../utils/logger.js'
+import { authenticatedSocket } from './AuthenticationRouter.js'
 
 export default (io) => {
     const garageController = new GarageController()
@@ -14,8 +15,9 @@ export default (io) => {
         const LOG_TAG = `Garage[${ garage.id }]`
 
         const garageConsumerSockets = io.of(`/${ garage.id }`)
-        const garageBrokerSocket = io.of(`/${ garage.id }-broker`)
         const garageRegisterSocket = io.of(`/${ garage.id }-register`)
+        const garageBrokerSocket = io.of(`/${ garage.id }-broker`)
+        garageBrokerSocket.use(authenticatedSocket)
 
         const registerSpot = (spot) => {
             const newSpot = new Spot(

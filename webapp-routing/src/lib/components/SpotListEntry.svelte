@@ -52,7 +52,7 @@
   </div>
 
   {#if spotDisplayStatus}
-    <div class='absolute top-0 right-0 bg-gray-50 m-2 p-1 rounded'>
+    <div class='absolute top-0 right-0 bg-gray-50 dark:bg-gray-800 m-2 p-1 rounded'>
       <svelte:component
         this={spotStatus[0]}
         class={`${spotStatus[1]}`}
@@ -62,7 +62,7 @@
   {/if}
 
   {#if spotType}
-    <div class='absolute top-0 left-0 bg-gray-50 m-2 p-1 rounded'>
+    <div class='absolute top-0 left-0 bg-gray-50 dark:bg-gray-800 m-2 p-1 rounded'>
       <svelte:component this={spotType} title={spot.type} />
     </div>
   {/if}

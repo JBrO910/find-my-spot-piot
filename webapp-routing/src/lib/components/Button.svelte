@@ -5,7 +5,7 @@
   $: colorClasses = disabled
                     ? 'bg-gray-400 opacity-60'
                     : color === 'primary'
-                      ? 'bg-blue-700 text-blue-50 hover:bg-blue-600 cursor-pointer'
+                      ? 'bg-orange-700 text-orange-50 hover:bg-orange-600 cursor-pointer'
                       : color === 'secondary'
                         ? 'bg-gray-700 text-gray-50 hover:bg-gray-600 cursor-pointer'
                         : color === 'error'

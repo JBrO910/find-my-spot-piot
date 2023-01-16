@@ -5,11 +5,10 @@
   import Input from '../../../lib/components/Input.svelte'
   import type { ApiError, FieldError } from '../../../lib/types'
 
-  let error: ApiError | FieldError = undefined
+  let error: ApiError | FieldError | undefined = undefined
 </script>
 
-<h5 class='text-blue-500 font-medium text-4xl'>FindMySpot</h5>
-<h6 class='text-blue-300 text-2xl'>Register</h6>
+<h5 class='text-orange-500 font-medium text-4xl'>Register</h5>
 <form
   action='?/register'
   class='flex flex-col gap-4 py-4 min-w-[400px]'
@@ -50,7 +49,7 @@
   />
   <Button type='submit'>Register</Button>
   <a
-    class='text-blue-500 hover:text-blue-700 hover:underline underline-offset-2 text-sm'
+    class='text-orange-500 hover:text-orange-700 hover:underline underline-offset-2 text-sm'
     href='/login'
   >Go to login
   </a>

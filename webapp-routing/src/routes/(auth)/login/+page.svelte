@@ -9,8 +9,7 @@
   let loading = false
 </script>
 
-<h5 class='text-blue-500 font-medium text-4xl'>FindMySpot</h5>
-<h6 class='text-blue-300 text-2xl'>Login</h6>
+<h5 class='text-orange-500 font-medium text-4xl'>Login</h5>
 <form
   class='flex flex-col gap-4 py-4 min-w-[400px]'
   method='POST'
@@ -54,5 +53,5 @@
     <small class='text-red-700 text-sm font-medium mt-[-16px]'>{error.message}</small>
   {/if}
   <Button disabled={loading} type='submit'>Login</Button>
-  <a href='/register' class='text-blue-500 hover:text-blue-700 hover:underline underline-offset-2 text-sm'>Register account</a>
+  <a href='/register' class='text-orange-500 hover:text-orange-700 hover:underline underline-offset-2 text-sm'>Register account</a>
 </form>

@@ -15,7 +15,7 @@
   let socket = undefined
 
   const navigateToEdit = () => {
-    goto(`/garage/${data.garage?.id}/edit`)
+    goto(`/garage/${ data.garage?.id }/edit`)
   }
 
   onMount(async () => {
@@ -41,7 +41,7 @@
 
   const onSelectLevel = (level) => () => selectedLevel = level
 
-  const openGate = (gate) => () => socket.emit("openGate", gate)
+  const openGate = (gate) => () => socket.emit('openGate', gate)
 
   $: levels = Object.values(data?.spots ?? {})
     .reduce((acc: Array<Array<CombinedSpot>>, curr: CombinedSpot) => {
@@ -51,27 +51,37 @@
       acc[curr.z].push(curr)
       return acc
     }, [])
+
+  $: gates = data?.garage?.gates ?? []
 </script>
 
 {#if data.page.user.isAdmin}
-  <Button color='secondary' type='button' on:click={navigateToEdit} class='m-2'>Edit Garage</Button>
+  <Button
+    color='secondary'
+    type='button'
+    on:click={navigateToEdit}
+    class='m-2'
+  >Edit Garage
+  </Button>
 
   <div class='pt-4 px-4'>
     <h6 class='text-xl font-medium mr-2'>Gates:</h6>
     <div class='flex gap-2'>
-      {#each data.garage.gates as gate}
-        <p
-          on:click={openGate(gate)}
-          on:keydown={openGate(gate)}
-          class={`px-2 py-1 whitespace-nowrap cursor-pointer select-none rounded bg-gray-700 text-gray-50`}
-        >
-          {gate}
-        </p>
+      {#if gates.length}
+        {#each gates as gate}
+          <p
+            on:click={openGate(gate)}
+            on:keydown={openGate(gate)}
+            class={`px-2 py-1 whitespace-nowrap cursor-pointer select-none rounded bg-gray-700 text-gray-50`}
+          >
+            {gate}
+          </p>
+        {/each}
       {:else}
         <small class='font-medium text-sm'>
           No gates were registered on garage
         </small>
-      {/each}
+      {/if}
     </div>
   </div>
 {/if}
@@ -82,9 +92,11 @@
       on:click={onSelectLevel(i)}
       class='underline-offset-2 text-xl font-medium hover:cursor-pointer select-none'
       class:text-gray-900={selectedLevel === i}
+      class:dark:text-gray-50={selectedLevel === i}
       class:underline={selectedLevel === i}
       class:font-bold={selectedLevel === i}
       class:text-gray-700={selectedLevel !== i}
+      class:dark:text-gray-200={selectedLevel !== i}
     >
       Level {i} <span class='text-base'>({level.filter(e => !!e.status).length}/{level.length})</span>
     </p>

@@ -11,7 +11,7 @@
 </script>
 
 <div class='flex flex-col items-center justify-center gap-2 p-4'>
-  <div class='rounded bg-gray-50 shadow px-4 py-2 w-1/2'>
+  <div class='rounded bg-gray-50 dark:bg-gray-800 shadow px-4 py-2 w-1/2'>
     <h6 class='text-2xl font-medium'>Register Garage</h6>
     <form
       class='flex flex-col gap-4 py-4'

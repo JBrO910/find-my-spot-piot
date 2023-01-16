@@ -126,7 +126,7 @@
   tabindex='0'
 >
   <div
-    class='gridDef grid rounded-xl p-2 border border-gray-300 bg-gray-500'
+    class='gridDef grid rounded-xl p-4 bg-gray-500 dark:bg-gray-800'
     style={cssGridDef}
   >
     {#each spots as spot}
@@ -146,7 +146,7 @@
       on:keydown={() => (selectedSpotIndex = undefined)}
     >
       <div
-        class='bg-gray-50 p-4 rounded-md shadow-md flex flex-col gap-2'
+        class='bg-gray-50 dark:bg-gray-800 p-4 rounded-md shadow-md flex flex-col gap-2'
         on:click|stopPropagation
         on:keydown|stopPropagation
       >
@@ -273,11 +273,11 @@
     }
 
     tr:nth-child(odd) {
-        @apply bg-gray-200
+        @apply bg-gray-200 dark:bg-gray-700;
     }
 
     tr:nth-child(even) {
-        @apply bg-gray-300
+        @apply bg-gray-300 dark:bg-gray-600;
     }
 
     th, td {
@@ -285,10 +285,10 @@
     }
 
     .key {
-        @apply text-gray-900 text-sm font-bold whitespace-nowrap
+        @apply text-gray-900 dark:text-gray-50 text-sm font-bold whitespace-nowrap
     }
 
     .value {
-        @apply text-gray-700 text-sm whitespace-nowrap
+        @apply text-gray-700 dark:text-gray-200 text-sm whitespace-nowrap
     }
 </style>

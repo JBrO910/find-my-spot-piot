@@ -23,7 +23,7 @@
     <title>FindMySpot</title>
 </svelte:head>
 
-<div class='h-screen flex flex-col bg-gray-100'>
+<div class='h-screen flex flex-col bg-gray-100 dark:bg-gray-900'>
     <TopBar title='FindMySpot'>
         <div slot='content' class='flex flex-1 items-center'>
             <h6 class='text-gray-50 text-md italic'>{$page.data?.page?.name}</h6>

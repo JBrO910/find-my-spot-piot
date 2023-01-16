@@ -13,9 +13,9 @@
     <h6 class='text-lg'>{garage.name}</h6>
     <div class='mt-1 flex items-center'>
       <MarkerIcon class='mr-1 text-sm text-gray-500' />
-      <small class='mr-4 text-sm text-gray-500 font-light'>{garage.address}</small>
+      <small class='mr-4 text-sm text-gray-500 dark:text-gray-300 font-light'>{garage.address}</small>
       <PhoneIcon class='mr-1 text-sm text-gray-500' />
-      <small class='text-sm text-gray-500 font-light'>{garage.phoneNumber}</small>
+      <small class='text-sm text-gray-500 dark:text-gray-300 font-light'>{garage.phoneNumber}</small>
     </div>
   </div>
   <div class='divider'></div>
@@ -43,7 +43,8 @@
             rounded
             p-4
             shadow
-            bg-gray-50
+            bg-gray-50 dark:bg-gray-800
+            hover:bg-orange-50 dark:hover:bg-orange-700
             hover:shadow-md
             hover:cursor-pointer
         }

@@ -48,7 +48,7 @@
 
 <div class='grid place-items-center p-4'>
   <form
-    class='bg-gray-50 rounded shadow p-4 w-[48rem] gap-2 flex flex-col'
+    class='bg-gray-50 dark:bg-gray-800 rounded shadow p-4 w-[48rem] gap-2 flex flex-col'
     use:enhance={() => {
           isLoadingCard = true
           return async ({result}) => {

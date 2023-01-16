@@ -12,7 +12,7 @@
 <div class='flex flex-col gap-4 p-4'>
   <form
     action='?/topUp'
-    class='bg-gray-50 rounded shadow px-4 py-2 flex items-center justify-between'
+    class='bg-gray-50 dark:bg-gray-800 rounded shadow px-4 py-2 flex items-center justify-between'
     use:enhance
   >
     <h6 class='text-xl font-semibold'>
@@ -47,7 +47,7 @@
 
   {#each data.parkingHistory as parkingSession}
     <div
-      class='bg-gray-50 rounded shadow flex-1 px-4 py-2 flex items-center justify-between border'
+      class='bg-gray-50 dark:bg-gray-800 rounded shadow flex-1 px-4 py-2 flex items-center justify-between border'
       class:border-red-700={parkingSession.status === "unpaid"}
       class:border-blue-700={parkingSession.status === "open"}
       class:border-green-700={parkingSession.status === "closed"}

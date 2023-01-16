@@ -116,7 +116,7 @@
     })
 </script>
 
-<div class='bg-gray-50 p-4 rounded mx-2 shadow mt-2'>
+<div class='bg-gray-50 dark:bg-gray-800 p-4 rounded mx-2 shadow mt-2'>
   <h6 class='text-xl font-semibold mb-2'>Level Definition</h6>
   <div class='flex gap-2'>
     <Input
@@ -157,7 +157,7 @@
         <p
           on:click={() => {selectedSpot = (selectedSpot === spot ? undefined : spot)}}
           on:keydown={() => {selectedSpot = (selectedSpot === spot ? undefined : spot)}}
-          class={`px-2 py-1 whitespace-nowrap cursor-pointer select-none rounded ${selectedSpot === spot ? 'bg-blue-700 text-blue-50' : 'bg-gray-700 text-gray-50'}`}
+          class={`px-2 py-1 whitespace-nowrap cursor-pointer select-none rounded ${selectedSpot === spot ? 'bg-orange-700 text-orange-50' : 'bg-gray-700 text-gray-50'}`}
         >
           {spot.id}
         </p>
@@ -232,9 +232,11 @@
         on:keydown={onSelectLevel(i)}
         class='underline-offset-2 text-xl font-medium hover:cursor-pointer select-none'
         class:text-gray-900={selectedLevel === i}
+        class:dark:text-gray-50={selectedLevel === i}
         class:underline={selectedLevel === i}
         class:font-bold={selectedLevel === i}
         class:text-gray-700={selectedLevel !== i}
+        class:dark:text-gray-200={selectedLevel !== i}
       >
         Level {i}
       </p>

@@ -67,6 +67,7 @@ class App:
                         iteration_time = 0
                         for spot in self.spots:
                             print(spot.id)
+                            spot.send_keep_alive()
                             spot.measure()
                             sleep(0.25)
                 else:

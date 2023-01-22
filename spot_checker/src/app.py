@@ -46,18 +46,30 @@ class App:
         return self.sleep_time
 
     def loop(self):
+        iteration_time = 0
+        check_time = self.get_sleep_time()
+
         while True:
             try:
                 if self.is_registered():
                     self.mqtt_client.check_msg()
-                    opening_times.check_time(self.opening_times)
-                    sleep(self.get_sleep_time())
-                    for spot in self.spots:
-                        print(spot.id)
-                        spot.send_keep_alive()
-                        spot.measure()
-                        sleep(0.25)
 
+                    opening_times.check_time(self.opening_times)
+
+                    sleep(1)
+                    iteration_time += 1
+
+                    if iteration_time >= 30:
+                        for spot in self.spots:
+                            spot.send_keep_alive()
+                            sleep(0.25)
+
+                    if iteration_time >= check_time:
+                        iteration_time = 0
+                        for spot in self.spots:
+                            print(spot.id)
+                            spot.measure()
+                            sleep(0.25)
                 else:
                     print('WAIT FOR REGISTER')
                     self.mqtt_client.wait_msg()

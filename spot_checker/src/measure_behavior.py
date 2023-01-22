@@ -19,27 +19,29 @@ class SpotBehavior:
         self.latest_keep_alive = 0
 
     def measure(self):
-        if not self.is_disabled:
-            try:
-                distance = self.sensor.distance_cm()
-                if distance < TRIGGER_DISTANCE:
-                    # Spot is occupied
-                    self.led.value(0)
-                    if not self.is_occupied and self.mqtt_client is not None:
-                        msg = json.dumps({"id": self.id, "status": "0", })
-                        sleep(0.5)
-                        self.mqtt_client.publish(topic_spot_update, msg)
-                    self.is_occupied = True
-                else:
-                    # Spot is free
-                    self.led.value(1)
-                    if self.is_occupied and self.mqtt_client is not None:
-                        msg = json.dumps({"id": self.id, "status": "1", })
-                        sleep(0.5)
-                        self.mqtt_client.publish(topic_spot_update, msg)
-                    self.is_occupied = False
-            except Exception as ex:
-                print(ex)
+        if self.is_disabled:
+            return
+
+        try:
+            distance = self.sensor.distance_cm()
+            if distance < TRIGGER_DISTANCE:
+                # Spot is occupied
+                self.led.value(0)
+                if (not self.is_occupied and self.mqtt_client is not None) or self.is_occupied is None:
+                    msg = json.dumps({"id": self.id, "status": "0", })
+                    sleep(0.5)
+                    self.mqtt_client.publish(topic_spot_update, msg)
+                self.is_occupied = True
+            else:
+                # Spot is free
+                self.led.value(1)
+                if (self.is_occupied and self.mqtt_client is not None) or self.is_occupied is None:
+                    msg = json.dumps({"id": self.id, "status": "1", })
+                    sleep(0.5)
+                    self.mqtt_client.publish(topic_spot_update, msg)
+                self.is_occupied = False
+        except Exception as ex:
+            print(ex)
 
     def send_keep_alive(self):
         start = time()

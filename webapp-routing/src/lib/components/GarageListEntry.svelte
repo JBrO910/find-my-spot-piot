@@ -22,7 +22,7 @@
   {#if !!garage.totalSpots}
     <div>
       <p class='min-w-[2em] text-end'>{garage.freeSpots}/{garage.totalSpots}</p>
-      <small class='text-sm text-gray-500'>Free Spots</small>
+      <small class='text-sm text-gray-500 dark:text-gray-300 font-light'>Free Spots</small>
     </div>
   {:else}
     <div>

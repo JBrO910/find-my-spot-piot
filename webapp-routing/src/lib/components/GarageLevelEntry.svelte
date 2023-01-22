@@ -98,7 +98,6 @@
   }
 
   $: cssGridDef = definition && `--count-cols: ${ definition.x }; --count-rows: ${ definition.y }`
-  $: console.log(referenceTime.getTime(), spots[selectedSpotIndex]?.statusChangedAt, Math.abs(referenceTime.getTime() - spots[selectedSpotIndex]?.statusChangedAt) / 1000 / 60, Math.abs(referenceTime.getTime() - spots[selectedSpotIndex]?.statusChangedAt) / 1000 / 60 / 60, Math.abs(referenceTime.getTime() - spots[selectedSpotIndex]?.statusChangedAt) / 1000 / 60 % 60)
   $: parkedFor = [
     (referenceTime.getTime() - spots[selectedSpotIndex]?.statusChangedAt) / 1000 / 60 / 60,
     ((referenceTime.getTime() - spots[selectedSpotIndex]?.statusChangedAt) / 1000 / 60) % 60,

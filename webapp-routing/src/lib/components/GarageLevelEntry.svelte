@@ -21,7 +21,7 @@
 
   export let editable = false
   export let isAdmin = false
-  export let editSpotClick: (mockSpot: any) => CombinedSpot = undefined
+  export let editSpotClick: ((mockSpot: any) => CombinedSpot) | undefined = undefined
   export let removable = false
   export let spots: Array<CombinedSpot> = []
   export let definition: { x: Number, y: Number }
@@ -78,9 +78,10 @@
   }
 
   $: {
-    if (!!socket && !isSocketSetup) {
-      isSocketSetup = true
-      socket?.on(
+    if (socket !== undefined && !isSocketSetup) {
+      isSocketSetup = true;
+
+      (socket as Socket).on(
         'measureResult', ({
                             measure,
                             id,
@@ -101,7 +102,7 @@
   $: parkedFor = [
     (referenceTime.getTime() - spots[selectedSpotIndex]?.statusChangedAt) / 1000 / 60 / 60,
     ((referenceTime.getTime() - spots[selectedSpotIndex]?.statusChangedAt) / 1000 / 60) % 60,
-  ].map(e => Math.abs(Math.floor(e)))
+  ].map(e => Math.floor(Math.abs(e)))
   $: spotDisabled = spots[selectedSpotIndex]?.isTurnedOff || spots[selectedSpotIndex]?.hasLostConnection
   $: spotStatus = spots[selectedSpotIndex]?.isTurnedOff
                   ? [ErrorIcon, 'text-red-700', 'Turned off']

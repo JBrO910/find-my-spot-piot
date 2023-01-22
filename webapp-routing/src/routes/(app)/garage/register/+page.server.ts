@@ -11,6 +11,7 @@ export const load: PageServerLoad = ({locals}) => {
   return {
     page: {
       name: 'Register Garage',
+      user: locals.user,
     },
   }
 }

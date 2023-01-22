@@ -175,7 +175,7 @@ garageRouter.post('/', async (req, res) => {
     await apiController.add(apiKey)
 
     Log.tag(LOG_TAG)
-        .info(`Created Garage`, created.id)
+        .info(`Created Garage\n\n`, `GARAGE_ID=${created.id}\n`, `API_KEY=${apiKey.key}\n\n`)
     res.status(200)
         .send({id: created.id, apiKey: apiKey.key})
 })

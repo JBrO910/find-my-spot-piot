@@ -31,7 +31,7 @@ export const handle: Handle = async ({
 
   const { data: user } = await getUser(event.locals.axios)
 
-  if (!user) {
+  if (!user && !isAuthenticationPage) {
     event.cookies.set('token', "", {
       path: '/',
       httpOnly: PUBLIC_ENVIRONMENT === 'dev',

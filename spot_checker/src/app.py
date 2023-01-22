@@ -47,7 +47,6 @@ class App:
 
     def loop(self):
         iteration_time = 0
-        check_time = self.get_sleep_time()
 
         while True:
             try:
@@ -64,7 +63,7 @@ class App:
                             spot.send_keep_alive()
                             sleep(0.25)
 
-                    if iteration_time >= check_time:
+                    if iteration_time >= self.get_sleep_time():
                         iteration_time = 0
                         for spot in self.spots:
                             print(spot.id)

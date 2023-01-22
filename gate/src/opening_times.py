@@ -59,6 +59,7 @@ def _check_time_weekend(weekend_start, weekend_end, workday_start, hour, minute,
         return False
 
     end_time_hour, end_time_minute = weekend_end.split(':')  # 12:00
+    end_time_hour, end_time_minute = int(end_time_hour), int(end_time_minute)
 
     if end_time_hour > hour or (end_time_hour >= hour and end_time_minute > minute):
         return False
